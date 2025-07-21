@@ -121,14 +121,14 @@
             }
 
             let password = prompt('관리자 비밀번호를 입력하세요:');
-            
+
             if (password) {
                 // 입력값 앞뒤의 공백을 제거합니다. (보이지 않는 공백 입력 방지)
                 password = password.trim();
                 console.log('입력된 비밀번호:', password);
 
                 const ADMIN_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
-                
+
                 try {
                     const encoder = new TextEncoder();
                     const data = encoder.encode(password);
@@ -169,7 +169,7 @@
         <div class="admin-section">
             <h2><i class="fas fa-chart-bar"></i> 통계</h2>
             <div class="admin-stats" id="adminStats">
-                </div>
+            </div>
         </div>
 
         <div class="admin-section">
@@ -190,160 +190,54 @@
                 </div>
             </div>
             <div id="feedbackList">
-                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // 피드백 타입별 한글 이름
-        const feedbackTypeNames = {
-            'bug': '버그 신고',
-            'feature': '기능 요청',
-            'improvement': '개선 제안',
-            'other': '기타'
-        };
-        
-        // 피드백 타입별 색상
-        const feedbackTypeColors = {
-            'bug': '#ef4444',
-            'feature': '#10b981',
-            'improvement': '#f59e0b',
-            'other': '#8b5cf6'
-        };
-
-        // 페이지 로드 시 피드백 로드
-        document.addEventListener('DOMContentLoaded', function() {
-            loadFeedbacks();
-            loadStats();
-        });
-
-        // 통계 로드
-        function loadStats() {
-            try {
-                const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
-                const statsContainer = document.getElementById('adminStats');
-                
-                // 타입별 통계
-                const typeStats = {
-                    'bug': 0,
-                    'feature': 0,
-                    'improvement': 0,
-                    'other': 0
-                };
-                
-                feedbacks.forEach(feedback => {
-                    typeStats[feedback.type] = (typeStats[feedback.type] || 0) + 1;
-                });
-                
-                // 최근 7일 피드백 수
-                const sevenDaysAgo = new Date();
-                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                const recentFeedbacks = feedbacks.filter(feedback => 
-                    new Date(feedback.timestamp) > sevenDaysAgo
-                ).length;
-                
-                statsContainer.innerHTML = `
-                    <div class="stat-card">
-                        <div class="stat-number">${feedbacks.length}</div>
-                        <div class="stat-label">총 피드백</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${recentFeedbacks}</div>
-                        <div class="stat-label">최근 7일</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${typeStats.bug}</div>
-                        <div class="stat-label">버그 신고</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${typeStats.feature}</div>
-                        <div class="stat-label">기능 요청</div>
-                    </div>
-                `;
-            } catch (error) {
-                console.error('통계 로드 오류:', error);
+        (async function checkAuth() {
+            // 이미 인증되었는지 확인
+            if (sessionStorage.getItem('isAdminAuthenticated') === 'true') {
+                return; // 인증되었으면 통과
             }
-        }
 
-        // 피드백 로드 및 표시
-        function loadFeedbacks() {
-            try {
-                const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
-                const feedbackList = document.getElementById('feedbackList');
-                
-                if (feedbacks.length === 0) {
-                    feedbackList.innerHTML = `
-                        <div class="empty-state">
-                            <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: var(--space-4); color: var(--neutral-400);"></i>
-                            <h3>아직 피드백이 없습니다</h3>
-                            <p>사용자들이 피드백을 보내면 여기에 표시됩니다.</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                // 최신 순으로 정렬
-                feedbacks.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                
-                feedbackList.innerHTML = feedbacks.map((feedback, index) => `
-                    <div class="feedback-item">
-                        <div class="feedback-header">
-                            <span class="feedback-type" style="background-color: ${feedbackTypeColors[feedback.type] || '#8b5cf6'}">
-                                ${feedbackTypeNames[feedback.type] || feedback.type}
-                            </span>
-                            <span class="feedback-date">
-                                ${new Date(feedback.timestamp).toLocaleString('ko-KR')}
-                            </span>
-                        </div>
-                        <div class="feedback-message">
-                            ${feedback.message.replace(/\n/g, '<br>')}
-                        </div>
-                        <div class="feedback-meta">
-                            <div>
-                                <strong>이메일:</strong> ${feedback.email}
-                            </div>
-                            <div>
-                                <strong>페이지:</strong> ${feedback.url}
-                            </div>
-                        </div>
-                    </div>
-                `).join('');
-                
-            } catch (error) {
-                console.error('피드백 로드 오류:', error);
-                document.getElementById('feedbackList').innerHTML = `
-                    <div class="empty-state">
-                        <h3>피드백을 불러오는 중 오류가 발생했습니다</h3>
-                        <p>콘솔을 확인해주세요.</p>
-                    </div>
-                `;
-            }
-        }
+            // 인증되지 않았다면 비밀번호를 물어봄
+            let password = prompt('관리자 비밀번호를 입력하세요:');
 
-        // 피드백 새로고침
-        function refreshFeedbacks() {
-            loadFeedbacks();
-            loadStats();
-        }
+            if (password) {
+                // 입력값 앞뒤의 공백을 제거합니다.
+                password = password.trim();
+                const ADMIN_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // 'admin123' 해시
 
-        // 모든 피드백 삭제
-        function clearAllFeedbacks() {
-            if (confirm('정말로 모든 피드백을 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.')) {
-                localStorage.removeItem('feedbacks');
-                loadFeedbacks();
-                loadStats();
-                alert('모든 피드백이 삭제되었습니다.');
-            }
-        }
+                try {
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(password);
 
-        // 뒤로가기 버튼 추가
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                if (confirm('메인 페이지로 돌아가시겠습니까?')) {
+                    // ▼▼▼ 이 부분의 오타를 수정했습니다! ▼▼▼
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                    // ▲▲▲ 'SHA-266' -> 'SHA-256' ▲▲▲
+
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                    if (hexHash === ADMIN_HASH) {
+                        // 비밀번호가 맞으면 세션에 인증서 발급
+                        sessionStorage.setItem('isAdminAuthenticated', 'true');
+                    } else {
+                        // 비밀번호가 틀리면 접근 금지 및 메인 페이지로 이동
+                        alert('비밀번호가 틀렸습니다.');
+                        window.location.href = 'index.html';
+                    }
+                } catch (error) {
+                    alert('인증 중 오류가 발생했습니다.');
                     window.location.href = 'index.html';
                 }
+            } else {
+                // 비밀번호 입력을 취소하면 접근 금지 및 메인 페이지로 이동
+                alert('접근 권한이 없습니다.');
+                window.location.href = 'index.html';
             }
-        });
+        })();
     </script>
 </body>
 
