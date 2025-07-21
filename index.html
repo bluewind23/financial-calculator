@@ -363,7 +363,7 @@
                     <div class="input-group">
                         <label for="modalInterestRate">연이율</label>
                         <div class="input-wrapper">
-                            <input type="text" id="modalInterestRate" placeholder="0" class="input-field" step="0.01">
+                            <input type="text" id="modalInterestRate" placeholder="0" class="input-field">
                             <span class="input-unit">%</span>
                         </div>
                     </div>
@@ -387,24 +387,33 @@
                 <div class="result-panel" id="modalLoanResult" style="display: none;">
                     <div class="result-header">
                         <h4>계산 결과</h4>
-                        <button class="btn export-btn" onclick="exportLoanResult()" style="display: none;">
+                        <button class="btn export-btn" onclick="showDownloadOptions('modalLoanResult', '대출이자계산기')"
+                            style="display: none;">
                             <i class="fas fa-download"></i>
                             결과 저장
                         </button>
                     </div>
-                    <div class="result-grid">
+                    <div class="result-grid result-grid-dense">
                         <div class="result-item">
                             <span class="result-label">월 상환액</span>
                             <span class="result-value" id="modalMonthlyPayment">0원</span>
                         </div>
                         <div class="result-item">
-                            <span class="result-label">총 상환액</span>
-                            <span class="result-value" id="modalTotalPayment">0원</span>
-                        </div>
-                        <div class="result-item">
                             <span class="result-label">총 이자</span>
                             <span class="result-value highlight" id="modalTotalInterest">0원</span>
                         </div>
+                        <div class="result-item">
+                            <span class="result-label">첫 달 원금</span>
+                            <span class="result-value" id="modalFirstPrincipal">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">첫 달 이자</span>
+                            <span class="result-value" id="modalFirstInterest">0원</span>
+                        </div>
+                    </div>
+                    <div class="legal-disclaimer">
+                        <i class="fas fa-info-circle"></i>
+                        <span>원리금균등 방식은 회차가 지날수록 원금 비중이 늘고 이자 비중이 줄어듭니다.</span>
                     </div>
                 </div>
             </div>

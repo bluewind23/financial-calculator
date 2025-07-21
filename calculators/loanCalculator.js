@@ -5,10 +5,13 @@ class LoanCalculator {
         const numPayments = years * 12;
 
         if (monthlyRate === 0) {
+            const monthlyPayment = principal / numPayments;
             return {
-                monthlyPayment: principal / numPayments,
+                monthlyPayment: monthlyPayment,
                 totalPayment: principal,
-                totalInterest: 0
+                totalInterest: 0,
+                firstMonthPrincipal: monthlyPayment,
+                firstMonthInterest: 0,
             };
         }
 
@@ -19,10 +22,16 @@ class LoanCalculator {
         const totalPayment = monthlyPayment * numPayments;
         const totalInterest = totalPayment - principal;
 
+        // 첫 달 이자 및 원금 계산
+        const firstMonthInterest = principal * monthlyRate;
+        const firstMonthPrincipal = monthlyPayment - firstMonthInterest;
+
         return {
             monthlyPayment,
             totalPayment,
-            totalInterest
+            totalInterest,
+            firstMonthPrincipal,
+            firstMonthInterest
         };
     }
 
@@ -41,13 +50,18 @@ class LoanCalculator {
         }
 
         const totalInterest = totalPayment - principal;
-        const firstMonthPayment = principalPayment + (principal * monthlyRate);
+
+        // 첫 달 이자 및 원금 계산
+        const firstMonthInterest = principal * monthlyRate;
+        const firstMonthPayment = principalPayment + firstMonthInterest;
 
         return {
-            monthlyPayment: firstMonthPayment, // First month payment (highest)
+            monthlyPayment: firstMonthPayment, // 첫 달 상환액 (가장 높음)
             totalPayment,
-            totalInterest
+            totalInterest,
+            firstMonthPrincipal: principalPayment, // 원금균등은 매달 원금이 동일
+            firstMonthInterest: firstMonthInterest,
         };
     }
 }
-window.LoanCalculator = LoanCalculator; // 클래스를 window 객체에 할당
+window.LoanCalculator = LoanCalculator;

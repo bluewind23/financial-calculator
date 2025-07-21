@@ -40,19 +40,20 @@ const trackDownload = (fileType, calculatorType) => {
 
 // Utility Functions
 const formatNumber = (number) => {
-    // toLocaleString을 사용하기 전에 숫자인지 확인합니다.
     if (typeof number !== 'number' || isNaN(number)) {
-        return ''; // 숫자가 아니면 빈 문자열 반환
+        return '';
     }
-    return new Intl.NumberFormat('ko-KR').format(number);
+    return new Intl.NumberFormat('ko-KR').format(Math.round(number)); // 최종 결과에서 반올림
 };
 
 const parseNumber = (value) => {
-    if (!value || value.trim() === '') return 0;  // null → 0으로 처리
-    const cleaned = value.replace(/,/g, '');
-    const parsed = parseFloat(cleaned);
+    if (!value || value.trim() === '') return 0;
+    const cleaned = String(value).replace(/,/g, ''); // 문자열로 변환하여 오류 방지
+    // 정수만 처리하도록 parseInt 사용, 소수점 입력 방지
+    const parsed = parseInt(cleaned, 10);
     return isNaN(parsed) ? 0 : parsed;
 };
+
 
 const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -65,6 +66,7 @@ const scrollToSection = (sectionId) => {
 };
 
 // Calculator Management
+// Calculator Management
 class CalculatorManager {
     constructor() {
         this.activeCalculator = 'loan';
@@ -75,11 +77,11 @@ class CalculatorManager {
         this.setupCalculatorNavigation();
         this.setupModalControls();
         this.setupModeButtons();
-        this.setupInputFormatting();
+        this.setupInputFormatting(); // 이 함수가 중요하게 변경됩니다.
         this.setupMobileMenu();
         this.setupScrollAnimations();
         this.setupGuideTabs();
-        this.setupRealEstateTaxModes(); // 새로 추가된 부동산 세금 계산기 모드 설정
+        this.setupRealEstateTaxModes();
     }
 
     setupCalculatorNavigation() {
@@ -239,57 +241,88 @@ class CalculatorManager {
         const textInputs = document.querySelectorAll('input[type="text"].input-field');
 
         textInputs.forEach(input => {
-            if (input.value) {
-                const initialNum = parseNumber(input.value);
-                if (initialNum !== null) {
-                    input.setAttribute('data-raw-value', initialNum.toString());
-                    input.value = formatNumber(initialNum);
-                } else {
-                    input.setAttribute('data-raw-value', '');
-                    input.value = '';
-                }
-            } else {
-                input.setAttribute('data-raw-value', '');
-            }
+            // 초기값 포맷팅
+            const initialRawValue = input.value.replace(/[^\d.]/g, ''); // 초기값에서도 소수점 허용 가능하게
+            input.setAttribute('data-raw-value', initialRawValue);
+            input.value = formatNumber(parseFloat(initialRawValue));
 
+            // 실시간 콤마(,) 포맷팅을 위한 input 이벤트 리스너
             input.addEventListener('input', (e) => {
-                let currentValue = e.target.value;
-                currentValue = currentValue.replace(/,/g, ''); // 콤마 제거
+                const target = e.target;
+                const originalValue = target.value;
+                const cursorPosition = target.selectionStart;
 
-                let cleanValue = currentValue.replace(/[^\d.]/g, ''); // 숫자와 소수점만 허용
+                let cleanRegex;
 
-                const parts = cleanValue.split('.');
-                if (parts.length > 2) {
-                    cleanValue = parts[0] + '.' + parts.slice(1).join('');
+                // ★ 수정된 핵심 로직 ★
+                // input의 id에 'Rate'가 포함되어 있으면 소수점을 허용, 아니면 정수만 허용
+                if (target.id.includes('Rate')) {
+                    cleanRegex = /[^\d.]/g; // 숫자와 점(.)만 허용
+                } else {
+                    cleanRegex = /[^\d]/g;  // 숫자만 허용
                 }
 
-                // 음수 입력 방지 (주로 금액 입력 필드에 해당)
-                // 첫 글자가 '-'인 경우, 제거
-                if (cleanValue.startsWith('-')) {
-                    cleanValue = cleanValue.substring(1);
+                let rawValue = originalValue.replace(cleanRegex, '');
+
+                // 소수점 허용 필드의 경우, 점이 여러 개 찍히지 않도록 처리
+                if (target.id.includes('Rate')) {
+                    const parts = rawValue.split('.');
+                    if (parts.length > 2) {
+                        rawValue = parts[0] + '.' + parts.slice(1).join('');
+                    }
                 }
 
-                e.target.value = cleanValue; // 입력 필드에는 포맷되지 않은 순수 숫자 문자열을 반영
-                e.target.setAttribute('data-raw-value', cleanValue);
+                target.setAttribute('data-raw-value', rawValue);
+
+                if (rawValue === '') {
+                    target.value = '';
+                    return;
+                }
+
+                // 정수 부분만 콤마 포맷팅
+                const parts = rawValue.split('.');
+                const integerPart = parts[0];
+                const decimalPart = parts[1];
+                let formattedValue = new Intl.NumberFormat('ko-KR').format(parseInt(integerPart, 10) || 0);
+                if (decimalPart !== undefined) {
+                    formattedValue += '.' + decimalPart;
+                }
+
+                if (target.value !== formattedValue) {
+                    const originalLength = originalValue.length;
+                    const newLength = formattedValue.length;
+                    const newCursorPosition = cursorPosition + (newLength - originalLength);
+
+                    target.value = formattedValue;
+                    requestAnimationFrame(() => {
+                        target.setSelectionRange(newCursorPosition, newCursorPosition);
+                    });
+                }
             });
 
-            // script.js 파일의 setupInputFormatting 함수 내 blur 이벤트 리스너
+            // 포커스를 잃었을 때 최종 포맷팅
             input.addEventListener('blur', (e) => {
                 const rawValue = e.target.getAttribute('data-raw-value') || '';
-
-                // 비어있는 값이면 필드를 확실하게 비워줍니다.
-                if (rawValue.trim() === '') {
-                    e.target.value = '';
+                if (rawValue) {
+                    // 이자율 필드는 소수점까지 표시, 나머지는 정수로 반올림
+                    if (e.target.id.includes('Rate')) {
+                        e.target.value = rawValue; // 포맷팅 없이 순수 숫자(소수점 포함)로 표시할 수도 있음
+                    } else {
+                        const numValue = parseNumber(rawValue);
+                        e.target.value = formatNumber(numValue);
+                    }
                 } else {
-                    // 값이 있을 때만 포맷팅을 적용합니다.
-                    const numValue = parseNumber(rawValue);
-                    e.target.value = formatNumber(numValue);
+                    e.target.value = '';
                 }
             });
+
+            // 포커스를 얻었을 때 순수 숫자 값 표시
             input.addEventListener('focus', (e) => {
-                const rawVal = e.target.getAttribute('data-raw-value') || '';
-                e.target.value = rawVal;
-                e.target.setSelectionRange(rawVal.length, rawVal.length);
+                const rawValue = e.target.getAttribute('data-raw-value') || '';
+                e.target.value = rawValue;
+                requestAnimationFrame(() => {
+                    e.target.setSelectionRange(rawValue.length, rawValue.length);
+                });
             });
         });
     }
@@ -457,13 +490,11 @@ let prepaymentFeeCalc;
 
 // Global Calculation Functions - Window 객체에 할당하여 HTML onclick에서 접근 가능하도록 함
 window.calculateModalLoan = function () {
-    // GA4 이벤트 추적
     trackCalculatorUsage('loan', 'calculate');
-    // loanCalc가 undefined가 아님을 보장
     if (!loanCalc) { console.error("LoanCalculator is not initialized."); return; }
 
     const amount = parseNumber(document.getElementById('modalLoanAmount').value);
-    const rate = parseNumber(document.getElementById('modalInterestRate').value);
+    const rate = parseFloat(document.getElementById('modalInterestRate').getAttribute('data-raw-value')); // 금리는 소수점 허용
     const years = parseNumber(document.getElementById('modalLoanTerm').value);
 
     if (amount <= 0 || rate < 0 || years <= 0) {
@@ -482,8 +513,10 @@ window.calculateModalLoan = function () {
 
     window.currentLoanResult = { amount, rate, years, mode: activeMode, ...result };
 
+    // 수정된 결과 표시
     document.getElementById('modalMonthlyPayment').textContent = formatNumber(result.monthlyPayment) + '원';
-    document.getElementById('modalTotalPayment').textContent = formatNumber(result.totalPayment) + '원';
+    document.getElementById('modalFirstPrincipal').textContent = formatNumber(result.firstMonthPrincipal) + '원';
+    document.getElementById('modalFirstInterest').textContent = formatNumber(result.firstMonthInterest) + '원';
     document.getElementById('modalTotalInterest').textContent = formatNumber(result.totalInterest) + '원';
 
     const resultPanel = document.getElementById('modalLoanResult');
