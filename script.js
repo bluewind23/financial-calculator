@@ -1103,9 +1103,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // 페이지 로드 시 GA4 페이지 뷰 추적
     trackPageView();
 
-    // 관리자 페이지 접근 단축키 (Ctrl+Shift+A)
+    // 관리자 페이지 접근 단축키 (Ctrl+Shift+L)
     document.addEventListener('keydown', async (e) => {
-        if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+        if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === 'L') {
             const password = prompt('관리자 비밀번호를 입력하세요:');
             if (password) {
                 // 사용자가 입력한 비밀번호를 SHA-256으로 해싱하여 저장된 해시와 비교
