@@ -38,11 +38,6 @@ const trackDownload = (fileType, calculatorType) => {
     });
 };
 
-if (hexHash === ADMIN_HASH) {
-    sessionStorage.setItem('isAdminAuthenticated', 'true'); // 인증서 발급 코드 추가!
-    window.location.href = 'dashboard_sec_a4b1c2.html';
-}
-
 // Utility Functions
 const formatNumber = (number) => {
     if (typeof number !== 'number' || isNaN(number)) {
