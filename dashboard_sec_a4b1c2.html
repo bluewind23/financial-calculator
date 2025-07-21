@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>관리자 페이지 - 금융계산기</title>
-    
+
     <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
-    
+
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         .admin-container {
             max-width: 1200px;
@@ -19,14 +20,14 @@
             background: white;
             min-height: 100vh;
         }
-        
+
         .admin-header {
             text-align: center;
             margin-bottom: var(--space-8);
             padding-bottom: var(--space-4);
             border-bottom: 2px solid var(--primary-500);
         }
-        
+
         .admin-section {
             background: var(--neutral-50);
             padding: var(--space-6);
@@ -34,7 +35,7 @@
             margin-bottom: var(--space-6);
             box-shadow: var(--shadow-md);
         }
-        
+
         .feedback-item {
             background: white;
             padding: var(--space-4);
@@ -42,14 +43,14 @@
             margin-bottom: var(--space-4);
             border-left: 4px solid var(--primary-500);
         }
-        
+
         .feedback-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: var(--space-3);
         }
-        
+
         .feedback-type {
             background: var(--primary-500);
             color: white;
@@ -58,17 +59,17 @@
             font-size: var(--font-size-sm);
             font-weight: 600;
         }
-        
+
         .feedback-date {
             color: var(--neutral-600);
             font-size: var(--font-size-sm);
         }
-        
+
         .feedback-message {
             margin-bottom: var(--space-3);
             line-height: 1.6;
         }
-        
+
         .feedback-meta {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -78,55 +79,63 @@
             font-size: var(--font-size-sm);
             color: var(--neutral-600);
         }
-        
+
         .empty-state {
             text-align: center;
             padding: var(--space-12);
             color: var(--neutral-500);
         }
-        
+
         .admin-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: var(--space-4);
             margin-bottom: var(--space-6);
         }
-        
+
         .stat-card {
             background: var(--primary-50);
             padding: var(--space-4);
             border-radius: var(--radius-md);
             text-align: center;
         }
-        
+
         .stat-number {
             font-size: var(--font-size-3xl);
             font-weight: 700;
             color: var(--primary-600);
         }
-        
+
         .stat-label {
             color: var(--neutral-600);
             margin-top: var(--space-1);
         }
     </style>
 </head>
+
 <body>
+    <script>
+        if (sessionStorage.getItem('isAdminAuthenticated') !== 'true') {
+            alert('접근 권한이 없습니다.');
+            window.location.href = 'index.html'; // 메인 페이지로 튕겨내기
+        }
+    </script>
     <div class="admin-container">
         <div class="admin-header">
             <h1><i class="fas fa-shield-alt"></i> 관리자 페이지</h1>
             <p>피드백 관리 및 사이트 통계</p>
         </div>
-        
+
         <div class="admin-section">
             <h2><i class="fas fa-chart-bar"></i> 통계</h2>
             <div class="admin-stats" id="adminStats">
                 <!-- 통계 정보가 여기에 표시됩니다 -->
             </div>
         </div>
-        
+
         <div class="admin-section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
                 <h2><i class="fas fa-comments"></i> 피드백 관리</h2>
                 <div style="display: flex; gap: var(--space-2);">
                     <button class="btn btn-secondary" onclick="refreshFeedbacks()">
@@ -135,7 +144,8 @@
                     <button class="btn btn-primary" onclick="downloadFeedbacks()">
                         <i class="fas fa-download"></i> 다운로드
                     </button>
-                    <button class="btn" onclick="clearAllFeedbacks()" style="background: var(--accent-red); color: white;">
+                    <button class="btn" onclick="clearAllFeedbacks()"
+                        style="background: var(--accent-red); color: white;">
                         <i class="fas fa-trash"></i> 전체 삭제
                     </button>
                 </div>
@@ -156,7 +166,7 @@
             'improvement': '개선 제안',
             'other': '기타'
         };
-        
+
         // 피드백 타입별 색상
         const feedbackTypeColors = {
             'bug': '#ef4444',
@@ -166,7 +176,7 @@
         };
 
         // 페이지 로드 시 피드백 로드
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             loadFeedbacks();
             loadStats();
         });
@@ -176,7 +186,7 @@
             try {
                 const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
                 const statsContainer = document.getElementById('adminStats');
-                
+
                 // 타입별 통계
                 const typeStats = {
                     'bug': 0,
@@ -184,18 +194,18 @@
                     'improvement': 0,
                     'other': 0
                 };
-                
+
                 feedbacks.forEach(feedback => {
                     typeStats[feedback.type] = (typeStats[feedback.type] || 0) + 1;
                 });
-                
+
                 // 최근 7일 피드백 수
                 const sevenDaysAgo = new Date();
                 sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                const recentFeedbacks = feedbacks.filter(feedback => 
+                const recentFeedbacks = feedbacks.filter(feedback =>
                     new Date(feedback.timestamp) > sevenDaysAgo
                 ).length;
-                
+
                 statsContainer.innerHTML = `
                     <div class="stat-card">
                         <div class="stat-number">${feedbacks.length}</div>
@@ -224,7 +234,7 @@
             try {
                 const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
                 const feedbackList = document.getElementById('feedbackList');
-                
+
                 if (feedbacks.length === 0) {
                     feedbackList.innerHTML = `
                         <div class="empty-state">
@@ -235,10 +245,10 @@
                     `;
                     return;
                 }
-                
+
                 // 최신 순으로 정렬
                 feedbacks.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                
+
                 feedbackList.innerHTML = feedbacks.map((feedback, index) => `
                     <div class="feedback-item">
                         <div class="feedback-header">
@@ -262,7 +272,7 @@
                         </div>
                     </div>
                 `).join('');
-                
+
             } catch (error) {
                 console.error('피드백 로드 오류:', error);
                 document.getElementById('feedbackList').innerHTML = `
@@ -291,7 +301,7 @@
         }
 
         // 뒤로가기 버튼 추가
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 if (confirm('메인 페이지로 돌아가시겠습니까?')) {
                     window.location.href = 'index.html';
@@ -300,4 +310,5 @@
         });
     </script>
 </body>
+
 </html>
