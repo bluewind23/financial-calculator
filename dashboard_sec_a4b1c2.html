@@ -115,10 +115,43 @@
 
 <body>
     <script>
-        if (sessionStorage.getItem('isAdminAuthenticated') !== 'true') {
-            alert('접근 권한이 없습니다.');
-            window.location.href = 'index.html'; // 메인 페이지로 튕겨내기
-        }
+        (async function checkAuth() {
+            // 이미 인증되었는지 확인
+            if (sessionStorage.getItem('isAdminAuthenticated') === 'true') {
+                return; // 인증되었으면 통과
+            }
+
+            // 인증되지 않았다면 비밀번호를 물어봄
+            const password = prompt('관리자 비밀번호를 입력하세요:');
+
+            if (password) {
+                const ADMIN_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // 'admin123' 해시
+
+                try {
+                    const encoder = new TextEncoder();
+                    const data = encoder.encode(password);
+                    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                    const hashArray = Array.from(new Uint8Array(hashBuffer));
+                    const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                    if (hexHash === ADMIN_HASH) {
+                        // 비밀번호가 맞으면 세션에 인증서 발급
+                        sessionStorage.setItem('isAdminAuthenticated', 'true');
+                    } else {
+                        // 비밀번호가 틀리면 접근 금지 및 메인 페이지로 이동
+                        alert('비밀번호가 틀렸습니다.');
+                        window.location.href = 'main_page.html';
+                    }
+                } catch (error) {
+                    alert('인증 중 오류가 발생했습니다.');
+                    window.location.href = 'main_page.html';
+                }
+            } else {
+                // 비밀번호 입력을 취소하면 접근 금지 및 메인 페이지로 이동
+                alert('접근 권한이 없습니다.');
+                window.location.href = 'main_page.html';
+            }
+        })();
     </script>
     <div class="admin-container">
         <div class="admin-header">
