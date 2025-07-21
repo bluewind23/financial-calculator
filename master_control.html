@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>관리자 페이지</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-container { max-width: 1200px; margin: 0 auto; padding: 2rem; background: white; min-height: 100vh; }
+        .admin-header { text-align: center; margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 2px solid #3b82f6; }
+        .admin-section { background: #f9fafb; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .feedback-item { background: white; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid #3b82f6; }
+        .feedback-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+        .feedback-type { background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .feedback-date { color: #6b7280; font-size: 0.75rem; }
+        .feedback-message { margin-bottom: 0.75rem; line-height: 1.6; }
+        .feedback-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding-top: 0.75rem; border-top: 1px solid #e5e7eb; font-size: 0.75rem; color: #6b7280; }
+        .empty-state { text-align: center; padding: 3rem; color: #9ca3af; }
+        .admin-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: #eff6ff; padding: 1rem; border-radius: 8px; text-align: center; }
+        .stat-number { font-size: 2rem; font-weight: 700; color: #1d4ed8; }
+        .stat-label { color: #6b7280; margin-top: 0.25rem; }
+        .btn { padding: 0.5rem 1rem; border-radius: 6px; border: 1px solid transparent; font-size: 0.875rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; }
+        .btn-secondary { background-color: #e5e7eb; color: #374151; }
+        .btn-secondary:hover { background-color: #d1d5db; }
+        .btn-primary { background-color: #3b82f6; color: white; }
+        .btn-primary:hover { background-color: #2563eb; }
+    </style>
+</head>
+<body>
+
+<script>
+    (async function checkAuth() {
+        if (sessionStorage.getItem('isAdminAuthenticated') === 'true') { return; }
+        let password = prompt('관리자 비밀번호를 입력하세요:');
+        if (password) {
+            password = password.trim();
+            const ADMIN_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+            try {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(password);
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+                if (hexHash === ADMIN_HASH) {
+                    sessionStorage.setItem('isAdminAuthenticated', 'true');
+                } else {
+                    alert('비밀번호가 틀렸습니다.');
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                alert('인증 중 오류가 발생했습니다.');
+                window.location.href = 'index.html';
+            }
+        } else {
+            alert('접근 권한이 없습니다.');
+            window.location.href = 'index.html';
+        }
+    })();
+</script>
+
+<div class="admin-container">
+    <div class="admin-header">
+        <h1><i class="fas fa-shield-alt"></i> 관리자 페이지</h1>
+        <p>피드백 관리 및 사이트 통계</p>
+    </div>
+    <div class="admin-section">
+        <h2><i class="fas fa-chart-bar"></i> 통계</h2>
+        <div class="admin-stats" id="adminStats"></div>
+    </div>
+    <div class="admin-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2><i class="fas fa-comments"></i> 피드백 관리</h2>
+            <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-secondary" onclick="refreshFeedbacks()"><i class="fas fa-refresh"></i> 새로고침</button>
+                <button class="btn" onclick="clearAllFeedbacks()" style="background: #ef4444; color: white;"><i class="fas fa-trash"></i> 전체 삭제</button>
+            </div>
+        </div>
+        <div id="feedbackList"></div>
+    </div>
+</div>
+
+<script>
+    const feedbackTypeNames = { 'bug': '버그 신고', 'feature': '기능 요청', 'improvement': '개선 제안', 'other': '기타' };
+    const feedbackTypeColors = { 'bug': '#ef4444', 'feature': '#10b981', 'improvement': '#f59e0b', 'other': '#8b5cf6' };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFeedbacks();
+        loadStats();
+    });
+
+    function loadStats() {
+        try {
+            const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+            const statsContainer = document.getElementById('adminStats');
+            const typeStats = { 'bug': 0, 'feature': 0, 'improvement': 0, 'other': 0 };
+            feedbacks.forEach(feedback => { typeStats[feedback.type] = (typeStats[feedback.type] || 0) + 1; });
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            const recentFeedbacks = feedbacks.filter(f => new Date(f.timestamp) > sevenDaysAgo).length;
+            statsContainer.innerHTML = `
+                <div class="stat-card"><div class="stat-number">${feedbacks.length}</div><div class="stat-label">총 피드백</div></div>
+                <div class="stat-card"><div class="stat-number">${recentFeedbacks}</div><div class="stat-label">최근 7일</div></div>
+                <div class="stat-card"><div class="stat-number">${typeStats.bug}</div><div class="stat-label">버그 신고</div></div>
+                <div class="stat-card"><div class="stat-number">${typeStats.feature}</div><div class="stat-label">기능 요청</div></div>
+            `;
+        } catch (error) { console.error('통계 로드 오류:', error); }
+    }
+
+    function loadFeedbacks() {
+        try {
+            const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
+            const feedbackList = document.getElementById('feedbackList');
+            if (feedbacks.length === 0) {
+                feedbackList.innerHTML = `<div class="empty-state"><h3>아직 피드백이 없습니다</h3></div>`;
+                return;
+            }
+            feedbacks.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            feedbackList.innerHTML = feedbacks.map(f => `
+                <div class="feedback-item">
+                    <div class="feedback-header">
+                        <span class="feedback-type" style="background-color: ${feedbackTypeColors[f.type] || '#8b5cf6'}">${feedbackTypeNames[f.type] || f.type}</span>
+                        <span class="feedback-date">${new Date(f.timestamp).toLocaleString('ko-KR')}</span>
+                    </div>
+                    <div class="feedback-message">${f.message.replace(/\n/g, '<br>')}</div>
+                    <div class="feedback-meta">
+                        <div><strong>이메일:</strong> ${f.email}</div>
+                        <div><strong>페이지:</strong> ${f.url}</div>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('피드백 로드 오류:', error);
+            document.getElementById('feedbackList').innerHTML = `<div class="empty-state"><h3>피드백 로딩 오류</h3></div>`;
+        }
+    }
+
+    function refreshFeedbacks() {
+        loadFeedbacks();
+        loadStats();
+    }
+
+    function clearAllFeedbacks() {
+        if (confirm('정말로 모든 피드백을 삭제하시겠습니까?')) {
+            localStorage.removeItem('feedbacks');
+            loadFeedbacks();
+            loadStats();
+            alert('모든 피드백이 삭제되었습니다.');
+        }
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            if (confirm('메인 페이지로 돌아가시겠습니까?')) {
+                window.location.href = 'index.html';
+            }
+        }
+    });
+</script>
+</body>
+</html>
