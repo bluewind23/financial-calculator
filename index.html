@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="정확하고 신뢰할 수 있는 금융계산기 - 대출이자, 부동산세금, 예적금, 양도소득세, 중도상환 등 9가지 전문 계산기 무료 제공">
+    <meta name="keywords"
+        content="대출 이자 계산기, 부동산 세금 계산기, 예적금 계산기, 양도소득세 계산기, 중개수수료 계산기, 중도상환 계산기, 보유세 계산기, 취득세 계산기, 전월세 전환율 계산기">
+    <meta name="author" content="금융계산기">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="ko">
+    <meta name="geo.region" content="KR">
+    <meta name="geo.country" content="South Korea">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="금융계산기 - 대출 이자, 부동산 세금, 예적금 계산의 모든 것">
+    <meta property="og:description" content="정확하고 신뢰할 수 있는 금융계산기 - 대출이자, 부동산세금, 예적금 등 9가지 전문 계산기 무료 제공">
+    <meta property="og:image" content="">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:site_name" content="금융계산기">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="금융계산기 - 대출 이자, 부동산 세금, 예적금 계산의 모든 것">
+    <meta property="twitter:description" content="정확하고 신뢰할 수 있는 금융계산기 - 대출이자, 부동산세금, 예적금 등 9가지 전문 계산기 무료 제공">
+    <meta property="twitter:image" content="">
+
+    <meta name="description" content="부동산, 대출, 예적금 등을 한 번에 계산할 수 있는 통합 금융 계산기 사이트.">
+    <meta name="keywords" content="세금 계산기, 대출 계산기, 예금 계산기, 부동산, 금융, 이자율 계산">
+    <meta property="og:title" content="금융 계산기 모음 - TaxTool">
+    <meta property="og:description" content="복잡한 계산을 쉽게! 부동산 취득세, 대출 한도, 중도상환 수수료 등 다양한 계산기를 제공합니다.">
+    <meta property="og:image" content="/your-thumbnail.png">
+    <meta name="author" content="bluewind">
+
+
+    <!-- Schema.org markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "금융계산기",
+      "description": "정확하고 신뢰할 수 있는 금융계산기 - 대출이자, 부동산세금, 예적금 등 9가지 전문 계산기 무료 제공",
+      "url": "",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      },
+      "inLanguage": "ko-KR",
+      "creator": {
+        "@type": "Organization",
+        "name": "금융계산기"
+      }
+    }
+    </script>
+
+    <title>금융계산기 - 대출 이자, 부동산 세금, 예적금 계산의 모든 것</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX', {
+            page_title: document.title,
+            page_location: window.location.href
+        });
+    </script>
+
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    </noscript>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Icons -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
+</head>
+
+<body>
+    <h1>통합 금융 계산기 - TaxTool</h1>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <i class="fas fa-calculator"></i>
+                <span>금융계산기</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#calculators" class="nav-link">계산기</a>
+                <a href="guides.html" class="nav-link">이용가이드</a>
+                <a href="about.html" class="nav-link">소개</a>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title centered">
+                복잡한 금융 계산을<br>
+                <span class="gradient-text">쉽고 빠르게</span>
+            </h1>
+            <p class="hero-description">
+                대출 이자부터 부동산 세금까지, 모든 금융 계산을 한 곳에서
+
+            </p>
+            <div class="hero-cta">
+                <button class="btn btn-primary" onclick="scrollToSection('calculators')">
+                    <i class="fas fa-calculator"></i>
+                    계산 시작하기
+                </button>
+                <button class="btn btn-secondary" onclick="window.location.href='guides.html'">
+                    <i class="fas fa-play"></i>
+                    사용법 보기
+                </button>
+            </div>
+            <!-- <p class="hero-subtitle">
+                대출 이자부터 부동산 세금까지, 모든 금융 계산을 한 곳에서
+            </p> -->
+        </div>
+        <div class="hero-visual">
+            <div class="calculator-preview">
+                <div class="calculator-screen">
+                    <div class="screen-header">
+                        <div class="screen-title">대출 이자 계산</div>
+                        <div class="screen-status">실시간</div>
+                    </div>
+                    <div class="screen-content">
+                        <div class="calculation-item">
+                            <span>대출금액</span>
+                            <span class="amount">300,000,000원</span>
+                        </div>
+                        <div class="calculation-item">
+                            <span>월 상환액</span>
+                            <span class="amount highlight">1,458,000원</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="calculators" class="calculators">
+        <div class="section-header">
+            <h2 class="section-title">전문 계산기 모음</h2>
+            <p class="section-description">각 분야별 전문가가 검증한 정확한 계산식을 제공합니다</p>
+        </div>
+
+        <div class="calculator-grid">
+            <div class="calculator-card" data-calculator="loan">
+                <div class="card-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">대출 이자 계산기</h3>
+                    <p class="card-description">원리금균등/원금균등 상환방식별 월 상환액과 총 이자를 계산</p>
+                    <div class="card-features">
+                        <span class="feature-tag">원리금균등</span>
+                        <span class="feature-tag">원금균등</span>
+                        <span class="feature-tag">중도상환</span>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="calculator-card" data-calculator="realestate">
+                <div class="card-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">부동산 세금 계산기</h3>
+                    <p class="card-description">취득세, 양도소득세, 보유세 등 부동산 관련 세금을 정확하게 계산</p>
+                    <div class="card-features">
+                        <span class="feature-tag">취득세</span>
+                        <span class="feature-tag">양도소득세</span>
+                        <span class="feature-tag">보유세</span>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="calculator-card" data-calculator="savings">
+                <div class="card-icon">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">예적금 계산기</h3>
+                    <p class="card-description">예금, 적금의 만기 수령액과 세후 이자를 정확하게 계산</p>
+                    <div class="card-features">
+                        <span class="feature-tag">단리/복리</span>
+                        <span class="feature-tag">세후계산</span>
+                        <span class="feature-tag">만기예상</span>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="calculator-card" data-calculator="brokerage">
+                <div class="card-icon">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">중개수수료 계산기</h3>
+                    <p class="card-description">매매, 임대 시 부동산 중개수수료와 관련 비용을 계산</p>
+                    <div class="card-features">
+                        <span class="feature-tag">매매수수료</span>
+                        <span class="feature-tag">임대수수료</span>
+                        <span class="feature-tag">상한선</span>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="calculator-card" data-calculator="loan-limit">
+                <div class="card-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">대출한도 계산기</h3>
+                    <p class="card-description">소득과 부채를 고려한 최대 대출 가능 금액을 계산</p>
+                    <div class="card-features">
+                        <span class="feature-tag">DSR계산</span>
+                        <span class="feature-tag">LTV계산</span>
+                        <span class="feature-tag">소득기반</span>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="calculator-card" data-calculator="affordability">
+                <div class="card-icon">
+                    <i class="fas fa-house-user"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">주택구매력 계산기</h3>
+                    <p class="card-description">월 소득 기준으로 구매 가능한 주택 가격을 계산</p>
+                    <div class="card-features">
+                        <span class="feature-tag">구매력 분석</span>
+                        <span class="feature-tag">적정 가격</span>
+                        <span class="feature-tag">월 상환액</span>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="calculator-card" data-calculator="prepayment-fee">
+                <div class="card-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">중도상환 수수료 계산기</h3>
+                    <p class="card-description">대출 중도상환 시 발생하는 수수료와 절약 효과를 계산</p>
+                    <div class="card-features">
+                        <span class="feature-tag">수수료 계산</span>
+                        <span class="feature-tag">절약 효과</span>
+                        <span class="feature-tag">손익분석</span>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="calculator-card" data-calculator="lease-conversion">
+                <div class="card-icon">
+                    <i class="fas fa-exchange-alt"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">전월세 전환율 계산기</h3>
+                    <p class="card-description">전세와 월세 간의 전환율을 계산하여 유리한 조건 비교</p>
+                    <div class="card-features">
+                        <span class="feature-tag">전환율</span>
+                        <span class="feature-tag">손익분석</span>
+                        <span class="feature-tag">비교계산</span>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+
+            <div class="calculator-card" data-calculator="holding-tax">
+                <div class="card-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">보유세 계산기</h3>
+                    <p class="card-description">재산세, 종합부동산세 등 부동산 보유세 계산</p>
+                    <div class="card-features">
+                        <span class="feature-tag">재산세</span>
+                        <span class="feature-tag">종부세</span>
+                        <span class="feature-tag">보유비용</span>
+                    </div>
+                </div>
+                <div class="card-action">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="loanModal" class="calculator-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>대출 이자 계산기</h3>
+                <span class="close-modal" data-modal="loanModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="calculation-mode">
+                    <button class="mode-btn active" data-mode="equal-payment">원리금균등</button>
+                    <button class="mode-btn" data-mode="equal-principal">원금균등</button>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="modalLoanAmount">대출금액</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalLoanAmount" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalInterestRate">연이율</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalInterestRate" placeholder="0" class="input-field" step="0.01">
+                            <span class="input-unit">%</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalLoanTerm">대출기간</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalLoanTerm" placeholder="0" class="input-field">
+                            <span class="input-unit">년</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn calculate-btn" onclick="calculateModalLoan()">
+                        <i class="fas fa-calculator"></i>
+                        계산하기
+                    </button>
+                </div>
+
+                <div class="result-panel" id="modalLoanResult" style="display: none;">
+                    <div class="result-header">
+                        <h4>계산 결과</h4>
+                        <button class="btn export-btn" onclick="exportLoanResult()" style="display: none;">
+                            <i class="fas fa-download"></i>
+                            결과 저장
+                        </button>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">월 상환액</span>
+                            <span class="result-value" id="modalMonthlyPayment">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">총 상환액</span>
+                            <span class="result-value" id="modalTotalPayment">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">총 이자</span>
+                            <span class="result-value highlight" id="modalTotalInterest">0원</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="realestateModal" class="calculator-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>부동산 세금 계산기</h3>
+                <span class="close-modal" data-modal="realestateModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="calculation-mode">
+                    <button class="mode-btn active" data-mode="acquisition">취득세</button>
+                    <button class="mode-btn" data-mode="transfer">양도소득세</button>
+                </div>
+
+                <div class="calculation-sub-mode" id="realestateTaxDetailMode" style="display: none;">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="detailModeToggle">
+                        <span class="toggle-slider">
+                            <span class="toggle-label" data-on="상세" data-off="간편"></span>
+                        </span>
+                    </label>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="modalPropertyPrice">부동산 가격</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalPropertyPrice" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalPropertyType">부동산 유형</label>
+                        <select id="modalPropertyType" class="select-field">
+                            <option value="house">주택</option>
+                            <option value="farmland">농지</option>
+                            <option value="land">토지</option>
+                            <option value="other">기타</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group" data-acquisition-only>
+                        <label for="modalAcquisitionMethod">취득 방법</label>
+                        <select id="modalAcquisitionMethod" class="select-field">
+                            <option value="purchase">매매/교환</option>
+                            <option value="gift">증여</option>
+                            <option value="inheritance">상속</option>
+                            <option value="original">원시</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group" data-acquisition-only>
+                        <label for="modalIsFirstHome">주택 보유 수</label>
+                        <select id="modalIsFirstHome" class="select-field">
+                            <option value="1">1주택</option>
+                            <option value="2">2주택</option>
+                            <option value="3">3주택</option>
+                            <option value="4">4주택 이상</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group" data-acquisition-only>
+                        <label for="modalAcquisitionAdjustmentArea">조정대상지역</label>
+                        <select id="modalAcquisitionAdjustmentArea" class="select-field">
+                            <option value="no">해당없음</option>
+                            <option value="yes">조정대상지역</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group" data-acquisition-only>
+                        <label for="modalExclusiveArea">전용면적 (주택만)</label>
+                        <select id="modalExclusiveArea" class="select-field">
+                            <option value="0">선택하세요</option>
+                            <option value="40">40㎡ 이하</option>
+                            <option value="60">40㎡ 초과 60㎡ 이하</option>
+                            <option value="85">60㎡ 초과 85㎡ 이하 (국민주택)</option>
+                            <option value="100">85㎡ 초과 100㎡ 이하</option>
+                            <option value="135">100㎡ 초과 135㎡ 이하</option>
+                            <option value="200">135㎡ 초과 200㎡ 이하</option>
+                            <option value="300">200㎡ 초과 300㎡ 이하</option>
+                            <option value="500">300㎡ 초과</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="transfer-tax-detailed-inputs" style="display: none;">
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="modalPurchasePrice">취득가액</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="modalPurchasePrice" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="modalHoldingPeriod">보유 기간</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="modalHoldingPeriod" placeholder="0" class="input-field">
+                                <span class="input-unit">년</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="modalAcquisitionDate">취득일</label>
+                            <input type="date" id="modalAcquisitionDate" class="input-field">
+                        </div>
+                        <div class="input-group">
+                            <label for="modalTransferDate">양도일</label>
+                            <input type="date" id="modalTransferDate" class="input-field">
+                        </div>
+                        <div class="input-group">
+                            <label for="modalExpense">필요 경비</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="modalExpense" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="modalMultipleHomes">보유 주택 수</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="modalMultipleHomes" placeholder="1" class="input-field">
+                                <span class="input-unit">채</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="modalAdjustmentArea">조정대상지역 여부</label>
+                            <select id="modalAdjustmentArea" class="select-field">
+                                <option value="no">아님</option>
+                                <option value="yes">맞음</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="modalOwnershipRatio">지분율 (공동명의시)</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="modalOwnershipRatio" placeholder="100" class="input-field">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn calculate-btn" onclick="calculateModalRealEstate()">
+                        <i class="fas fa-calculator"></i>
+                        계산하기
+                    </button>
+                </div>
+
+                <div class="result-panel" id="modalRealEstateResult" style="display: none;">
+                    <div class="result-header">
+                        <h4>세금 계산 결과</h4>
+                        <button class="btn export-btn"
+                            onclick="showDownloadOptions('modalRealEstateResult', '부동산세금계산기')" style="display: none;">
+                            <i class="fas fa-download"></i>
+                            결과 저장
+                        </button>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item acquisition-tax-result-detail">
+                            <span class="result-label">취득세율</span>
+                            <span class="result-value" id="modalAcquisitionTaxRate">0%</span>
+                        </div>
+                        <div class="result-item acquisition-tax-result-detail">
+                            <span class="result-label">취득세</span>
+                            <span class="result-value" id="modalAcquisitionTax">0원</span>
+                        </div>
+                        <div class="result-item acquisition-tax-result-detail">
+                            <span class="result-label">지방교육세</span>
+                            <span class="result-value" id="modalLocalEducationTax">0원</span>
+                        </div>
+                        <div class="result-item acquisition-tax-result-detail">
+                            <span class="result-label">농어촌특별세</span>
+                            <span class="result-value" id="modalRuralSpecialTax">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">총 세금</span>
+                            <span class="result-value highlight" id="modalTotalTax">0원</span>
+                        </div>
+                        <div class="result-item transfer-tax-result-detail" style="display: none;">
+                            <span class="result-label">양도차익</span>
+                            <span class="result-value" id="modalCapitalGain">0원</span>
+                        </div>
+                        <div class="result-item transfer-tax-result-detail" style="display: none;">
+                            <span class="result-label">장기보유특별공제</span>
+                            <span class="result-value" id="modalLongTermDeduction">0원</span>
+                        </div>
+                        <div class="result-item transfer-tax-result-detail" style="display: none;">
+                            <span class="result-label">양도소득세율</span>
+                            <span class="result-value" id="modalTransferTaxRate">0%</span>
+                        </div>
+                    </div>
+                    <div class="legal-disclaimer">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="savingsModal" class="calculator-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>예적금 계산기</h3>
+                <span class="close-modal" data-modal="savingsModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="calculation-mode">
+                    <button class="mode-btn active" data-mode="deposit">예금</button>
+                    <button class="mode-btn" data-mode="installment">적금</button>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="modalSavingsAmount">납입금액</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalSavingsAmount" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalSavingsRate">연이율</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalSavingsRate" placeholder="0" class="input-field" step="0.01">
+                            <span class="input-unit">%</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalSavingsTerm">기간</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalSavingsTerm" placeholder="0" class="input-field">
+                            <span class="input-unit">개월</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn calculate-btn" onclick="calculateModalSavings()">
+                        <i class="fas fa-calculator"></i>
+                        계산하기
+                    </button>
+                </div>
+
+                <div class="result-panel" id="modalSavingsResult" style="display: none;">
+                    <div class="result-header">
+                        <h4>만기 수령액</h4>
+                        <button class="btn export-btn" onclick="exportSavingsResult()" style="display: none;">
+                            <i class="fas fa-download"></i>
+                            결과 저장
+                        </button>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">원금</span>
+                            <span class="result-value" id="modalSavingsPrincipal">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">세후 이자</span>
+                            <span class="result-value" id="modalSavingsInterest">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">세후 수령액</span>
+                            <span class="result-value highlight" id="modalSavingsTotal">0원</span>
+                        </div>
+                    </div>
+                    <div class="legal-disclaimer">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="brokerageModal" class="calculator-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>중개수수료 계산기</h3>
+                <span class="close-modal" data-modal="brokerageModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="calculation-mode">
+                    <button class="mode-btn active" data-mode="sale">매매</button>
+                    <button class="mode-btn" data-mode="rental">임대</button>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="modalBrokerageAmount">거래금액</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalBrokerageAmount" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalBrokerageType">부동산 유형</label>
+                        <select id="modalBrokerageType" class="select-field">
+                            <option value="residential">주거용</option>
+                            <option value="commercial">상업용</option>
+                            <option value="land">토지</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalBrokerageCustomRate">중개수수료율</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalBrokerageCustomRate" placeholder="0.4" class="input-field">
+                            <span class="input-unit">%</span>
+                        </div>
+                        <small class="input-help">기본값: 0.4% (수정 가능)</small>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn calculate-btn" onclick="calculateModalBrokerage()">
+                        <i class="fas fa-calculator"></i>
+                        계산하기
+                    </button>
+                </div>
+
+                <div class="result-panel" id="modalBrokerageResult" style="display: none;">
+                    <div class="result-header">
+                        <h4>수수료 계산 결과</h4>
+                        <button class="btn export-btn" onclick="exportBrokerageResult()" style="display: none;">
+                            <i class="fas fa-download"></i>
+                            결과 저장
+                        </button>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">중개수수료율</span>
+                            <span class="result-value" id="modalBrokerageRate">0%</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">상한 수수료</span>
+                            <span class="result-value highlight" id="modalBrokerageFee">0원</span>
+                        </div>
+                    </div>
+                    <div class="legal-disclaimer">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="loanLimitModal" class="calculator-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>대출한도 계산기</h3>
+                <span class="close-modal" data-modal="loanLimitModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="calculation-mode">
+                    <button class="mode-btn active" data-mode="dsr">DSR 기준</button>
+                    <button class="mode-btn" data-mode="ltv">LTV 기준</button>
+                </div>
+
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="modalMonthlyIncome">월 소득</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalMonthlyIncome" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalExistingDebt">기존 부채</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalExistingDebt" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalPropertyValue">담보가치</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalPropertyValue" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn calculate-btn" onclick="calculateModalLoanLimit()">
+                        <i class="fas fa-calculator"></i>
+                        계산하기
+                    </button>
+                </div>
+
+                <div class="result-panel" id="modalLoanLimitResult" style="display: none;">
+                    <div class="result-header">
+                        <h4>대출한도 계산 결과</h4>
+                        <button class="btn export-btn" onclick="exportLoanLimitResult()">
+                            <i class="fas fa-download"></i>
+                            결과 저장
+                        </button>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">DSR 기준 한도</span>
+                            <span class="result-value" id="modalDsrLimit">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">LTV 기준 한도</span>
+                            <span class="result-value" id="modalLtvLimit">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">최종 대출한도</span>
+                            <span class="result-value highlight" id="modalFinalLimit">0원</span>
+                        </div>
+                    </div>
+                    <div class="legal-disclaimer">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="affordabilityModal" class="calculator-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>주택구매력 계산기</h3>
+                <span class="close-modal" data-modal="affordabilityModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="modalAffordabilityIncome">월 소득</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalAffordabilityIncome" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalDownPayment">자기자금</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalDownPayment" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalAffordabilityRate">대출금리</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalAffordabilityRate" placeholder="0" class="input-field"
+                                step="0.01">
+                            <span class="input-unit">%</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalAffordabilityTerm">대출기간</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalAffordabilityTerm" placeholder="0" class="input-field">
+                            <span class="input-unit">년</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn calculate-btn" onclick="calculateModalAffordability()">
+                        <i class="fas fa-calculator"></i>
+                        계산하기
+                    </button>
+                </div>
+
+                <div class="result-panel" id="modalAffordabilityResult" style="display: none;">
+                    <div class="result-header">
+                        <h4>주택구매력 분석</h4>
+                        <button class="btn export-btn" onclick="exportAffordabilityResult()">
+                            <i class="fas fa-download"></i>
+                            결과 저장
+                        </button>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">대출 가능액</span>
+                            <span class="result-value" id="modalMaxLoanAmount">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">총 구매가능액</span>
+                            <span class="result-value highlight" id="modalMaxPurchase">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">월 상환액</span>
+                            <span class="result-value" id="modalMonthlyPaymentAffordability">0원</span>
+                        </div>
+                    </div>
+                    <div class="legal-disclaimer">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="leaseConversionModal" class="calculator-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>전월세 전환율 계산기</h3>
+                <span class="close-modal" data-modal="leaseConversionModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="modalDepositAmount">보증금</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalDepositAmount" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalMonthlyRent">월세</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalMonthlyRent" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalJeonseAmount">전세금</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalJeonseAmount" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalLeaseInterestRate">시중금리</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalLeaseInterestRate" placeholder="3.0" class="input-field"
+                                step="0.1">
+                            <span class="input-unit">%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn calculate-btn" onclick="calculateModalLeaseConversion()">
+                        <i class="fas fa-calculator"></i>
+                        계산하기
+                    </button>
+                </div>
+
+                <div class="result-panel" id="modalLeaseConversionResult" style="display: none;">
+                    <div class="result-header">
+                        <h4>전월세 전환율 분석</h4>
+                        <button class="btn export-btn" onclick="exportLeaseConversionResult()">
+                            <i class="fas fa-download"></i>
+                            결과 저장
+                        </button>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">전환율</span>
+                            <span class="result-value" id="modalConversionRate">0%</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">유리한 선택</span>
+                            <span class="result-value highlight" id="modalBetterChoice">-</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">연간 차이</span>
+                            <span class="result-value" id="modalYearlyDifference">0원</span>
+                        </div>
+                    </div>
+                    <div class="legal-disclaimer">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="holdingTaxModal" class="calculator-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>보유세 계산기</h3>
+                <span class="close-modal" data-modal="holdingTaxModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="modalHoldingPropertyValue">공시가격</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalHoldingPropertyValue" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalHoldingPropertyType">부동산 유형</label>
+                        <select id="modalHoldingPropertyType" class="select-field">
+                            <option value="house">주택</option>
+                            <option value="land">토지</option>
+                            <option value="building">건물</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalHoldingAge">주택 연수</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalHoldingAge" placeholder="0" class="input-field">
+                            <span class="input-unit">년</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalHoldingHomesCount">보유 주택 수</label>
+                        <select id="modalHoldingHomesCount" class="select-field">
+                            <option value="1">1주택</option>
+                            <option value="2">2주택</option>
+                            <option value="3">3주택 이상</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn calculate-btn" onclick="calculateModalHoldingTax()">
+                        <i class="fas fa-calculator"></i>
+                        계산하기
+                    </button>
+                </div>
+
+                <div class="result-panel" id="modalHoldingTaxResult" style="display: none;">
+                    <div class="result-header">
+                        <h4>보유세 계산 결과</h4>
+                        <button class="btn export-btn" onclick="showDownloadOptions('modalHoldingTaxResult', '보유세계산기')">
+                            <i class="fas fa-download"></i>
+                            결과 저장
+                        </button>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">재산세</span>
+                            <span class="result-value" id="modalPropertyTax">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">종합부동산세</span>
+                            <span class="result-value" id="modalComprehensiveTax">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">총 보유세</span>
+                            <span class="result-value highlight" id="modalTotalHoldingTax">0원</span>
+                        </div>
+                    </div>
+                    <div class="legal-disclaimer">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="prepaymentFeeModal" class="calculator-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>중도상환 수수료 계산기</h3>
+                <span class="close-modal" data-modal="prepaymentFeeModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="modalLoanAmount">대출원금</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalLoanAmount" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalRemainingAmount">잔여원금</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalRemainingAmount" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalLoanInterestRate">대출금리</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalLoanInterestRate" placeholder="0" class="input-field">
+                            <span class="input-unit">%</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalRemainingPeriod">잔여기간</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalRemainingPeriod" placeholder="0" class="input-field">
+                            <span class="input-unit">개월</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalPrepaymentFeeRate">중도상환수수료율</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalPrepaymentFeeRate" placeholder="1.5" class="input-field">
+                            <span class="input-unit">%</span>
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="modalPrepaymentAmount">상환금액</label>
+                        <div class="input-wrapper">
+                            <input type="text" id="modalPrepaymentAmount" placeholder="0" class="input-field">
+                            <span class="input-unit">원</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn calculate-btn" onclick="calculateModalPrepaymentFee()">
+                        <i class="fas fa-calculator"></i>
+                        계산하기
+                    </button>
+                </div>
+
+                <div class="result-panel" id="modalPrepaymentFeeResult" style="display: none;">
+                    <div class="result-header">
+                        <h4>중도상환 분석 결과</h4>
+                        <button class="btn export-btn"
+                            onclick="showDownloadOptions('modalPrepaymentFeeResult', '중도상환수수료계산기')">
+                            <i class="fas fa-download"></i>
+                            결과 저장
+                        </button>
+                    </div>
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-label">중도상환수수료</span>
+                            <span class="result-value" id="modalPrepaymentFee">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">절약되는 이자</span>
+                            <span class="result-value" id="modalSavedInterest">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">실제 절약액</span>
+                            <span class="result-value highlight" id="modalNetSavings">0원</span>
+                        </div>
+                        <div class="result-item">
+                            <span class="result-label">손익분기점</span>
+                            <span class="result-value" id="modalBreakEvenMonth">0개월</span>
+                        </div>
+                    </div>
+                    <div class="legal-disclaimer">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="why-choose-us">
+        <div class="section-header">
+            <h2 class="section-title">왜 우리를 선택해야 할까요?</h2>
+            <p class="section-description">정확하고 신뢰할 수 있는 금융 계산의 이유</p>
+        </div>
+
+        <div class="why-grid">
+            <div class="why-item">
+                <div class="why-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>100% 정확성</h3>
+                <p>금융 전문가가 검증한 계산식으로 정확한 결과를 보장합니다</p>
+            </div>
+
+            <div class="why-item">
+                <div class="why-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>빠른 계산</h3>
+                <p>복잡한 계산도 몇 초 만에 완료되어 시간을 절약할 수 있습니다</p>
+            </div>
+
+            <div class="why-item">
+                <div class="why-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h3>완벽한 보안</h3>
+                <p>모든 계산은 브라우저에서 처리되어 개인정보가 안전합니다</p>
+            </div>
+
+            <div class="why-item">
+                <div class="why-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>어디서나 사용</h3>
+                <p>PC, 모바일, 태블릿 등 어떤 기기에서도 편리하게 이용 가능합니다</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-calculator"></i>
+                <span>금융계산기</span>
+            </div>
+            <div class="footer-right">
+                <p class="footer-copyright">&copy; 2024 Financial Calculator. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="guides.html">이용가이드</a>
+                    <a href="about.html">소개</a>
+                    <a href="#contact">문의하기</a>
+                    <a href="#" onclick="openFeedbackModal(); return false;" class="feedback-link">
+                        <i class="fas fa-comment"></i>
+                        피드백하기
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 피드백 모달 -->
+    <div id="feedbackModal" class="calculator-modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>피드백 보내기</h3>
+                <span class="close-modal" data-modal="feedbackModal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="feedbackType">피드백 유형</label>
+                    <select id="feedbackType" class="select-field">
+                        <option value="bug">버그 신고</option>
+                        <option value="feature">기능 요청</option>
+                        <option value="improvement">개선 제안</option>
+                        <option value="other">기타</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="feedbackMessage">메시지</label>
+                    <textarea id="feedbackMessage" class="input-field" rows="5" placeholder="피드백을 입력해주세요..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label for="feedbackEmail">이메일 (선택사항)</label>
+                    <input type="email" id="feedbackEmail" class="input-field" placeholder="답변 받을 이메일 (선택)">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" onclick="closeFeedbackModal()">취소</button>
+                    <button class="btn btn-primary" onclick="submitFeedback()">보내기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="calculators/loanCalculator.js"></script>
+    <script src="calculators/realEstateTaxCalculator.js"></script>
+    <script src="calculators/savingsCalculator.js"></script>
+    <script src="calculators/brokerageFeeCalculator.js"></script>
+    <script src="calculators/loanLimitCalculator.js"></script>
+    <script src="calculators/housingAffordabilityCalculator.js"></script>
+    <script src="calculators/leaseConversionCalculator.js"></script>
+    <script src="calculators/holdingTaxCalculator.js"></script>
+    <script src="calculators/prepaymentFeeCalculator.js"></script>
+
+    <!-- PDF 및 이미지 다운로드 라이브러리 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- 중복 제거됨 -->
+
+    <!-- 그 다음에 메인 로직 -->
+    <script src="script.js"></script>
+</body>
+
+</html>
