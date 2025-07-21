@@ -1104,33 +1104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     trackPageView();
 
     // 관리자 페이지 접근 단축키 (Ctrl+Shift+L)
-    document.addEventListener('keydown', async (e) => {
-        if (e.ctrlKey && e.shiftKey && e.key.toUpperCase() === 'L') {
-            const password = prompt('관리자 비밀번호를 입력하세요:');
-            if (password) {
-                // 사용자가 입력한 비밀번호를 SHA-256으로 해싱하여 저장된 해시와 비교
-                const ADMIN_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // 'admin123'을 해싱한 값
-
-                try {
-                    const encoder = new TextEncoder();
-                    const data = encoder.encode(password);
-                    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-                    const hashArray = Array.from(new Uint8Array(hashBuffer));
-                    const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-                    if (hexHash === ADMIN_HASH) {
-                        window.location.href = 'admin.html';
-                    } else {
-                        alert('잘못된 비밀번호입니다.');
-                    }
-                } catch (error) {
-                    console.error('해싱 오류:', error);
-                    alert('인증 중 오류가 발생했습니다. 안전하지 않은 환경(http)에서는 작동하지 않을 수 있습니다.');
-                }
-            }
-        }
-    });
-
+    
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const activeModal = document.querySelector('.calculator-modal.active');

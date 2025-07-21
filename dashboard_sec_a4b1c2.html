@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* 기존 CSS 스타일은 그대로 유지 */
         .admin-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -20,7 +19,91 @@
             min-height: 100vh;
         }
 
-        /* ... (중략) ... */
+        .admin-header {
+            text-align: center;
+            margin-bottom: var(--space-8);
+            padding-bottom: var(--space-4);
+            border-bottom: 2px solid var(--primary-500);
+        }
+
+        .admin-section {
+            background: var(--neutral-50);
+            padding: var(--space-6);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .feedback-item {
+            background: white;
+            padding: var(--space-4);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-4);
+            border-left: 4px solid var(--primary-500);
+        }
+
+        .feedback-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-3);
+        }
+
+        .feedback-type {
+            background: var(--primary-500);
+            color: white;
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            font-weight: 600;
+        }
+
+        .feedback-date {
+            color: var(--neutral-600);
+            font-size: var(--font-size-sm);
+        }
+
+        .feedback-message {
+            margin-bottom: var(--space-3);
+            line-height: 1.6;
+        }
+
+        .feedback-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-4);
+            padding-top: var(--space-3);
+            border-top: 1px solid var(--neutral-200);
+            font-size: var(--font-size-sm);
+            color: var(--neutral-600);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-12);
+            color: var(--neutral-500);
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .stat-card {
+            background: var(--primary-50);
+            padding: var(--space-4);
+            border-radius: var(--radius-md);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            color: var(--primary-600);
+        }
+
         .stat-label {
             color: var(--neutral-600);
             margin-top: var(--space-1);
@@ -31,17 +114,21 @@
 <body>
     <script>
         (async function checkAuth() {
-            // 이미 인증되었는지 확인
+            console.log("보안 스크립트 시작");
             if (sessionStorage.getItem('isAdminAuthenticated') === 'true') {
-                return; // 인증되었으면 통과
+                console.log("세션 확인: 이미 인증됨");
+                return;
             }
 
-            // 인증되지 않았다면 비밀번호를 물어봄
-            const password = prompt('관리자 비밀번호를 입력하세요:');
-
+            let password = prompt('관리자 비밀번호를 입력하세요:');
+            
             if (password) {
-                const ADMIN_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // 'admin123' 해시
+                // 입력값 앞뒤의 공백을 제거합니다. (보이지 않는 공백 입력 방지)
+                password = password.trim();
+                console.log('입력된 비밀번호:', password);
 
+                const ADMIN_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+                
                 try {
                     const encoder = new TextEncoder();
                     const data = encoder.encode(password);
@@ -49,20 +136,25 @@
                     const hashArray = Array.from(new Uint8Array(hashBuffer));
                     const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
+                    console.log('입력값의 해시:', hexHash);
+                    console.log('저장된 해시:', ADMIN_HASH);
+                    console.log('해시 비교 결과:', hexHash === ADMIN_HASH);
+
                     if (hexHash === ADMIN_HASH) {
-                        // 비밀번호가 맞으면 세션에 인증서 발급
+                        console.log('인증 성공!');
                         sessionStorage.setItem('isAdminAuthenticated', 'true');
                     } else {
-                        // 비밀번호가 틀리면 접근 금지 및 메인 페이지로 이동
+                        console.log('인증 실패: 해시 불일치');
                         alert('비밀번호가 틀렸습니다.');
                         window.location.href = 'index.html';
                     }
                 } catch (error) {
-                    alert('인증 중 오류가 발생했습니다.');
+                    console.error('인증 중 오류 발생:', error);
+                    alert('암호화 기능 실행 중 오류가 발생했습니다. 개발자 콘솔을 확인해주세요.');
                     window.location.href = 'index.html';
                 }
             } else {
-                // 비밀번호 입력을 취소하면 접근 금지 및 메인 페이지로 이동
+                console.log('비밀번호 입력 취소');
                 alert('접근 권한이 없습니다.');
                 window.location.href = 'index.html';
             }
@@ -77,7 +169,7 @@
         <div class="admin-section">
             <h2><i class="fas fa-chart-bar"></i> 통계</h2>
             <div class="admin-stats" id="adminStats">
-            </div>
+                </div>
         </div>
 
         <div class="admin-section">
@@ -98,94 +190,10 @@
                 </div>
             </div>
             <div id="feedbackList">
-            </div>
-        </div>
-    </div>
-
-    <script src="script.js"></script>
-    <script>
-
-        const feedbackTypeNames = {
-            'bug': '버그 신고',
-            'feature': '기능 요청',
-            'improvement': '개선 제안',
-            'other': '기타'
-        };
-        (async function checkAuth() {
-            // 이미 인증되었는지 확인
-            if (sessionStorage.getItem('isAdminAuthenticated') === 'true') {
-                return; // 인증되었으면 통과
-            }
-
-            // 인증되지 않았다면 비밀번호를 물어봄
-            const password = prompt('관리자 비밀번호를 입력하세요:');
-
-            if (password) {
-                const ADMIN_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918'; // 'admin123' 해시
-
-                try {
-                    const encoder = new TextEncoder();
-                    const data = encoder.encode(password);
-                    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-                    const hashArray = Array.from(new Uint8Array(hashBuffer));
-                    const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-                    if (hexHash === ADMIN_HASH) {
-                        // 비밀번호가 맞으면 세션에 인증서 발급
-                        sessionStorage.setItem('isAdminAuthenticated', 'true');
-                    } else {
-                        // 비밀번호가 틀리면 접근 금지 및 메인 페이지로 이동
-                        alert('비밀번호가 틀렸습니다.');
-                        window.location.href = 'main_page.html';
-                    }
-                } catch (error) {
-                    alert('인증 중 오류가 발생했습니다.');
-                    window.location.href = 'main_page.html';
-                }
-            } else {
-                // 비밀번호 입력을 취소하면 접근 금지 및 메인 페이지로 이동
-                alert('접근 권한이 없습니다.');
-                window.location.href = 'main_page.html';
-            }
-        })();
-    </script>
-    <div class="admin-container">
-        <div class="admin-header">
-            <h1><i class="fas fa-shield-alt"></i> 관리자 페이지</h1>
-            <p>피드백 관리 및 사이트 통계</p>
-        </div>
-
-        <div class="admin-section">
-            <h2><i class="fas fa-chart-bar"></i> 통계</h2>
-            <div class="admin-stats" id="adminStats">
-                <!-- 통계 정보가 여기에 표시됩니다 -->
-            </div>
-        </div>
-
-        <div class="admin-section">
-            <div
-                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
-                <h2><i class="fas fa-comments"></i> 피드백 관리</h2>
-                <div style="display: flex; gap: var(--space-2);">
-                    <button class="btn btn-secondary" onclick="refreshFeedbacks()">
-                        <i class="fas fa-refresh"></i> 새로고침
-                    </button>
-                    <button class="btn btn-primary" onclick="downloadFeedbacks()">
-                        <i class="fas fa-download"></i> 다운로드
-                    </button>
-                    <button class="btn" onclick="clearAllFeedbacks()"
-                        style="background: var(--accent-red); color: white;">
-                        <i class="fas fa-trash"></i> 전체 삭제
-                    </button>
                 </div>
-            </div>
-            <div id="feedbackList">
-                <!-- 피드백 목록이 여기에 표시됩니다 -->
-            </div>
         </div>
     </div>
 
-    <!-- JavaScript -->
     <script src="script.js"></script>
     <script>
         // 피드백 타입별 한글 이름
@@ -195,7 +203,7 @@
             'improvement': '개선 제안',
             'other': '기타'
         };
-
+        
         // 피드백 타입별 색상
         const feedbackTypeColors = {
             'bug': '#ef4444',
@@ -205,7 +213,7 @@
         };
 
         // 페이지 로드 시 피드백 로드
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             loadFeedbacks();
             loadStats();
         });
@@ -215,7 +223,7 @@
             try {
                 const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
                 const statsContainer = document.getElementById('adminStats');
-
+                
                 // 타입별 통계
                 const typeStats = {
                     'bug': 0,
@@ -223,18 +231,18 @@
                     'improvement': 0,
                     'other': 0
                 };
-
+                
                 feedbacks.forEach(feedback => {
                     typeStats[feedback.type] = (typeStats[feedback.type] || 0) + 1;
                 });
-
+                
                 // 최근 7일 피드백 수
                 const sevenDaysAgo = new Date();
                 sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                const recentFeedbacks = feedbacks.filter(feedback =>
+                const recentFeedbacks = feedbacks.filter(feedback => 
                     new Date(feedback.timestamp) > sevenDaysAgo
                 ).length;
-
+                
                 statsContainer.innerHTML = `
                     <div class="stat-card">
                         <div class="stat-number">${feedbacks.length}</div>
@@ -263,7 +271,7 @@
             try {
                 const feedbacks = JSON.parse(localStorage.getItem('feedbacks') || '[]');
                 const feedbackList = document.getElementById('feedbackList');
-
+                
                 if (feedbacks.length === 0) {
                     feedbackList.innerHTML = `
                         <div class="empty-state">
@@ -274,10 +282,10 @@
                     `;
                     return;
                 }
-
+                
                 // 최신 순으로 정렬
                 feedbacks.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
+                
                 feedbackList.innerHTML = feedbacks.map((feedback, index) => `
                     <div class="feedback-item">
                         <div class="feedback-header">
@@ -301,7 +309,7 @@
                         </div>
                     </div>
                 `).join('');
-
+                
             } catch (error) {
                 console.error('피드백 로드 오류:', error);
                 document.getElementById('feedbackList').innerHTML = `
