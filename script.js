@@ -1239,86 +1239,6 @@ function downloadTxtFile(content, filename) {
     URL.revokeObjectURL(url);
 }
 
-// Ad Modal Function
-window.showAdModal = function () {
-    const adShownKey = 'adShown_' + new Date().toDateString();
-    const lastAdShown = localStorage.getItem(adShownKey);
-    const currentTime = Date.now();
-
-    if (lastAdShown && (currentTime - parseInt(localStorage.getItem('lastAdShownTimestamp') || '0') < 1800000 || lastAdShown === 'true')) {
-        return;
-    }
-
-    const adModal = document.getElementById('adModal');
-    const adTimer = document.getElementById('adTimer');
-    const closeAdModalBtn = document.getElementById('closeAdModal');
-
-    if (!adModal || !adTimer || !closeAdModalBtn) return;
-
-    let timeLeft = 5;
-    adModal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-
-    const adModalContent = adModal.querySelector('.ad-modal-content');
-    let closeXBtn = adModalContent.querySelector('.close-x-btn');
-    if (!closeXBtn && adModalContent) {
-        closeXBtn = document.createElement('button');
-        closeXBtn.className = 'close-x-btn';
-        closeXBtn.innerHTML = '&times;';
-        closeXBtn.style.cssText = `
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: #525252;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background-color 0.3s, color 0.3s;
-        `;
-        adModalContent.style.position = 'relative';
-        adModalContent.appendChild(closeXBtn);
-
-        closeXBtn.addEventListener('mouseover', () => {
-            closeXBtn.style.backgroundColor = 'var(--neutral-100)';
-            closeXBtn.style.color = 'var(--neutral-900)';
-        });
-
-        closeXBtn.addEventListener('mouseout', () => {
-            closeXBtn.style.backgroundColor = 'transparent';
-            closeXBtn.style.color = 'var(--neutral-500)';
-        });
-
-        closeXBtn.addEventListener('click', closeAdModalFunction);
-    }
-
-    const countdown = setInterval(() => {
-        timeLeft--;
-        adTimer.textContent = timeLeft;
-
-        if (timeLeft <= 0) {
-            clearInterval(countdown);
-            closeAdModalBtn.style.display = 'inline-flex';
-            adTimer.style.display = 'none';
-        }
-    }, 1000);
-
-    function closeAdModalFunction() {
-        adModal.style.display = 'none';
-        document.body.style.overflow = '';
-        localStorage.setItem(adShownKey, 'true');
-        localStorage.setItem('lastAdShownTimestamp', currentTime.toString());
-    }
-
-    closeAdModalBtn.addEventListener('click', closeAdModalFunction);
-}
 
 // 보유세 계산 함수
 window.calculateModalHoldingTax = function () {
@@ -1501,6 +1421,207 @@ window.clearFeedbacks = function () {
         console.log('🗑️ 모든 피드백이 삭제되었습니다.');
     }
 };
+
+// 계산기 검색 기능
+const calculatorData = [
+    {
+        id: 'loan',
+        title: '대출 이자 계산기',
+        description: '원리금균등/원금균등 상환방식별 월 상환액과 총 이자를 계산',
+        icon: 'fas fa-home',
+        keywords: ['대출', '이자', '원리금', '원금', '상환', '월세']
+    },
+    {
+        id: 'realestate',
+        title: '부동산 세금 계산기',
+        description: '취득세, 양도소득세, 보유세 등 부동산 관련 세금을 정확하게 계산',
+        icon: 'fas fa-building',
+        keywords: ['부동산', '세금', '취득세', '양도소득세', '보유세']
+    },
+    {
+        id: 'savings',
+        title: '예적금 계산기',
+        description: '예금, 적금의 만기 수령액과 세후 이자를 정확하게 계산',
+        icon: 'fas fa-piggy-bank',
+        keywords: ['예금', '적금', '이자', '만기', '수령액']
+    },
+    {
+        id: 'brokerage',
+        title: '중개수수료 계산기',
+        description: '매매, 임대 시 부동산 중개수수료와 관련 비용을 계산',
+        icon: 'fas fa-handshake',
+        keywords: ['중개', '수수료', '매매', '임대', '부동산']
+    },
+    {
+        id: 'loan-limit',
+        title: '대출한도 계산기',
+        description: '소득과 부채를 고려한 최대 대출 가능 금액을 계산',
+        icon: 'fas fa-chart-bar',
+        keywords: ['대출', '한도', 'DSR', 'LTV', '소득']
+    },
+    {
+        id: 'affordability',
+        title: '주택구매력 계산기',
+        description: '월 소득 기준으로 구매 가능한 주택 가격을 계산',
+        icon: 'fas fa-house-user',
+        keywords: ['주택', '구매력', '소득', '가격']
+    },
+    {
+        id: 'prepayment-fee',
+        title: '중도상환 수수료 계산기',
+        description: '대출 중도상환 시 발생하는 수수료와 절약 효과를 계산',
+        icon: 'fas fa-money-bill-wave',
+        keywords: ['중도상환', '수수료', '대출', '절약']
+    },
+    {
+        id: 'lease-conversion',
+        title: '전월세 전환율 계산기',
+        description: '전세와 월세 간의 전환율을 계산하여 유리한 조건 비교',
+        icon: 'fas fa-exchange-alt',
+        keywords: ['전세', '월세', '전환율', '임대']
+    },
+    {
+        id: 'holding-tax',
+        title: '보유세 계산기',
+        description: '재산세, 종합부동산세 등 부동산 보유세 계산',
+        icon: 'fas fa-building',
+        keywords: ['보유세', '재산세', '종부세', '부동산']
+    }
+];
+
+// 검색 기능 초기화
+function initializeSearch() {
+    const searchInput = document.getElementById('calculatorSearch');
+    const searchResults = document.getElementById('searchResults');
+    
+    if (!searchInput || !searchResults) return;
+    
+    let searchTimeout;
+    
+    searchInput.addEventListener('input', function(e) {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const query = e.target.value.trim().toLowerCase();
+            
+            if (query.length === 0) {
+                searchResults.style.display = 'none';
+                return;
+            }
+            
+            const results = calculatorData.filter(calc => {
+                return calc.title.toLowerCase().includes(query) ||
+                       calc.description.toLowerCase().includes(query) ||
+                       calc.keywords.some(keyword => keyword.toLowerCase().includes(query));
+            });
+            
+            displaySearchResults(results, query);
+        }, 300);
+    });
+    
+    // 검색창 외부 클릭 시 결과 숨기기
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+    
+    // 검색창 포커스 시 결과 다시 보이기 (내용이 있는 경우)
+    searchInput.addEventListener('focus', function() {
+        if (searchInput.value.trim().length > 0 && searchResults.children.length > 0) {
+            searchResults.style.display = 'block';
+        }
+    });
+}
+
+// 검색 결과 표시
+function displaySearchResults(results, query) {
+    const searchResults = document.getElementById('searchResults');
+    
+    if (results.length === 0) {
+        searchResults.innerHTML = `
+            <div class="search-result-item">
+                <i class="fas fa-search"></i>
+                <div class="search-result-content">
+                    <div class="search-result-title">검색 결과가 없습니다</div>
+                    <div class="search-result-description">"${query}"에 대한 계산기를 찾을 수 없습니다</div>
+                </div>
+            </div>
+        `;
+    } else {
+        searchResults.innerHTML = results.map(calc => `
+            <div class="search-result-item" onclick="openCalculatorModal('${calc.id}')">
+                <i class="${calc.icon}"></i>
+                <div class="search-result-content">
+                    <div class="search-result-title">${highlightText(calc.title, query)}</div>
+                    <div class="search-result-description">${highlightText(calc.description, query)}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    searchResults.style.display = 'block';
+}
+
+// 검색어 하이라이트
+function highlightText(text, query) {
+    if (!query) return text;
+    
+    const regex = new RegExp(`(${query})`, 'gi');
+    return text.replace(regex, '<strong style="color: var(--primary-500);">$1</strong>');
+}
+
+// 계산기 모달 열기 통합 함수
+function openCalculatorModal(calculatorType) {
+    // 검색 결과 숨기기
+    const searchResults = document.getElementById('searchResults');
+    if (searchResults) {
+        searchResults.style.display = 'none';
+    }
+    
+    // 검색창 초기화
+    const searchInput = document.getElementById('calculatorSearch');
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    
+    // 해당 계산기 모달 열기
+    const modalId = calculatorType + 'Modal';
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        // GA 추적
+        trackCalculatorUsage(calculatorType, 'open');
+    }
+}
+
+// 인기 도구 기능 초기화
+function initializePopularTools() {
+    const popularTools = document.querySelectorAll('.popular-tool');
+    
+    popularTools.forEach(tool => {
+        tool.addEventListener('click', function() {
+            const calculatorType = this.getAttribute('data-calculator');
+            openCalculatorModal(calculatorType);
+        });
+    });
+}
+
+// 페이지 로드 시 검색 및 인기 도구 기능 초기화
+document.addEventListener('DOMContentLoaded', function() {
+    initializeSearch();
+    initializePopularTools();
+    
+    // 기존 계산기 카드 클릭 이벤트도 통합 함수 사용하도록 수정
+    const calculatorCards = document.querySelectorAll('.calculator-card');
+    calculatorCards.forEach(card => {
+        card.addEventListener('click', function() {
+            const calculatorType = this.getAttribute('data-calculator');
+            openCalculatorModal(calculatorType);
+        });
+    });
+});
 
 // Export for testing purposes
 if (typeof module !== 'undefined' && module.exports) {

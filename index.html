@@ -103,7 +103,6 @@
 </head>
 
 <body>
-    <h1>통합 금융 계산기 - TaxTool</h1>
     <header class="header">
         <nav class="nav">
             <div class="nav-brand">
@@ -127,9 +126,49 @@
                 복잡한 금융 계산을<br>
                 <span class="gradient-text">쉽고 빠르게</span>
             </h1>
+            
+            <!-- 검색창 추가 -->
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="calculatorSearch" placeholder="계산기 검색..." autocomplete="off">
+                </div>
+                <div class="search-results" id="searchResults" style="display: none;"></div>
+            </div>
+
+            <!-- 인기 도구 섹션 -->
+            <div class="popular-tools">
+                <h3 class="popular-title">인기 도구</h3>
+                <div class="popular-grid">
+                    <div class="popular-tool" data-calculator="loan">
+                        <i class="fas fa-home"></i>
+                        <span>대출 이자</span>
+                    </div>
+                    <div class="popular-tool" data-calculator="realestate">
+                        <i class="fas fa-building"></i>
+                        <span>부동산 세금</span>
+                    </div>
+                    <div class="popular-tool" data-calculator="savings">
+                        <i class="fas fa-piggy-bank"></i>
+                        <span>예적금</span>
+                    </div>
+                    <div class="popular-tool" data-calculator="brokerage">
+                        <i class="fas fa-handshake"></i>
+                        <span>중개수수료</span>
+                    </div>
+                    <div class="popular-tool" data-calculator="loan-limit">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>대출한도</span>
+                    </div>
+                    <div class="popular-tool" data-calculator="affordability">
+                        <i class="fas fa-house-user"></i>
+                        <span>주택구매력</span>
+                    </div>
+                </div>
+            </div>
+
             <p class="hero-description">
                 대출 이자부터 부동산 세금까지, 모든 금융 계산을 한 곳에서
-
             </p>
             <div class="hero-cta">
                 <button class="btn btn-primary" onclick="scrollToSection('calculators')">
@@ -141,9 +180,6 @@
                     사용법 보기
                 </button>
             </div>
-            <!-- <p class="hero-subtitle">
-                대출 이자부터 부동산 세금까지, 모든 금융 계산을 한 곳에서
-            </p> -->
         </div>
         <div class="hero-visual">
             <div class="calculator-preview">
