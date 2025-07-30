@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="주택구매력 계산기 - 소득과 자금을 기반으로 구매 가능한 주택 가격을 정확하게 계산하세요. 대출한도와 자기자금 포함">
+    <meta name="keywords" content="주택구매력 계산기, 집 살 돈 계산기, 주택 구매 가능 금액, 부동산 구매력, 무료 계산기">
+    <meta name="author" content="금융계산기">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="ko">
+    <meta name="geo.region" content="KR">
+    <meta name="geo.country" content="South Korea">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="주택구매력 계산기 - 구매 가능한 주택 가격 계산">
+    <meta property="og:description" content="소득과 자금을 기반으로 구매 가능한 주택 가격을 정확하게 계산하세요">
+    <meta property="og:image" content="">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:site_name" content="금융계산기">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="주택구매력 계산기 - 구매 가능한 주택 가격 계산">
+    <meta property="twitter:description" content="소득과 자금을 기반으로 구매 가능한 주택 가격을 정확하게 계산하세요">
+    <meta property="twitter:image" content="">
+
+    <!-- Schema.org markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "주택구매력 계산기",
+      "description": "소득과 자금을 기반으로 구매 가능한 주택 가격을 정확하게 계산하는 무료 계산기",
+      "url": "",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      },
+      "inLanguage": "ko-KR",
+      "creator": {
+        "@type": "Organization",
+        "name": "금융계산기"
+      }
+    }
+    </script>
+
+    <title>주택구매력 계산기 - 구매 가능한 주택 가격 계산</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX', {
+            page_title: document.title,
+            page_location: window.location.href
+        });
+    </script>
+
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    </noscript>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Icons -->
+
+    <!-- PDF/Image Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
+
+    <style>
+        /* Page-specific styles */
+        
+        /* 컨테이너 정렬을 위한 추가 스타일 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+        
+        /* 카테고리 메뉴 컨테이너 너비 조정 */
+        .container:has(.calculator-navigation) {
+            max-width: 1300px;
+            padding: 0 var(--space-6);
+        }
+        .page-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: var(--space-8);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6) var(--space-8);
+            min-height: calc(100vh - 200px);
+        }
+
+        .calculator-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-lg);
+            height: fit-content;
+        }
+
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+
+        .info-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-card h3 {
+            color: var(--primary-600);
+            margin-bottom: var(--space-4);
+            font-size: var(--font-size-xl);
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-card li {
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--neutral-100);
+            font-size: var(--font-size-sm);
+            line-height: 1.6;
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        .breadcrumb {
+            margin-bottom: var(--space-6);
+            font-size: var(--font-size-sm);
+            color: var(--neutral-500);
+        }
+
+        .breadcrumb a {
+            color: var(--primary-600);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            margin-bottom: var(--space-8);
+        }
+
+        .page-title {
+            font-size: var(--font-size-4xl);
+            color: var(--neutral-900);
+            margin-bottom: var(--space-4);
+        }
+
+        .page-description {
+            font-size: var(--font-size-lg);
+            color: var(--neutral-600);
+            line-height: 1.6;
+        }
+
+        .calculator-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+        }
+
+        .calculator-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-size-xl);
+        }
+
+        .calculator-navigation {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+            background: white;
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--neutral-200);
+        }
+
+        .nav-calculator {
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            background: var(--neutral-100);
+            color: var(--neutral-600);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .nav-calculator:hover {
+            background: var(--primary-50);
+            color: var(--primary-600);
+        }
+
+        .nav-calculator.active {
+            background: var(--primary-600);
+            color: white;
+        }
+
+        .recommended-calculators-section {
+            background: var(--primary-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-top: var(--space-6);
+        }
+
+        .recommended-calculators-section h3 {
+            color: var(--primary-700);
+            margin-bottom: var(--space-4);
+            font-size: var(--font-size-lg);
+            text-align: center;
+        }
+
+        .recommended-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-4);
+        }
+
+        .recommended-item {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-4);
+            background: white;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--neutral-700);
+            transition: all var(--duration-fast) var(--ease-out);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            min-height: 120px;
+        }
+
+        .recommended-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: var(--primary-600);
+        }
+
+        .recommended-item i {
+            color: white;
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .recommended-item:hover i {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+        }
+
+        .recommended-item span {
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 1024px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+                gap: var(--space-6);
+            }
+
+            .info-panel {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-layout {
+                padding: var(--space-4);
+            }
+
+            .calculator-section,
+            .info-card {
+                padding: var(--space-4);
+            }
+
+            .page-title {
+                font-size: var(--font-size-3xl);
+            }
+
+            .calculator-navigation {
+                flex-direction: column;
+            }
+
+            .nav-calculator {
+                text-align: center;
+            }
+
+            .recommended-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-3);
+            }
+
+            .recommended-item {
+                min-height: 100px;
+                flex-direction: row;
+                justify-content: flex-start;
+                text-align: left;
+                aspect-ratio: auto;
+            }
+
+            .recommended-item i {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                font-size: var(--font-size-lg);
+                margin-bottom: 0;
+                margin-right: var(--space-3);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <i class="fas fa-calculator"></i>
+                    <span>금융계산기</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">홈</a>
+                <a href="guides.html" class="nav-link">이용가이드</a>
+                <a href="about.html" class="nav-link">소개</a>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main style="margin-top: 80px;">
+        <!-- Breadcrumb -->
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">홈</a> > <a href="index.html#calculators">계산기</a> > 주택구매력 계산기
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">주택구매력 계산기</h1>
+                <p class="page-description">현재 소득과 보유 자금을 바탕으로 구매 가능한 주택 가격을 계산하세요. 대출한도와 자기자금을 종합하여 현실적인 주택 구매 예산을 확인할 수 있습니다.</p>
+            </div>
+        </div>
+
+        <!-- Calculator Navigation -->
+        <div class="container">
+            <div class="calculator-navigation">
+                <a href="loan-calculator.html" class="nav-calculator">대출 이자 계산기</a>
+                <a href="realestate-tax.html" class="nav-calculator">부동산 세금 계산기</a>
+                <a href="savings-calculator.html" class="nav-calculator">예적금 계산기</a>
+                <a href="brokerage-calculator.html" class="nav-calculator">중개수수료 계산기</a>
+                <a href="loan-limit.html" class="nav-calculator">대출 한도 계산기</a>
+                <a href="affordability-calculator.html" class="nav-calculator active">주택 구매력 계산기</a>
+                <a href="jeonse-calculator.html" class="nav-calculator">전월세 계산기</a>
+                <a href="prepayment-calculator.html" class="nav-calculator">중도상환 계산기</a>
+                <a href="investment-calculator.html" class="nav-calculator">투자 수익 계산기</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container">
+            <div class="page-layout">
+                <!-- Calculator Section -->
+                <div class="calculator-section">
+                    <div class="calculator-header">
+                        <div class="calculator-icon">
+                            <i class="fas fa-house-user"></i>
+                        </div>
+                        <div>
+                            <h2>주택구매력 계산기</h2>
+                            <p>구매 가능한 주택 가격</p>
+                        </div>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="monthlyIncome">월 소득</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="monthlyIncome" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="existingDebt">기존 대출 월 상환액</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="existingDebt" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="ownFunds">자기자금</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="ownFunds" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="interestRate">대출금리</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="interestRate" placeholder="4.5" class="input-field">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="loanTerm">대출기간</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="loanTerm" placeholder="30" class="input-field">
+                                <span class="input-unit">년</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="dsrLimit">DSR 한도</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="dsrLimit" placeholder="40" class="input-field">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="ltvLimit">LTV 한도</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="ltvLimit" placeholder="70" class="input-field">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="additionalCosts">부대비용 비율</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="additionalCosts" placeholder="5" class="input-field">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="btn calculate-btn" onclick="calculateAffordability()">
+                            <i class="fas fa-calculator"></i>
+                            계산하기
+                        </button>
+                    </div>
+
+                    <div class="result-panel" id="affordabilityResult" style="display: none;">
+                        <div class="result-header">
+                            <h4>계산 결과</h4>
+                            <button class="btn export-btn" onclick="exportAffordabilityResult()" style="display: none;">
+                                <i class="fas fa-download"></i>
+                                결과 저장
+                            </button>
+                        </div>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <span class="result-label">가능 대출금액</span>
+                                <span class="result-value" id="maxLoanAmount">0원</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">총 구매자금</span>
+                                <span class="result-value" id="totalBudget">0원</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">구매 가능 가격</span>
+                                <span class="result-value highlight" id="affordablePrice">0원</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">예상 월 상환액</span>
+                                <span class="result-value" id="monthlyPayment">0원</span>
+                            </div>
+                        </div>
+                        <div class="legal-disclaimer">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Recommended Calculators -->
+                    <div class="recommended-calculators-section">
+                        <h3><i class="fas fa-star"></i> 추천 계산기</h3>
+                        <div class="recommended-grid" id="recommended-grid">
+                            <!-- 동적으로 생성됨 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Information Panel -->
+                <div class="info-panel">
+                    <!-- Purchase Factors -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-list-check"></i> 주택구매력 구성 요소</h3>
+                        <ul>
+                            <li><strong>자기자금:</strong> 예금, 적금, 부모 지원금 등</li>
+                            <li><strong>대출한도:</strong> DSR, LTV 기준 최대 대출 가능 금액</li>
+                            <li><strong>월 상환능력:</strong> 소득 대비 감당 가능한 월 상환액</li>
+                            <li><strong>부대비용:</strong> 취득세, 등록세, 중개수수료 등</li>
+                            <li><strong>여유자금:</strong> 이사비용, 인테리어비 등</li>
+                            <li><strong>비상자금:</strong> 생활비 3~6개월분 보유 권장</li>
+                        </ul>
+                    </div>
+
+                    <!-- Additional Costs -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-receipt"></i> 부대비용 계산</h3>
+                        <div style="margin-bottom: var(--space-4);">
+                            <h4 style="color: var(--primary-600); margin-bottom: var(--space-2);">필수 비용</h4>
+                            <ul>
+                                <li>취득세: 1~3% (주택 가격에 따라 차등)</li>
+                                <li>등록세: 0.4~2% (주택 가격에 따라 차등)</li>
+                                <li>중개수수료: 0.4~0.9% (상한요율)</li>
+                                <li>법무사 수수료: 50~100만원</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--accent-green); margin-bottom: var(--space-2);">추가 비용</h4>
+                            <ul>
+                                <li>이사비용: 100~300만원</li>
+                                <li>인테리어비: 주택 가격의 5~10%</li>
+                                <li>대출 관련 수수료: 50~200만원</li>
+                                <li>화재보험료: 연 20~50만원</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Purchase Tips -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-lightbulb"></i> 주택 구매 팁</h3>
+                        <ul>
+                            <li>총 주택 예산의 80% 선에서 매물 검토</li>
+                            <li>월 상환액은 월 소득의 30% 이하 권장</li>
+                            <li>비상자금은 별도로 확보 후 구매</li>
+                            <li>입주 후 추가 비용 발생 가능성 고려</li>
+                            <li>대출 조건과 금리 변동 위험 점검</li>
+                            <li>향후 3~5년 재정 계획 수립</li>
+                            <li>주택 가격 상승률과 대출이자 비교</li>
+                        </ul>
+                    </div>
+
+                    <!-- Financial Planning -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-chart-line"></i> 재정 계획</h3>
+                        <ul>
+                            <li><strong>자금 조달 계획:</strong> 자기자금과 대출 비율 최적화</li>
+                            <li><strong>상환 계획:</strong> 소득 증가와 금리 변동 고려</li>
+                            <li><strong>세금 혜택:</strong> 주택자금공제, 소득공제 활용</li>
+                            <li><strong>보험 가입:</strong> 화재보험, 생명보험 검토</li>
+                            <li><strong>투자 대안:</strong> 주택 구매와 임차 + 투자 비교</li>
+                            <li><strong>위험 관리:</strong> 금리 상승, 소득 감소 대비책</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-calculator"></i>
+                <span>금융계산기</span>
+            </div>
+            <div class="footer-right">
+                <p class="footer-copyright">&copy; 2024 Financial Calculator. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="guides.html">이용가이드</a>
+                    <a href="about.html">소개</a>
+                    <a href="index.html">메인으로</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Calculator JavaScript -->
+    <script src="calculators/housingAffordabilityCalculator.js"></script>
+    
+    <!-- Main JavaScript -->
+    <script src="script.js"></script>
+
+    <script>
+        // Page-specific JavaScript
+        let affordabilityCalculator;
+        
+        try {
+            affordabilityCalculator = new HousingAffordabilityCalculator();
+        } catch (error) {
+            console.error('HousingAffordabilityCalculator initialization failed:', error);
+            alert('계산기 초기화에 실패했습니다. 페이지를 새로고침해주세요.');
+        }
+
+        // Note: formatNumber and parseNumber are defined in script.js
+
+        // Setup input formatting with real-time comma formatting
+        function setupInputFormatting() {
+            const inputs = document.querySelectorAll('.input-field');
+            inputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    if (this.id === 'interestRate' || this.id === 'dsrLimit' || this.id === 'ltvLimit' || this.id === 'additionalCosts') {
+                        // Allow decimal input for percentage and cost fields
+                        let value = this.value.replace(/[^0-9.]/g, '');
+                        const parts = value.split('.');
+                        if (parts.length > 2) {
+                            value = parts[0] + '.' + parts.slice(1).join('');
+                        }
+                        // Limit decimal places to 2
+                        if (parts[1] && parts[1].length > 2) {
+                            value = parts[0] + '.' + parts[1].substring(0, 2);
+                        }
+                        this.value = value;
+                        this.setAttribute('data-raw-value', value);
+                    } else if (this.type === 'text') {
+                        // Handle numeric fields with comma formatting
+                        const cursorPosition = this.selectionStart;
+                        let numericValue = this.value.replace(/[^0-9]/g, '');
+                        
+                        if (numericValue) {
+                            // Convert to number and format with commas
+                            const number = parseInt(numericValue, 10);
+                            if (!isNaN(number)) {
+                                const formattedValue = new Intl.NumberFormat('ko-KR').format(number);
+                                this.value = formattedValue;
+                                this.setAttribute('data-raw-value', numericValue);
+                                
+                                // Adjust cursor position
+                                const commasAdded = formattedValue.split(',').length - 1;
+                                const originalCommas = (this.getAttribute('data-old-value') || '').split(',').length - 1;
+                                const cursorAdjustment = commasAdded - originalCommas;
+                                const newCursorPosition = Math.min(cursorPosition + cursorAdjustment, formattedValue.length);
+                                
+                                setTimeout(() => {
+                                    this.setSelectionRange(newCursorPosition, newCursorPosition);
+                                }, 0);
+                                
+                                this.setAttribute('data-old-value', formattedValue);
+                            }
+                        } else {
+                            this.value = '';
+                            this.setAttribute('data-raw-value', '');
+                            this.setAttribute('data-old-value', '');
+                        }
+                    }
+                });
+
+                input.addEventListener('blur', function() {
+                    if (this.id === 'interestRate' || this.id === 'dsrLimit' || this.id === 'ltvLimit' || this.id === 'additionalCosts') {
+                        const value = parseFloat(this.value);
+                        if (!isNaN(value) && value >= 0) {
+                            this.value = value.toFixed(1);
+                        }
+                    }
+                });
+
+                input.addEventListener('focus', function() {
+                    this.setAttribute('data-old-value', this.value || '');
+                });
+            });
+        }
+
+        // Calculate affordability
+        function calculateAffordability() {
+            if (!affordabilityCalculator) {
+                alert('계산기가 초기화되지 않았습니다. 페이지를 새로고침해주세요.');
+                return;
+            }
+            
+            const monthlyIncome = parseNumber(document.getElementById('monthlyIncome').value);
+            const existingDebt = parseNumber(document.getElementById('existingDebt').value);
+            const ownFunds = parseNumber(document.getElementById('ownFunds').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const loanTerm = parseNumber(document.getElementById('loanTerm').value);
+            const dsrLimit = parseFloat(document.getElementById('dsrLimit').value);
+            const ltvLimit = parseFloat(document.getElementById('ltvLimit').value);
+            const additionalCosts = parseFloat(document.getElementById('additionalCosts').value);
+
+            if (monthlyIncome <= 0 || interestRate < 0 || loanTerm <= 0 || dsrLimit <= 0 || ltvLimit <= 0) {
+                alert('올바른 값을 입력해주세요.');
+                return;
+            }
+
+            const result = affordabilityCalculator.calculateAffordability(
+                monthlyIncome, existingDebt, ownFunds, interestRate, 
+                loanTerm, dsrLimit, ltvLimit, additionalCosts
+            );
+
+            // Display results
+            document.getElementById('maxLoanAmount').textContent = formatNumber(Math.round(result.maxLoanAmount)) + '원';
+            document.getElementById('totalBudget').textContent = formatNumber(Math.round(result.totalBudget)) + '원';
+            document.getElementById('affordablePrice').textContent = formatNumber(Math.round(result.affordablePrice)) + '원';
+            document.getElementById('monthlyPayment').textContent = formatNumber(Math.round(result.monthlyPayment)) + '원';
+            
+            document.getElementById('affordabilityResult').style.display = 'block';
+            document.querySelector('.export-btn').style.display = 'inline-flex';
+
+            // Track usage
+            if (typeof trackCalculatorUsage === 'function') {
+                trackCalculatorUsage('affordability', 'calculate');
+            }
+        }
+
+        // Export results
+        function exportAffordabilityResult() {
+            const monthlyIncome = parseNumber(document.getElementById('monthlyIncome').value);
+            const existingDebt = parseNumber(document.getElementById('existingDebt').value);
+            const ownFunds = parseNumber(document.getElementById('ownFunds').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const loanTerm = parseNumber(document.getElementById('loanTerm').value);
+            const dsrLimit = parseFloat(document.getElementById('dsrLimit').value);
+            const ltvLimit = parseFloat(document.getElementById('ltvLimit').value);
+            const additionalCosts = parseFloat(document.getElementById('additionalCosts').value);
+            
+            const maxLoanAmount = document.getElementById('maxLoanAmount').textContent;
+            const totalBudget = document.getElementById('totalBudget').textContent;
+            const affordablePrice = document.getElementById('affordablePrice').textContent;
+            const monthlyPayment = document.getElementById('monthlyPayment').textContent;
+
+            const content = `주택구매력 계산 결과
+
+계산 조건:
+- 월 소득: ${formatNumber(monthlyIncome)}원
+- 기존 대출 월 상환액: ${formatNumber(existingDebt)}원
+- 자기자금: ${formatNumber(ownFunds)}원
+- 대출금리: ${interestRate}%
+- 대출기간: ${loanTerm}년
+- DSR 한도: ${dsrLimit}%
+- LTV 한도: ${ltvLimit}%
+- 부대비용 비율: ${additionalCosts}%
+
+계산 결과:
+- 가능 대출금액: ${maxLoanAmount}
+- 총 구매자금: ${totalBudget}
+- 구매 가능 가격: ${affordablePrice}
+- 예상 월 상환액: ${monthlyPayment}
+
+계산일시: ${new Date().toLocaleString('ko-KR')}
+`;
+
+            // 다운로드 옵션 모달 표시
+            showDownloadOptions('affordabilityResult', '주택구매력계산기', content);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            setupInputFormatting();
+            
+            // Initialize random recommended calculators
+            if (window.recommendedCalculators) {
+                window.recommendedCalculators.renderRecommendations('affordability', 'recommended-grid', 'category');
+            }
+            
+            // Track page view
+            if (typeof trackPageView === 'function') {
+                trackPageView('주택구매력 계산기');
+            }
+        });
+    </script>
+</body>
+
+</html>

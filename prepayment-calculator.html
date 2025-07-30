@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+
+    <meta name="description" content="중도상환 계산기 - 대출 중도상환 수수료와 이자 절약 효과를 정확하게 계산하세요. 중도상환 시점과 금액별 손익 분석">
+    <meta name="keywords" content="중도상환 계산기, 대출 중도상환, 중도상환 수수료, 이자 절약, 대출 조기상환, 무료 계산기">
+    <meta name="author" content="금융계산기">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="ko">
+    <meta name="geo.region" content="KR">
+    <meta name="geo.country" content="South Korea">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="중도상환 계산기 - 대출 중도상환 수수료와 절약 효과">
+    <meta property="og:description" content="대출 중도상환 수수료와 이자 절약 효과를 정확하게 계산하세요">
+    <meta property="og:image" content="">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:site_name" content="금융계산기">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="중도상환 계산기 - 대출 중도상환 수수료와 절약 효과">
+    <meta property="twitter:description" content="대출 중도상환 수수료와 이자 절약 효과를 정확하게 계산하세요">
+    <meta property="twitter:image" content="">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "중도상환 계산기",
+      "description": "대출 중도상환 수수료와 이자 절약 효과를 정확하게 계산하는 무료 계산기",
+      "url": "",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      },
+      "inLanguage": "ko-KR",
+      "creator": {
+        "@type": "Organization",
+        "name": "금융계산기"
+      }
+    }
+    </script>
+
+    <title>중도상환 계산기 - 대출 중도상환 수수료와 절약 효과</title>
+
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💸</text></svg>">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💸</text></svg>">
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX', {
+            page_title: document.title,
+            page_location: window.location.href
+        });
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    </noscript>
+
+    <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        /* Page-specific styles */
+        
+        /* 컨테이너 정렬을 위한 추가 스타일 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+        
+        /* 카테고리 메뉴 컨테이너 너비 조정 */
+        .container:has(.calculator-navigation) {
+            max-width: 1300px;
+            padding: 0 var(--space-6);
+        }
+        .page-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: var(--space-8);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6) var(--space-8);
+            min-height: calc(100vh - 200px);
+        }
+
+        .calculator-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-lg);
+            height: fit-content;
+        }
+
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+
+        .info-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-card h3 {
+            color: var(--primary-600);
+            margin-bottom: var(--space-4);
+            font-size: var(--font-size-xl);
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-card li {
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--neutral-100);
+            font-size: var(--font-size-sm);
+            line-height: 1.6;
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        .breadcrumb {
+            margin-bottom: var(--space-6);
+            font-size: var(--font-size-sm);
+            color: var(--neutral-500);
+        }
+
+        .breadcrumb a {
+            color: var(--primary-600);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            margin-bottom: var(--space-8);
+        }
+
+        .page-title {
+            font-size: var(--font-size-4xl);
+            color: var(--neutral-900);
+            margin-bottom: var(--space-4);
+        }
+
+        .page-description {
+            font-size: var(--font-size-lg);
+            color: var(--neutral-600);
+            line-height: 1.6;
+        }
+
+        .calculator-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+        }
+
+        .calculator-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-size-xl);
+        }
+
+        .calculator-navigation {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+            background: white;
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--neutral-200);
+        }
+
+        .nav-calculator {
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            background: var(--neutral-100);
+            color: var(--neutral-600);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .nav-calculator:hover {
+            background: var(--primary-50);
+            color: var(--primary-600);
+        }
+
+        .nav-calculator.active {
+            background: var(--primary-600);
+            color: white;
+        }
+
+        .recommended-calculators-section {
+            background: var(--primary-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-top: var(--space-6);
+        }
+
+        .recommended-calculators-section h3 {
+            color: var(--primary-700);
+            margin-bottom: var(--space-4);
+            font-size: var(--font-size-lg);
+            text-align: center;
+        }
+
+        .recommended-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-4);
+        }
+
+        .recommended-item {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-4);
+            background: white;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--neutral-700);
+            transition: all var(--duration-fast) var(--ease-out);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            min-height: 120px;
+        }
+
+        .recommended-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: var(--primary-600);
+        }
+
+        .recommended-item i {
+            color: white;
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .recommended-item:hover i {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+            background: linear-gradient(135deg, var(--primary-700), var(--primary-800));
+        }
+
+        .recommended-item span {
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 1024px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+                gap: var(--space-6);
+            }
+
+            .info-panel {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-layout {
+                padding: var(--space-4);
+            }
+
+            .calculator-section,
+            .info-card {
+                padding: var(--space-4);
+            }
+
+            .page-title {
+                font-size: var(--font-size-3xl);
+            }
+
+            .calculator-navigation {
+                flex-direction: column;
+            }
+
+            .nav-calculator {
+                text-align: center;
+            }
+
+            .recommended-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-3);
+            }
+
+            .recommended-item {
+                min-height: 100px;
+                flex-direction: row;
+                justify-content: flex-start;
+                text-align: left;
+                aspect-ratio: auto;
+            }
+
+            .recommended-item i {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                font-size: var(--font-size-lg);
+                margin-bottom: 0;
+                margin-right: var(--space-3);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <i class="fas fa-calculator"></i>
+                    <span>금융계산기</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">홈</a>
+                <a href="guides.html" class="nav-link">이용가이드</a>
+                <a href="about.html" class="nav-link">소개</a>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main style="margin-top: 80px;">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">홈</a> > <a href="index.html#calculators">계산기</a> > 중도상환 계산기
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">중도상환 계산기</h1>
+                <p class="page-description">대출 중도상환 시 발생하는 수수료와 이자 절약 효과를 계산하여 중도상환의 손익을 정확하게 분석하세요. 최적의 중도상환 시점을 찾을 수 있습니다.</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="calculator-navigation">
+                <a href="loan-calculator.html" class="nav-calculator">대출 이자 계산기</a>
+                <a href="realestate-tax.html" class="nav-calculator">부동산 세금 계산기</a>
+                <a href="savings-calculator.html" class="nav-calculator">예적금 계산기</a>
+                <a href="brokerage-calculator.html" class="nav-calculator">중개수수료 계산기</a>
+                <a href="loan-limit.html" class="nav-calculator">대출 한도 계산기</a>
+                <a href="affordability-calculator.html" class="nav-calculator">주택 구매력 계산기</a>
+                <a href="jeonse-calculator.html" class="nav-calculator">전월세 계산기</a>
+                <a href="prepayment-calculator.html" class="nav-calculator active">중도상환 계산기</a>
+                <a href="investment-calculator.html" class="nav-calculator">투자 수익 계산기</a>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="page-layout">
+                <div class="calculator-section">
+                    <div class="calculator-header">
+                        <div class="calculator-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div>
+                            <h2>중도상환 계산기</h2>
+                            <p>수수료와 절약 효과 분석</p>
+                        </div>
+                    </div>
+
+                    <div class="calculation-mode">
+                        <button class="mode-btn active" data-mode="full">전액상환</button>
+                        <button class="mode-btn" data-mode="partial">일부상환</button>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="originalAmount">원 대출금액</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="originalAmount" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="remainingBalance">현재 잔액</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="remainingBalance" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group partial-only" style="display: none;">
+                            <label for="prepaymentAmount">중도상환 금액</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="prepaymentAmount" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="interestRate">대출금리</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="interestRate" placeholder="4.5" class="input-field">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="remainingMonths">잔여기간</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="remainingMonths" placeholder="0" class="input-field">
+                                <span class="input-unit">개월</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="feeRate">중도상환 수수료율</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="feeRate" placeholder="1.0" class="input-field">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="repaymentType">상환방식</label>
+                            <select id="repaymentType" class="input-field">
+                                <option value="equal-payment">원리금균등</option>
+                                <option value="equal-principal" disabled>원금균등 (추후 지원)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="btn calculate-btn" onclick="calculatePrepayment()">
+                            <i class="fas fa-calculator"></i>
+                            계산하기
+                        </button>
+                    </div>
+
+                    <div class="result-panel" id="prepaymentResult" style="display: none;">
+                        <div class="result-header">
+                            <h4>계산 결과</h4>
+                            <button class="btn export-btn" onclick="exportPrepaymentResult()" style="display: none;">
+                                <i class="fas fa-download"></i>
+                                결과 저장
+                            </button>
+                        </div>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <span class="result-label">중도상환 수수료</span>
+                                <span class="result-value" id="prepaymentFee">0원</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">절약되는 이자</span>
+                                <span class="result-value" id="savedInterest">0원</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">실제 절약 금액</span>
+                                <span class="result-value highlight" id="netSavings">0원</span>
+                            </div>
+                            <div class="result-item partial-result" style="display: none;">
+                                <span class="result-label">변경된 월 상환액</span>
+                                <span class="result-value" id="newMonthlyPayment">0원</span>
+                            </div>
+                        </div>
+                        <div class="legal-disclaimer">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                        </div>
+                    </div>
+
+                    <div class="recommended-calculators-section">
+                        <h3><i class="fas fa-star"></i> 추천 계산기</h3>
+                        <div class="recommended-grid" id="recommended-grid">
+                            </div>
+                    </div>
+                </div>
+
+                <div class="info-panel">
+                    <div class="info-card">
+                        <h3><i class="fas fa-list-alt"></i> 중도상환 유형</h3>
+                        <div style="margin-bottom: var(--space-4);">
+                            <h4 style="color: var(--primary-600); margin-bottom: var(--space-2);">전액 중도상환</h4>
+                            <ul>
+                                <li>대출 잔액을 한 번에 모두 상환</li>
+                                <li>대출 계약이 완전히 종료</li>
+                                <li>잔여 기간의 모든 이자 절약</li>
+                                <li>담보권 말소 등기 가능</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--accent-green); margin-bottom: var(--space-2);">일부 중도상환</h4>
+                            <ul>
+                                <li>대출 잔액의 일부만 상환</li>
+                                <li>대출 계약은 계속 유지</li>
+                                <li>월 상환액 감소 또는 기간 단축</li>
+                                <li>유연한 상환 계획 조정 가능</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3><i class="fas fa-receipt"></i> 중도상환 수수료</h3>
+                        <ul>
+                            <li><strong>일반 기준:</strong> 상환원금의 1~2% (금융기관별 차이)</li>
+                            <li><strong>고정금리:</strong> 계약서상 약정 수수료율</li>
+                            <li><strong>변동금리:</strong> 시장금리 변동에 따라 조정</li>
+                            <li><strong>면제 조건:</strong> 3년 이상 경과 시 면제 (일부 은행)</li>
+                            <li><strong>최대 한도:</strong> 상환원금의 2% 이내 (일반적)</li>
+                            <li><strong>계산 기준:</strong> 상환일 기준 원금 잔액</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3><i class="fas fa-lightbulb"></i> 중도상환 전략</h3>
+                        <ul>
+                            <li>중도상환 수수료 < 절약 이자일 때 유리</li>
+                            <li>금리 상승 시기에는 중도상환 고려</li>
+                            <li>여유자금과 비상자금 확보 후 실행</li>
+                            <li>세액공제 혜택과 비교 검토</li>
+                            <li>투자 수익률과 대출금리 비교</li>
+                            <li>임시적 소득 증가 시 활용</li>
+                            <li>계약 갱신 시점 활용</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3><i class="fas fa-calendar-alt"></i> 타이밍 고려사항</h3>
+                        <ul>
+                            <li><strong>이자 계산 기준일:</strong> 매월 약정일 기준 계산</li>
+                            <li><strong>최적 시점:</strong> 약정일 직후가 유리</li>
+                            <li><strong>수수료 면제 기간:</strong> 약정 조건 확인</li>
+                            <li><strong>금리 변동 시기:</strong> 인상 전 실행 고려</li>
+                            <li><strong>세무 연도:</strong> 소득공제 혜택 고려</li>
+                            <li><strong>재대출 계획:</strong> 향후 자금 필요성 검토</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-calculator"></i>
+                <span>금융계산기</span>
+            </div>
+            <div class="footer-right">
+                <p class="footer-copyright">&copy; 2024 Financial Calculator. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="guides.html">이용가이드</a>
+                    <a href="about.html">소개</a>
+                    <a href="index.html">메인으로</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="calculators/prepaymentFeeCalculator.js"></script>
+    
+    <script src="script.js"></script>
+
+    <script>
+        // Page-specific JavaScript
+        let currentMode = 'full';
+        let prepaymentCalculator;
+        
+        try {
+            prepaymentCalculator = new PrepaymentFeeCalculator();
+        } catch (error) {
+            console.error('PrepaymentFeeCalculator initialization failed:', error);
+            alert('계산기 초기화에 실패했습니다. 페이지를 새로고침해주세요.');
+        }
+
+        // Note: formatNumber and parseNumber are defined in script.js
+
+        // Setup input formatting with real-time comma formatting
+        function setupInputFormatting() {
+            const inputs = document.querySelectorAll('.input-field');
+            inputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    if (this.id === 'interestRate' || this.id === 'feeRate') {
+                        // Allow decimal input for rate fields
+                        let value = this.value.replace(/[^0-9.]/g, '');
+                        const parts = value.split('.');
+                        if (parts.length > 2) {
+                            value = parts[0] + '.' + parts.slice(1).join('');
+                        }
+                        // Limit decimal places to 2
+                        if (parts[1] && parts[1].length > 2) {
+                            value = parts[0] + '.' + parts[1].substring(0, 2);
+                        }
+                        this.value = value;
+                        this.setAttribute('data-raw-value', value);
+                    } else if (this.type === 'text') {
+                        // Handle numeric fields with comma formatting
+                        const cursorPosition = this.selectionStart;
+                        let numericValue = this.value.replace(/[^0-9]/g, '');
+                        
+                        if (numericValue) {
+                            // Convert to number and format with commas
+                            const number = parseInt(numericValue, 10);
+                            if (!isNaN(number)) {
+                                const formattedValue = new Intl.NumberFormat('ko-KR').format(number);
+                                this.value = formattedValue;
+                                this.setAttribute('data-raw-value', numericValue);
+                                
+                                // Adjust cursor position
+                                const commasAdded = formattedValue.split(',').length - 1;
+                                const originalCommas = (this.getAttribute('data-old-value') || '').split(',').length - 1;
+                                const cursorAdjustment = commasAdded - originalCommas;
+                                const newCursorPosition = Math.min(cursorPosition + cursorAdjustment, formattedValue.length);
+                                
+                                setTimeout(() => {
+                                    this.setSelectionRange(newCursorPosition, newCursorPosition);
+                                }, 0);
+                                
+                                this.setAttribute('data-old-value', formattedValue);
+                            }
+                        } else {
+                            this.value = '';
+                            this.setAttribute('data-raw-value', '');
+                            this.setAttribute('data-old-value', '');
+                        }
+                    }
+                });
+
+                input.addEventListener('blur', function() {
+                    if (this.id === 'interestRate' || this.id === 'feeRate') {
+                        const value = parseFloat(this.value);
+                        if (!isNaN(value) && value >= 0) {
+                            this.value = value.toFixed(2);
+                        }
+                    }
+                });
+
+                input.addEventListener('focus', function() {
+                    this.setAttribute('data-old-value', this.value || '');
+                });
+            });
+        }
+
+        // Setup mode buttons
+        function setupModeButtons() {
+            const modeButtons = document.querySelectorAll('.mode-btn');
+            modeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    modeButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    currentMode = this.dataset.mode;
+                    
+                    // Show/hide relevant fields
+                    const partialFields = document.querySelectorAll('.partial-only');
+                    const partialResults = document.querySelectorAll('.partial-result');
+                    
+                    if (currentMode === 'partial') {
+                        partialFields.forEach(field => field.style.display = 'block');
+                        partialResults.forEach(field => field.style.display = 'block');
+                    } else {
+                        partialFields.forEach(field => field.style.display = 'none');
+                        partialResults.forEach(field => field.style.display = 'none');
+                    }
+                    
+                    // Clear previous results
+                    document.getElementById('prepaymentResult').style.display = 'none';
+                });
+            });
+        }
+
+        // Calculate prepayment
+        function calculatePrepayment() {
+            if (!prepaymentCalculator) {
+                alert('계산기가 초기화되지 않았습니다. 페이지를 새로고침해주세요.');
+                return;
+            }
+            
+            const remainingBalance = parseNumber(document.getElementById('remainingBalance').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const remainingMonths = parseNumber(document.getElementById('remainingMonths').value);
+            const feeRate = parseFloat(document.getElementById('feeRate').value);
+            const repaymentType = document.getElementById('repaymentType').value;
+
+            if (remainingBalance <= 0 || interestRate < 0 || remainingMonths <= 0 || feeRate < 0) {
+                alert('올바른 값을 입력해주세요.');
+                return;
+            }
+
+            let result;
+            if (currentMode === 'full') {
+                result = prepaymentCalculator.calculateFullPrepayment(
+                    remainingBalance, interestRate, remainingMonths, feeRate, repaymentType
+                );
+            } else {
+                const prepaymentAmount = parseNumber(document.getElementById('prepaymentAmount').value);
+                
+                if (prepaymentAmount <= 0 || prepaymentAmount > remainingBalance) {
+                    alert('올바른 중도상환 금액을 입력해주세요. (0보다 크고, 현재 잔액보다 작아야 합니다)');
+                    return;
+                }
+                
+                result = prepaymentCalculator.calculatePartialPrepayment(
+                    remainingBalance, prepaymentAmount, interestRate, remainingMonths, feeRate, repaymentType
+                );
+                
+                document.getElementById('newMonthlyPayment').textContent = formatNumber(Math.round(result.newMonthlyPayment)) + '원';
+            }
+
+            // Display results
+            document.getElementById('prepaymentFee').textContent = formatNumber(Math.round(result.prepaymentFee)) + '원';
+            document.getElementById('savedInterest').textContent = formatNumber(Math.round(result.savedInterest)) + '원';
+            document.getElementById('netSavings').textContent = formatNumber(Math.round(result.netSavings)) + '원';
+            
+            document.getElementById('prepaymentResult').style.display = 'block';
+            document.querySelector('.export-btn').style.display = 'inline-flex';
+
+            // Track usage
+            if (typeof trackCalculatorUsage === 'function') {
+                trackCalculatorUsage('prepayment', 'calculate');
+            }
+        }
+
+        // Export results
+        function exportPrepaymentResult() {
+            const originalAmount = parseNumber(document.getElementById('originalAmount').value);
+            const remainingBalance = parseNumber(document.getElementById('remainingBalance').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const remainingMonths = parseNumber(document.getElementById('remainingMonths').value);
+            const feeRate = parseFloat(document.getElementById('feeRate').value);
+            const repaymentType = document.getElementById('repaymentType').value;
+            const modeName = currentMode === 'full' ? '전액상환' : '일부상환';
+            
+            const prepaymentFee = document.getElementById('prepaymentFee').textContent;
+            const savedInterest = document.getElementById('savedInterest').textContent;
+            const netSavings = document.getElementById('netSavings').textContent;
+
+            let content = `중도상환 계산 결과
+
+계산 조건:
+- 상환 유형: ${modeName}
+- 원 대출금액: ${formatNumber(originalAmount)}원
+- 현재 잔액: ${formatNumber(remainingBalance)}원
+- 대출금리: ${interestRate}%
+- 잔여기간: ${remainingMonths}개월
+- 중도상환 수수료율: ${feeRate}%
+- 상환방식: ${repaymentType === 'equal-payment' ? '원리금균등' : '원금균등'}
+`;
+
+            if (currentMode === 'partial') {
+                const prepaymentAmount = parseNumber(document.getElementById('prepaymentAmount').value);
+                const newMonthlyPayment = document.getElementById('newMonthlyPayment').textContent;
+                
+                content += `- 중도상환 금액: ${formatNumber(prepaymentAmount)}원\n`;
+                content += `
+계산 결과:
+- 중도상환 수수료: ${prepaymentFee}
+- 절약되는 이자: ${savedInterest}
+- 실제 절약 금액: ${netSavings}
+- 변경된 월 상환액: ${newMonthlyPayment}
+`;
+            } else {
+                content += `
+계산 결과:
+- 중도상환 수수료: ${prepaymentFee}
+- 절약되는 이자: ${savedInterest}
+- 실제 절약 금액: ${netSavings}
+`;
+            }
+
+            content += `
+계산일시: ${new Date().toLocaleString('ko-KR')}
+`;
+
+            // 다운로드 옵션 모달 표시
+            showDownloadOptions('prepaymentResult', '중도상환계산기', content);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            setupInputFormatting();
+            setupModeButtons();
+            
+            // Initialize random recommended calculators
+            if (window.recommendedCalculators) {
+                window.recommendedCalculators.renderRecommendations('prepayment', 'recommended-grid', 'category');
+            }
+            
+            // Track page view
+            if (typeof trackPageView === 'function') {
+                trackPageView('중도상환 계산기');
+            }
+        });
+    </script>
+</body>
+
+</html>

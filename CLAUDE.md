@@ -1,196 +1,193 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code when working with this Korean financial calculator web application.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
 
-This is a comprehensive financial calculator web application built with vanilla HTML, CSS, and JavaScript. The application provides Korean users with various financial calculators including loan interest, real estate taxes, savings calculations, and more. All calculations are performed client-side for privacy and security.
+This is a comprehensive Korean financial calculator web application built with vanilla HTML, CSS, and JavaScript. The application provides 9 specialized financial calculators with a focus on Korean real estate, loans, and tax calculations. All calculations are performed client-side for privacy and security.
 
 ## Development Commands
 
 ### Local Development
 ```bash
-# Serve locally (any local server)
+# Serve locally with Python
 python -m http.server 8000
-# or
+
+# Or with Node.js
 npx serve .
+
+# Or with live-reload
+npx live-server
+
 # Access at: http://localhost:8000
 ```
 
 ### Testing
-- Test all calculators with various input values
-- Verify responsive design on mobile devices
-- Check input field formatting and persistence
+- Test all 9 calculators with edge cases (0, negative, very large values)
+- Verify responsive design on mobile devices (breakpoints: 768px, 480px)
+- Check input field formatting and value persistence on blur events
+- Test export functionality for all calculators
 
 ## Project Architecture
 
 ### File Structure
-- **index.html**: Main page with calculator grid and hero section
-- **about.html**: About page with company information and service features
-- **guides.html**: User guide page with detailed calculator instructions and ads
-- **styles.css**: Main stylesheet with custom properties and responsive design
-- **script.js**: Core JavaScript containing all calculator logic and UI management
+```
+money_Calculator/
+├── index.html              # Main page with calculator grid
+├── about.html              # Company information page
+├── guides.html             # User guides with Google AdSense
+├── styles.css              # Main stylesheet (3000+ lines)
+├── script.js               # Core calculator logic and UI (5000+ lines)
+├── calculators/            # Individual calculator modules
+│   ├── loanCalculator.js
+│   ├── realEstateTaxCalculator.js
+│   ├── savingsCalculator.js
+│   ├── brokerageFeeCalculator.js
+│   ├── loanLimitCalculator.js
+│   ├── housingAffordabilityCalculator.js
+│   ├── leaseConversionCalculator.js
+│   ├── prepaymentFeeCalculator.js
+│   └── holdingTaxCalculator.js
+└── [individual calculator pages]
+```
 
-### Key Technologies
-- **Frontend**: Vanilla HTML5, CSS3, JavaScript (ES6+)
-- **Styling**: CSS Grid, Flexbox, CSS Custom Properties
-- **Icons**: Font Awesome 6.4.0
-- **Fonts**: Inter font family from Google Fonts
-- **Monetization**: Google AdSense integration (guides page only)
+### Core Components
 
-## Core Components
+#### CalculatorManager Class (`script.js:68-85`)
+Central controller managing calculator states, modal interactions, and UI events:
+- `setupCalculatorNavigation()`: Handles calculator card clicks and modal opening
+- `setupModalControls()`: Modal open/close functionality
+- `setupInputFormatting()`: Critical input field formatting system
+- `setupRealEstateTaxModes()`: Special handling for real estate tax sub-modes
 
-### Calculator System (`script.js`)
-The application features a modal-based calculator system with these key functions:
+#### Input Formatting System (`script.js:186-242`)
+**CRITICAL**: This system has historically had issues with values disappearing. Key components:
+- `parseNumber()`: Converts formatted strings to numbers, returns 0 for empty values
+- `formatNumber()`: Formats numbers with Korean locale (ko-KR)
+- `setupInputFormatting()`: Manages input field behavior with data-raw-value attribute
+- Percentage fields are handled differently (no comma formatting)
 
-#### Input Formatting System (`lines 186-242`)
-- **setupInputFormatting()**: Handles number formatting with Korean locale (ko-KR)
-- **parseNumber()**: Converts formatted strings to numbers, returns 0 for empty values
-- **formatNumber()**: Formats numbers with thousands separators
-- **Critical Issue**: Input fields can lose values on blur events - carefully test when modifying
+#### Calculator Modules (`calculators/`)
+Each calculator is a separate class with standardized methods:
+- Equal payment/principal calculations for loans
+- Progressive tax rate calculations for real estate
+- Compound interest calculations for savings
+- Fee calculations based on Korean regulations
 
-#### Calculator Types
-1. **Loan Interest Calculator**: 원리금균등/원금균등 repayment methods
-2. **Real Estate Tax Calculator**: 취득세, 등록세, 양도소득세
-3. **Savings Calculator**: 예금/적금 with compound interest
-4. **Brokerage Fee Calculator**: Real estate transaction fees
-5. **Loan Limit Calculator**: DSR/LTV based calculations
-6. **Home Affordability Calculator**: Purchase power based on income
-7. **Jeonse Conversion Calculator**: 전월세 conversion rates
-
-#### Export Functionality
-- **exportToTxt()**: Generates downloadable .txt files with calculation results
-- Uses Blob API for file creation
-- Results formatted in Korean with proper currency formatting
-
-### UI/UX Features
-
-#### Responsive Design (`styles.css`)
-- **CSS Grid Layout**: Calculator grid adapts from 4 columns to 1 on mobile
-- **CSS Custom Properties**: Consistent spacing, colors, and typography
-- **Media Queries**: Optimized for tablets (768px) and mobile (480px)
+### UI/UX Architecture
 
 #### Modal System
-- **Modal Management**: Dynamic content loading based on calculator type
-- **Event Delegation**: Efficient event handling for dynamic content
-- **Accessibility**: Proper focus management and keyboard navigation
+- Dynamic modal content based on calculator type
+- Result panels hidden until calculation
+- Export buttons appear after successful calculation
+- Proper focus management and keyboard accessibility
 
-#### Advertisement Integration (`guides.html`)
-- **Ad Modal**: Timed advertisement display with session management
-- **LocalStorage**: Prevents repeated ad displays within same session
-- **Ad Placements**: Strategic banner and sidebar ad positions
+#### Responsive Design System
+- CSS Grid: 4 columns → 2 columns (768px) → 1 column (480px)
+- Font scaling: 60px → 36px → 28px for hero text
+- Touch-friendly button sizes on mobile (min 44px)
+- Hamburger menu for mobile navigation
 
-### Styling System (`styles.css`)
-
-#### Color Scheme
-- **Primary Blue**: #3b82f6 (used in buttons, accents)
-- **Dark Blue**: #1e40af (used in footer gradient)
-- **Text Colors**: #1f2937 (primary), #6b7280 (secondary)
-- **Success/Error**: #10b981, #ef4444
-
-#### Component Architecture
-- **Modular CSS**: Each component has isolated styles
-- **BEM-like Naming**: Consistent class naming conventions
-- **CSS Custom Properties**: Centralized design tokens
+#### Google Analytics Integration
+- GA4 event tracking for calculator usage
+- Custom events: calculator_usage, file_download, page_view
+- Conversion tracking for high-value calculator interactions
 
 ## Critical Implementation Details
 
-### Input Field Bug Prevention
-**IMPORTANT**: The application has historically had issues with input values disappearing when users click outside input fields. When modifying input handling:
+### Input Field Value Persistence
+**Known Issue**: Values can disappear when users click outside input fields
+**Root Cause**: Blur event handler formatting conflicts
+**Solution**: 
+1. Always check `parseNumber()` returns 0 (not null) for empty values
+2. Use data-raw-value attribute to store unformatted values
+3. Test with actual user interactions, not just programmatic input
 
-1. Always test the `parseNumber()` function behavior
-2. Verify blur event handlers don't reset values unexpectedly
-3. Test with actual user interaction (not just programmatic input)
-4. Pay special attention to the 대출금액 (loan amount) field
+### Number Formatting Rules
+- Korean locale (ko-KR) for all number formatting
+- Percentage fields: No comma formatting, decimal values allowed
+- Currency fields: Comma separated thousands, no decimal places
+- Interest rates: Up to 2 decimal places
 
-### Number Formatting
-- Uses Korean locale (ko-KR) for number formatting
-- Handles both integers and decimals
-- Supports percentage inputs for interest rates
-- Currency values displayed with ₩ symbol
+### Real Estate Tax Calculator Modes
+Complex multi-mode calculator with different UI states:
+1. **Acquisition Tax Mode**: Simple price input
+2. **Transfer Tax Simple Mode**: Price and holding period
+3. **Transfer Tax Detailed Mode**: Full form with dates, expenses, ownership ratio
 
-### Modal Calculator Logic
-Each calculator follows this pattern:
-1. Parse input values using `parseNumber()`
-2. Validate inputs (check for null/zero values)
-3. Perform calculations using financial formulas
-4. Display results with proper formatting
-5. Enable export functionality
+### Export Functionality
+- Text file generation using Blob API
+- Korean formatted output with proper line breaks
+- Timestamp and input/output data included
+- UTF-8 encoding for Korean characters
 
 ## Common Issues & Solutions
 
-### Input Field Value Persistence
-**Problem**: Numbers disappear when leaving input fields
-**Solution**: Ensure parseNumber() returns 0 instead of null for empty values, and blur handlers check `value >= 0` rather than `value > 0`
+### Issue: Calculator Results Not Showing
+- Check console for validation errors
+- Verify all required fields have values
+- Ensure parseNumber() isn't returning null
 
-### Mobile Responsiveness
-**Problem**: Layout issues on small screens
-**Solution**: Use CSS Grid with proper breakpoints and flexible font sizing
+### Issue: Mobile Layout Broken
+- Check viewport meta tag settings
+- Verify media queries are properly cascading
+- Test with actual devices, not just browser DevTools
 
-### Calculator Accuracy
-**Problem**: Floating point precision errors
-**Solution**: Use proper rounding for financial calculations (typically 2 decimal places)
+### Issue: Export File Not Downloading
+- Check browser console for security errors
+- Verify Blob API support
+- Test download attribute compatibility
 
-## File-Specific Notes
+## Korean Financial Regulations
 
-### `script.js` Key Functions
-- `parseNumber(value)`: Core number parsing (lines 6-11)
-- `formatNumber(value)`: Number formatting with commas
-- `setupInputFormatting(input)`: Input field behavior setup (lines 186-242)
-- `calculateLoanInterest()`: Main loan calculation function
-- `exportToTxt(content, filename)`: File export functionality
+### Tax Rates (2024)
+- Acquisition tax: 1-4% based on property value and ownership
+- Transfer tax: 6-45% progressive rates
+- Local education tax: 10% of acquisition tax
+- Brokerage fees: 0.4-0.9% based on transaction type
 
-### `styles.css` Important Sections
-- CSS Custom Properties (lines 1-50): Core design tokens
-- Calculator Grid (lines 200-300): Main layout system
-- Modal Styles (lines 800-1000): Calculator modal appearance
-- Responsive Breakpoints (lines 1500+): Mobile adaptations
-
-### `index.html` Structure
-- Hero section with main title and CTA
-- Calculator grid (4x2 layout, responsive)
-- "Why Choose Us" section with benefits
-- Modal containers for each calculator
+### Loan Regulations
+- DSR (Debt Service Ratio): 40% limit for most borrowers
+- LTV (Loan to Value): 70% maximum for apartments
+- Prepayment fees: Typically 1.5% of prepaid amount
 
 ## Testing Checklist
 
-When making changes, always test:
-1. ✅ All calculator types produce correct results
-2. ✅ Input formatting works correctly (commas, percentages)
-3. ✅ Values persist when clicking outside input fields
-4. ✅ Export functionality generates proper .txt files
-5. ✅ Responsive design works on mobile devices
-6. ✅ Modal opening/closing functions properly
-7. ✅ Ad system works correctly (guides page only)
+1. **Input Validation**
+   - ✅ Empty fields return 0, not null
+   - ✅ Negative values handled appropriately
+   - ✅ Very large numbers format correctly
+   - ✅ Percentage inputs accept decimals
 
-## Korean Localization
+2. **Calculator Accuracy**
+   - ✅ Loan calculations match Korean bank standards
+   - ✅ Tax calculations follow current regulations
+   - ✅ Compound interest calculations are precise
 
-The application is designed specifically for Korean users:
-- All UI text in Korean
-- Korean Won (₩) currency formatting
-- Korean number formatting (ko-KR locale)
-- Real estate and financial terms specific to Korea
-- Tax rates and regulations based on Korean law
+3. **UI/UX Testing**
+   - ✅ All modals open and close properly
+   - ✅ Results display with proper formatting
+   - ✅ Export functionality works on all browsers
+   - ✅ Mobile responsive design functions correctly
 
-## Security Considerations
+4. **Cross-Browser Testing**
+   - ✅ Chrome 90+
+   - ✅ Safari 14+
+   - ✅ Firefox 88+
+   - ✅ Samsung Internet
 
-- All calculations performed client-side
-- No personal data transmitted to servers
-- Input sanitization to prevent XSS
-- Secure file handling for exports
-- Ad integration follows privacy best practices
+## Performance Considerations
 
-## Performance Optimizations
+- Minimize DOM queries by caching selectors
+- Use event delegation for dynamic content
+- Lazy load calculator modules when needed
+- Optimize large number calculations with memoization
+- Consider Web Workers for complex calculations
 
-- Lazy loading of calculator logic
-- Efficient event delegation
-- Minimal DOM manipulations
-- Optimized CSS with modern features
-- Font loading optimization
+## Security Notes
 
-## Browser Compatibility
-
-- Modern browsers (Chrome, Firefox, Safari, Edge)
-- ES6+ JavaScript features used
-- CSS Grid and Flexbox for layouts
-- Progressive enhancement approach
+- All calculations are client-side only
+- No API calls or data transmission
+- Input sanitization prevents XSS attacks
+- No storage of personal financial data
+- Google Analytics configured for privacy compliance

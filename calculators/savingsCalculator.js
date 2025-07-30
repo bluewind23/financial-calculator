@@ -1,38 +1,63 @@
 // calculators/savingsCalculator.js
 class SavingsCalculator {
-    calculateDeposit(principal, rate, months) {
-        const monthlyRate = rate / 100 / 12;
-        const interest = principal * monthlyRate * months;
-        const tax = interest * 0.154; // 15.4% tax (소득세 14% + 지방소득세 1.4%)
-        const afterTaxInterest = interest - tax;
-        const total = principal + afterTaxInterest;
 
-        return {
-            principal,
-            interest,
-            afterTaxInterest,
-            total
-        };
-    }
-
-    calculateInstallment(monthlyAmount, rate, months) {
-        const monthlyRate = rate / 100 / 12;
-        const principal = monthlyAmount * months;
-
+    calculateDeposit(principal, rate, months, interestType, taxRate) {
+        const annualRate = rate / 100;
         let totalInterest = 0;
-        for (let i = 1; i <= months; i++) {
-            totalInterest += monthlyAmount * monthlyRate * (months - i + 1);
-        }
 
-        const tax = totalInterest * 0.154; // 15.4% tax
+        if (interestType === 'simple') {
+            // 단리 계산
+            totalInterest = principal * annualRate * (months / 12);
+        } else {
+            // 복리 계산 (연 복리 기준)
+            const years = months / 12;
+            totalInterest = principal * (Math.pow(1 + annualRate, years) - 1);
+        }
+        
+        const tax = totalInterest * (taxRate / 100);
         const afterTaxInterest = totalInterest - tax;
         const total = principal + afterTaxInterest;
 
         return {
-            principal,
-            interest: totalInterest,
-            afterTaxInterest,
-            total
+            totalPrincipal: principal,
+            beforeTaxInterest: totalInterest,
+            afterTaxInterest: afterTaxInterest,
+            maturityAmount: total
+        };
+    }
+
+    calculateSavings(monthlyAmount, rate, months, interestType, taxRate) {
+        const principal = monthlyAmount * months;
+        const annualRate = rate / 100;
+        const monthlyRate = annualRate / 12;
+        
+        let totalInterest = 0;
+        let futureValue = 0;
+
+        if (interestType === 'simple') {
+            // 단리 계산 (월 단위)
+            let totalPrincipalForInterest = 0;
+            for (let i = 0; i < months; i++) {
+                totalPrincipalForInterest += monthlyAmount * (months - i);
+            }
+            totalInterest = totalPrincipalForInterest * monthlyRate;
+            futureValue = principal + totalInterest;
+
+        } else {
+            // 복리 계산 (월 복리)
+            futureValue = monthlyAmount * ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+            totalInterest = futureValue - principal;
+        }
+
+        const tax = totalInterest * (taxRate / 100);
+        const afterTaxInterest = totalInterest - tax;
+        const total = principal + afterTaxInterest;
+
+        return {
+            totalPrincipal: principal,
+            beforeTaxInterest: totalInterest,
+            afterTaxInterest: afterTaxInterest,
+            maturityAmount: total
         };
     }
 }

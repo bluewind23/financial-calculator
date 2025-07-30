@@ -1,39 +1,37 @@
 // calculators/leaseConversionCalculator.js
 class LeaseConversionCalculator {
-    calculateConversionRate(deposit, monthlyRent, jeonseAmount, interestRate) {
-        const priceDifference = jeonseAmount - deposit;
-
-        if (priceDifference <= 0 || monthlyRent <= 0) {
-            return {
-                conversionRate: 0,
-                betterChoice: '전세가 유리',
-                yearlyDifference: Math.abs(monthlyRent * 12 - (jeonseAmount - deposit) * (interestRate / 100))
-            };
-        }
-
-        const yearlyRent = monthlyRent * 12;
-        const conversionRate = (yearlyRent / priceDifference) * 100;
-
-        const marketCost = priceDifference * (interestRate / 100);
-        const rentCost = yearlyRent;
-
-        let betterChoice, yearlyDifference;
-
-        if (rentCost < marketCost) {
-            betterChoice = '월세가 유리';
-            yearlyDifference = marketCost - rentCost;
-        } else if (rentCost > marketCost) {
-            betterChoice = '전세가 유리';
-            yearlyDifference = rentCost - marketCost;
-        } else {
-            betterChoice = '비슷합니다';
-            yearlyDifference = 0;
-        }
+    
+    // 전세 → 월세 변환
+    jeonseToMonthly(jeonseAmount, conversionRate, contractPeriod, savingsRate) {
+        const monthlyRent = (jeonseAmount * (conversionRate / 100)) / 12;
+        const opportunityCost = (jeonseAmount * (savingsRate / 100)) / 12 * contractPeriod; // 전세금 예치시 기대수익
+        const totalRent = monthlyRent * contractPeriod;
+        
+        // 월세가 더 유리하다고 가정 (기회비용이 총 월세보다 크면)
+        const recommendation = opportunityCost > totalRent ? '월세가 유리' : '전세가 유리';
 
         return {
-            conversionRate,
-            betterChoice,
-            yearlyDifference
+            monthlyRent: monthlyRent,
+            opportunityCost: opportunityCost,
+            totalCost: totalRent,
+            recommendation: recommendation
+        };
+    }
+
+    // 월세 → 전세 변환
+    monthlyToJeonse(monthlyDeposit, monthlyRent, conversionRate, contractPeriod, savingsRate) {
+        const equivalentJeonse = monthlyDeposit + (monthlyRent * 12) / (conversionRate / 100);
+        const totalMonthlyPayment = monthlyRent * contractPeriod;
+        const opportunityCost = (equivalentJeonse * (savingsRate / 100) / 12) * contractPeriod;
+
+        // 전세가 더 유리하다고 가정 (기회비용이 총 월세보다 작으면)
+         const recommendation = opportunityCost < totalMonthlyPayment ? '전세가 유리' : '월세가 유리';
+        
+        return {
+            jeonseAmount: equivalentJeonse,
+            opportunityCost: opportunityCost,
+            totalCost: totalMonthlyPayment,
+            recommendation: recommendation
         };
     }
 }

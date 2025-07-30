@@ -40,20 +40,19 @@ const trackDownload = (fileType, calculatorType) => {
 
 // Utility Functions
 const formatNumber = (number) => {
+    // toLocaleString을 사용하기 전에 숫자인지 확인합니다.
     if (typeof number !== 'number' || isNaN(number)) {
-        return '';
+        return ''; // 숫자가 아니면 빈 문자열 반환
     }
-    return new Intl.NumberFormat('ko-KR').format(Math.round(number)); // 최종 결과에서 반올림
+    return new Intl.NumberFormat('ko-KR').format(number);
 };
 
 const parseNumber = (value) => {
-    if (!value || value.trim() === '') return 0;
-    const cleaned = String(value).replace(/,/g, ''); // 문자열로 변환하여 오류 방지
-    // 정수만 처리하도록 parseInt 사용, 소수점 입력 방지
-    const parsed = parseInt(cleaned, 10);
+    if (!value || value.trim() === '') return 0;  // null → 0으로 처리
+    const cleaned = value.replace(/,/g, '');
+    const parsed = parseFloat(cleaned);
     return isNaN(parsed) ? 0 : parsed;
 };
-
 
 const scrollToSection = (sectionId) => {
     const section = document.getElementById(sectionId);
@@ -66,7 +65,6 @@ const scrollToSection = (sectionId) => {
 };
 
 // Calculator Management
-// Calculator Management
 class CalculatorManager {
     constructor() {
         this.activeCalculator = 'loan';
@@ -77,16 +75,19 @@ class CalculatorManager {
         this.setupCalculatorNavigation();
         this.setupModalControls();
         this.setupModeButtons();
-        this.setupInputFormatting(); // 이 함수가 중요하게 변경됩니다.
+        this.setupInputFormatting();
         this.setupMobileMenu();
         this.setupScrollAnimations();
         this.setupGuideTabs();
-        this.setupRealEstateTaxModes();
+        this.setupRealEstateTaxModes(); // 새로 추가된 부동산 세금 계산기 모드 설정
+        this.setupSearch(); // 검색 기능 설정
     }
 
     setupCalculatorNavigation() {
         const calculatorCards = document.querySelectorAll('.calculator-card');
+        const popularTools = document.querySelectorAll('.popular-tool');
 
+        // 기존 계산기 카드 이벤트
         calculatorCards.forEach(card => {
             card.addEventListener('click', () => {
                 const calculatorType = card.dataset.calculator;
@@ -98,6 +99,20 @@ class CalculatorManager {
 
                 // GA4 이벤트 추적 - 계산기 열기
                 trackCalculatorUsage(calculatorType, 'open');
+
+                this.openModal(calculatorType);
+            });
+        });
+
+        // 인기 도구 이벤트
+        popularTools.forEach(tool => {
+            tool.addEventListener('click', () => {
+                const calculatorType = tool.dataset.calculator;
+
+                this.activeCalculator = calculatorType;
+
+                // GA4 이벤트 추적 - 인기 도구에서 계산기 열기
+                trackCalculatorUsage(calculatorType, 'popular-tool');
 
                 this.openModal(calculatorType);
             });
@@ -241,88 +256,99 @@ class CalculatorManager {
         const textInputs = document.querySelectorAll('input[type="text"].input-field');
 
         textInputs.forEach(input => {
-            // 초기값 포맷팅
-            const initialRawValue = input.value.replace(/[^\d.]/g, ''); // 초기값에서도 소수점 허용 가능하게
-            input.setAttribute('data-raw-value', initialRawValue);
-            input.value = formatNumber(parseFloat(initialRawValue));
+            // Check if this is a percentage/rate field by ID or class
+            const isPercentageField = input.id.includes('Rate') || input.id.includes('rate') || 
+                                    input.id.includes('Interest') || input.id.includes('interest') ||
+                                    input.classList.contains('rate-field') || 
+                                    input.classList.contains('percentage-field');
 
-            // 실시간 콤마(,) 포맷팅을 위한 input 이벤트 리스너
-            input.addEventListener('input', (e) => {
-                const target = e.target;
-                const originalValue = target.value;
-                const cursorPosition = target.selectionStart;
-
-                let cleanRegex;
-
-                // ★ 수정된 핵심 로직 ★
-                // input의 id에 'Rate'가 포함되어 있으면 소수점을 허용, 아니면 정수만 허용
-                if (target.id.includes('Rate')) {
-                    cleanRegex = /[^\d.]/g; // 숫자와 점(.)만 허용
+            if (input.value) {
+                const initialNum = parseNumber(input.value);
+                if (initialNum !== null) {
+                    input.setAttribute('data-raw-value', initialNum.toString());
+                    // Don't format percentage fields with commas
+                    input.value = isPercentageField ? initialNum.toString() : formatNumber(initialNum);
                 } else {
-                    cleanRegex = /[^\d]/g;  // 숫자만 허용
+                    input.setAttribute('data-raw-value', '');
+                    input.value = '';
+                }
+            } else {
+                input.setAttribute('data-raw-value', '');
+            }
+
+            input.addEventListener('input', (e) => {
+                let currentValue = e.target.value;
+                const cursorPosition = e.target.selectionStart;
+                
+                // 콤마 제거하여 순수 숫자만 추출
+                currentValue = currentValue.replace(/,/g, '');
+
+                let cleanValue = currentValue.replace(/[^\d.]/g, ''); // 숫자와 소수점만 허용
+
+                const parts = cleanValue.split('.');
+                if (parts.length > 2) {
+                    cleanValue = parts[0] + '.' + parts.slice(1).join('');
                 }
 
-                let rawValue = originalValue.replace(cleanRegex, '');
-
-                // 소수점 허용 필드의 경우, 점이 여러 개 찍히지 않도록 처리
-                if (target.id.includes('Rate')) {
-                    const parts = rawValue.split('.');
-                    if (parts.length > 2) {
-                        rawValue = parts[0] + '.' + parts.slice(1).join('');
-                    }
+                // Limit decimal places to 2 for percentage fields
+                if (isPercentageField && parts.length === 2 && parts[1].length > 2) {
+                    cleanValue = parts[0] + '.' + parts[1].substring(0, 2);
                 }
 
-                target.setAttribute('data-raw-value', rawValue);
-
-                if (rawValue === '') {
-                    target.value = '';
-                    return;
+                // 음수 입력 방지 (주로 금액 입력 필드에 해당)
+                // 첫 글자가 '-'인 경우, 제거
+                if (cleanValue.startsWith('-')) {
+                    cleanValue = cleanValue.substring(1);
                 }
 
-                // 정수 부분만 콤마 포맷팅
-                const parts = rawValue.split('.');
-                const integerPart = parts[0];
-                const decimalPart = parts[1];
-                let formattedValue = new Intl.NumberFormat('ko-KR').format(parseInt(integerPart, 10) || 0);
-                if (decimalPart !== undefined) {
-                    formattedValue += '.' + decimalPart;
+                // Apply formatting based on field type
+                let formattedValue;
+                if (isPercentageField) {
+                    // For percentage fields, don't add commas, just use the clean value
+                    formattedValue = cleanValue;
+                } else {
+                    // For amount fields, apply comma formatting
+                    formattedValue = formatNumber(parseNumber(cleanValue));
                 }
-
-                if (target.value !== formattedValue) {
-                    const originalLength = originalValue.length;
-                    const newLength = formattedValue.length;
-                    const newCursorPosition = cursorPosition + (newLength - originalLength);
-
-                    target.value = formattedValue;
-                    requestAnimationFrame(() => {
-                        target.setSelectionRange(newCursorPosition, newCursorPosition);
-                    });
+                
+                e.target.value = formattedValue;
+                e.target.setAttribute('data-raw-value', cleanValue);
+                
+                // Cursor position restoration (only for non-percentage fields with commas)
+                if (!isPercentageField && formattedValue.includes(',')) {
+                    const commasBeforeCursor = (formattedValue.substring(0, cursorPosition).match(/,/g) || []).length;
+                    const newCursorPosition = cursorPosition + commasBeforeCursor;
+                    
+                    setTimeout(() => {
+                        e.target.setSelectionRange(newCursorPosition, newCursorPosition);
+                    }, 0);
                 }
             });
 
-            // 포커스를 잃었을 때 최종 포맷팅
+            // script.js 파일의 setupInputFormatting 함수 내 blur 이벤트 리스너
             input.addEventListener('blur', (e) => {
                 const rawValue = e.target.getAttribute('data-raw-value') || '';
-                if (rawValue) {
-                    // 이자율 필드는 소수점까지 표시, 나머지는 정수로 반올림
-                    if (e.target.id.includes('Rate')) {
-                        e.target.value = rawValue; // 포맷팅 없이 순수 숫자(소수점 포함)로 표시할 수도 있음
+
+                // 비어있는 값이면 필드를 확실하게 비워줍니다.
+                if (rawValue.trim() === '') {
+                    e.target.value = '';
+                } else {
+                    // 값이 있을 때만 포맷팅을 적용합니다.
+                    const numValue = parseNumber(rawValue);
+                    if (isPercentageField) {
+                        // For percentage fields, show the actual decimal value
+                        e.target.value = numValue.toString();
                     } else {
-                        const numValue = parseNumber(rawValue);
+                        // For amount fields, apply comma formatting
                         e.target.value = formatNumber(numValue);
                     }
-                } else {
-                    e.target.value = '';
                 }
             });
-
-            // 포커스를 얻었을 때 순수 숫자 값 표시
             input.addEventListener('focus', (e) => {
-                const rawValue = e.target.getAttribute('data-raw-value') || '';
-                e.target.value = rawValue;
-                requestAnimationFrame(() => {
-                    e.target.setSelectionRange(rawValue.length, rawValue.length);
-                });
+                // 포커스할 때는 이미 포맷된 값을 유지
+                // 커서를 끝으로 이동
+                const currentValue = e.target.value;
+                e.target.setSelectionRange(currentValue.length, currentValue.length);
             });
         });
     }
@@ -472,6 +498,242 @@ class CalculatorManager {
             detailModeToggle.addEventListener('change', updateUI);
         }
     }
+
+    setupSearch() {
+        const searchInput = document.getElementById('calculatorSearch');
+        const searchClear = document.getElementById('searchClear');
+        const searchSuggestions = document.getElementById('searchSuggestions');
+        
+        if (!searchInput || !searchSuggestions) return;
+
+        // 계산기 데이터
+        this.calculators = [
+            {
+                id: 'loan',
+                title: '대출 이자 계산기',
+                description: '원리금균등/원금균등 상환방식별 월 상환액과 총 이자를 계산',
+                keywords: ['대출', '이자', '월상환액', '원리금균등', '원금균등', '상환', '금리'],
+                icon: 'fas fa-home',
+                tags: ['원리금균등', '원금균등', '중도상환']
+            },
+            {
+                id: 'realestate',
+                title: '부동산 세금 계산기',
+                description: '취득세, 양도소득세, 보유세 등 부동산 관련 세금을 정확하게 계산',
+                keywords: ['부동산', '세금', '취득세', '양도소득세', '보유세', '등록세'],
+                icon: 'fas fa-building',
+                tags: ['취득세', '양도소득세', '보유세']
+            },
+            {
+                id: 'savings',
+                title: '예적금 계산기',
+                description: '예금, 적금의 만기 수령액과 세후 이자를 정확하게 계산',
+                keywords: ['예금', '적금', '저축', '만기', '복리', '단리', '이자'],
+                icon: 'fas fa-piggy-bank',
+                tags: ['단리/복리', '세후계산', '만기예상']
+            },
+            {
+                id: 'brokerage',
+                title: '중개수수료 계산기',
+                description: '매매, 임대 시 부동산 중개수수료와 관련 비용을 계산',
+                keywords: ['중개수수료', '부동산', '매매', '임대', '수수료', '거래'],
+                icon: 'fas fa-handshake',
+                tags: ['매매수수료', '임대수수료', '상한선']
+            },
+            {
+                id: 'loan-limit',
+                title: '대출한도 계산기',
+                description: '소득과 부채를 고려한 최대 대출 가능 금액을 계산',
+                keywords: ['대출한도', 'DSR', 'LTV', '소득', '부채', '한도'],
+                icon: 'fas fa-chart-bar',
+                tags: ['DSR계산', 'LTV계산', '소득기반']
+            },
+            {
+                id: 'affordability',
+                title: '주택구매력 계산기',
+                description: '소득을 기준으로 구매 가능한 주택 가격대를 계산',
+                keywords: ['주택구매력', '주택', '구매', '소득', '가격대', '구매력'],
+                icon: 'fas fa-house-user',
+                tags: ['소득기반', '구매력분석', '가격대']
+            },
+            {
+                id: 'lease-conversion',
+                title: '전월세 전환율 계산기',
+                description: '전세와 월세 간의 합리적인 전환율을 계산',
+                keywords: ['전월세', '전세', '월세', '전환율', '임대', '보증금'],
+                icon: 'fas fa-exchange-alt',
+                tags: ['전환율', '보증금', '월세']
+            },
+            {
+                id: 'holding-tax',
+                title: '보유세 계산기',
+                description: '재산세, 종합부동산세 등 부동산 보유에 따른 세금을 계산',
+                keywords: ['보유세', '재산세', '종합부동산세', '종부세', '부동산'],
+                icon: 'fas fa-building-columns',
+                tags: ['재산세', '종부세', '보유세']
+            },
+            {
+                id: 'prepayment-fee',
+                title: '중도상환 수수료 계산기',
+                description: '대출 중도상환 시 발생하는 수수료와 이자 절약액을 계산',
+                keywords: ['중도상환', '수수료', '대출', '상환', '이자절약'],
+                icon: 'fas fa-calculator',
+                tags: ['중도상환', '수수료', '이자절약']
+            }
+        ];
+
+        let currentHighlight = -1;
+
+        // 검색어 입력 이벤트
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            
+            if (query.length > 0) {
+                searchClear.style.display = 'flex';
+                this.showSuggestions(query, searchSuggestions);
+            } else {
+                searchClear.style.display = 'none';
+                this.hideSuggestions(searchSuggestions);
+            }
+            currentHighlight = -1;
+        });
+
+        // 검색창 포커스 이벤트
+        searchInput.addEventListener('focus', (e) => {
+            const query = e.target.value.trim();
+            if (query.length > 0) {
+                this.showSuggestions(query, searchSuggestions);
+            }
+        });
+
+        // 키보드 네비게이션
+        searchInput.addEventListener('keydown', (e) => {
+            const suggestions = searchSuggestions.querySelectorAll('.suggestion-item');
+            
+            if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                currentHighlight = Math.min(currentHighlight + 1, suggestions.length - 1);
+                this.updateHighlight(suggestions, currentHighlight);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                currentHighlight = Math.max(currentHighlight - 1, -1);
+                this.updateHighlight(suggestions, currentHighlight);
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                if (currentHighlight >= 0 && suggestions[currentHighlight]) {
+                    suggestions[currentHighlight].click();
+                }
+            } else if (e.key === 'Escape') {
+                this.hideSuggestions(searchSuggestions);
+                currentHighlight = -1;
+            }
+        });
+
+        // 검색어 지우기 버튼
+        searchClear.addEventListener('click', () => {
+            searchInput.value = '';
+            searchInput.focus();
+            searchClear.style.display = 'none';
+            this.hideSuggestions(searchSuggestions);
+            currentHighlight = -1;
+        });
+
+        // 외부 클릭 시 자동완성 숨기기
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.search-wrapper')) {
+                this.hideSuggestions(searchSuggestions);
+                currentHighlight = -1;
+            }
+        });
+    }
+
+    showSuggestions(query, container) {
+        const results = this.searchCalculators(query);
+        
+        if (results.length === 0) {
+            container.classList.remove('active');
+            return;
+        }
+
+        const html = results.map(calc => `
+            <div class="suggestion-item" data-calculator="${calc.id}">
+                <div class="suggestion-icon">
+                    <i class="${calc.icon}"></i>
+                </div>
+                <div class="suggestion-content">
+                    <div class="suggestion-title">${this.highlightText(calc.title, query)}</div>
+                    <div class="suggestion-description">${this.highlightText(calc.description, query)}</div>
+                    <div class="suggestion-tags">
+                        ${calc.tags.map(tag => `<span class="suggestion-tag">${tag}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        container.innerHTML = html;
+        container.classList.add('active');
+
+        // 검색 결과 클릭 이벤트
+        container.querySelectorAll('.suggestion-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const calculatorId = item.dataset.calculator;
+                
+                // GA4 이벤트 추적
+                trackCalculatorUsage(calculatorId, 'search');
+                
+                this.openModal(calculatorId);
+                this.hideSuggestions(container);
+                
+                // 검색창 초기화
+                const searchInput = document.getElementById('calculatorSearch');
+                const searchClear = document.getElementById('searchClear');
+                searchInput.value = '';
+                searchClear.style.display = 'none';
+            });
+        });
+    }
+
+    hideSuggestions(container) {
+        container.classList.remove('active');
+    }
+
+    searchCalculators(query) {
+        const lowerQuery = query.toLowerCase();
+        
+        return this.calculators.filter(calc => {
+            // 제목, 설명, 키워드에서 검색
+            const titleMatch = calc.title.toLowerCase().includes(lowerQuery);
+            const descMatch = calc.description.toLowerCase().includes(lowerQuery);
+            const keywordMatch = calc.keywords.some(keyword => 
+                keyword.toLowerCase().includes(lowerQuery)
+            );
+            
+            return titleMatch || descMatch || keywordMatch;
+        }).sort((a, b) => {
+            // 제목 매치를 우선순위로 정렬
+            const aTitle = a.title.toLowerCase().includes(lowerQuery);
+            const bTitle = b.title.toLowerCase().includes(lowerQuery);
+            
+            if (aTitle && !bTitle) return -1;
+            if (!aTitle && bTitle) return 1;
+            return 0;
+        });
+    }
+
+    highlightText(text, query) {
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<span class="search-highlight">$1</span>');
+    }
+
+    updateHighlight(suggestions, index) {
+        suggestions.forEach((item, i) => {
+            if (i === index) {
+                item.classList.add('highlighted');
+            } else {
+                item.classList.remove('highlighted');
+            }
+        });
+    }
 }
 
 // Calculator Classes are loaded from individual files in calculators/ folder
@@ -490,11 +752,13 @@ let prepaymentFeeCalc;
 
 // Global Calculation Functions - Window 객체에 할당하여 HTML onclick에서 접근 가능하도록 함
 window.calculateModalLoan = function () {
+    // GA4 이벤트 추적
     trackCalculatorUsage('loan', 'calculate');
+    // loanCalc가 undefined가 아님을 보장
     if (!loanCalc) { console.error("LoanCalculator is not initialized."); return; }
 
     const amount = parseNumber(document.getElementById('modalLoanAmount').value);
-    const rate = parseFloat(document.getElementById('modalInterestRate').getAttribute('data-raw-value')); // 금리는 소수점 허용
+    const rate = parseNumber(document.getElementById('modalInterestRate').value);
     const years = parseNumber(document.getElementById('modalLoanTerm').value);
 
     if (amount <= 0 || rate < 0 || years <= 0) {
@@ -513,10 +777,8 @@ window.calculateModalLoan = function () {
 
     window.currentLoanResult = { amount, rate, years, mode: activeMode, ...result };
 
-    // 수정된 결과 표시
     document.getElementById('modalMonthlyPayment').textContent = formatNumber(result.monthlyPayment) + '원';
-    document.getElementById('modalFirstPrincipal').textContent = formatNumber(result.firstMonthPrincipal) + '원';
-    document.getElementById('modalFirstInterest').textContent = formatNumber(result.firstMonthInterest) + '원';
+    document.getElementById('modalTotalPayment').textContent = formatNumber(result.totalPayment) + '원';
     document.getElementById('modalTotalInterest').textContent = formatNumber(result.totalInterest) + '원';
 
     const resultPanel = document.getElementById('modalLoanResult');
@@ -961,7 +1223,7 @@ window.calculateModalPrepaymentFee = function () {
     exportBtn.style.display = 'inline-flex';
 }
 
-// PDF 및 이미지 다운로드 함수들
+// PDF 및 이미지 다운로드 함수들 (개선된 버전)
 window.downloadResultAsPDF = function (elementId, filename) {
     // GA4 이벤트 추적
     const calculatorType = filename.split('_')[0];
@@ -973,37 +1235,65 @@ window.downloadResultAsPDF = function (elementId, filename) {
         return;
     }
 
+    // 로딩 표시
+    const loadingDiv = document.createElement('div');
+    loadingDiv.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="margin-bottom: 10px;">PDF 생성 중...</div>
+                <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+            </div>
+        </div>
+        <style>
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        </style>
+    `;
+    document.body.appendChild(loadingDiv);
+
     html2canvas(element, {
         scale: 2,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        logging: false
     }).then(canvas => {
-        const { jsPDF } = window.jspdf;
-        const pdf = new jsPDF();
+        try {
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
 
-        const imgData = canvas.toDataURL('image/png');
-        const imgWidth = 190;
-        const pageHeight = pdf.internal.pageSize.height;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
+            const imgData = canvas.toDataURL('image/png');
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = pdf.internal.pageSize.getHeight();
+            const imgWidth = canvas.width;
+            const imgHeight = canvas.height;
 
-        let position = 10;
+            // 여백을 고려한 사용 가능한 크기
+            const margin = 10;
+            const availableWidth = pdfWidth - (2 * margin);
+            const availableHeight = pdfHeight - (2 * margin);
 
-        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
+            // 비율 유지하면서 크기 조정
+            const ratio = Math.min(availableWidth / imgWidth, availableHeight / imgHeight) * 72 / 96;
+            const scaledWidth = imgWidth * ratio;
+            const scaledHeight = imgHeight * ratio;
 
-        while (heightLeft >= 0) {
-            position = heightLeft - imgHeight + 10;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            // 중앙 정렬
+            const x = (pdfWidth - scaledWidth) / 2;
+            const y = (pdfHeight - scaledHeight) / 2;
+
+            pdf.addImage(imgData, 'PNG', x, y, scaledWidth, scaledHeight);
+            pdf.save(`${filename || '계산결과'}.pdf`);
+
+            document.body.removeChild(loadingDiv);
+        } catch (error) {
+            console.error('PDF 생성 오류:', error);
+            alert('PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+            document.body.removeChild(loadingDiv);
         }
-
-        pdf.save(`${filename || '계산결과'}.pdf`);
     }).catch(error => {
-        console.error('PDF 생성 오류:', error);
-        alert('PDF 생성 중 오류가 발생했습니다.');
+        console.error('캔버스 생성 오류:', error);
+        alert('이미지 캡처 중 오류가 발생했습니다. 다시 시도해주세요.');
+        document.body.removeChild(loadingDiv);
     });
 };
 
@@ -1018,19 +1308,49 @@ window.downloadResultAsImage = function (elementId, filename) {
         return;
     }
 
+    // 로딩 표시
+    const loadingDiv = document.createElement('div');
+    loadingDiv.innerHTML = `
+        <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; align-items: center; justify-content: center;">
+            <div style="background: white; padding: 20px; border-radius: 8px; text-align: center;">
+                <div style="margin-bottom: 10px;">이미지 생성 중...</div>
+                <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto;"></div>
+            </div>
+        </div>
+        <style>
+            @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        </style>
+    `;
+    document.body.appendChild(loadingDiv);
+
     html2canvas(element, {
-        scale: 2,
+        scale: 3, // 더 높은 해상도
         useCORS: true,
         allowTaint: true,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        logging: false
     }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `${filename || '계산결과'}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        try {
+            canvas.toBlob((blob) => {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = `${filename || '계산결과'}_${new Date().toISOString().slice(0, 10)}.png`;
+                link.href = url;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                document.body.removeChild(loadingDiv);
+            }, 'image/png', 1.0);
+        } catch (error) {
+            console.error('이미지 다운로드 오류:', error);
+            alert('이미지 다운로드 중 오류가 발생했습니다. 다시 시도해주세요.');
+            document.body.removeChild(loadingDiv);
+        }
     }).catch(error => {
-        console.error('이미지 생성 오류:', error);
-        alert('이미지 생성 중 오류가 발생했습니다.');
+        console.error('캔버스 생성 오류:', error);
+        alert('이미지 캡처 중 오류가 발생했습니다. 다시 시도해주세요.');
+        document.body.removeChild(loadingDiv);
     });
 };
 
@@ -1066,9 +1386,13 @@ window.closeDownloadModal = function () {
 
 // DOMContentLoaded 이벤트 리스너: 모든 HTML이 로드되고 개별 스크립트 파일이 실행된 후 호출됩니다.
 document.addEventListener('DOMContentLoaded', () => {
-    // Calculator 인스턴스 생성 (window 객체에서 가져옴)
-    loanCalc = new window.LoanCalculator();
-    realEstateCalc = new window.RealEstateTaxCalculator();
+    // Calculator 인스턴스 생성 (window 객체에서 가져옴 - 개별 페이지용)
+    if (window.LoanCalculator) {
+        loanCalc = new window.LoanCalculator();
+    }
+    if (window.RealEstateTaxCalculator) {
+        realEstateCalc = new window.RealEstateTaxCalculator();
+    }
 
     // 다른 계산기들도 초기화 (파일이 로드되었는지 확인)
     if (window.SavingsCalculator) {
@@ -1098,8 +1422,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // 페이지 로드 시 GA4 페이지 뷰 추적
     trackPageView();
 
-    // 관리자 페이지 접근 단축키 (Ctrl+Shift+L)
-    
+    // 관리자 페이지 접근은 직접 URL로만 가능
+
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const activeModal = document.querySelector('.calculator-modal.active');
@@ -1138,8 +1462,7 @@ document.addEventListener('DOMContentLoaded', () => {
 window.exportLoanResult = function () {
     const result = window.currentLoanResult;
     if (!result) { alert('계산 결과가 없습니다. 먼저 계산을 실행해주세요.'); return; }
-    const content = `대출 이자 계산 결과\n===================\n\n계산 일시: ${new Date().toLocaleString('ko-KR')}\n\n[입력 정보]\n대출금액: ${formatNumber(result.amount)}원\n연이율: ${result.rate}%\n대출기간: ${result.years}년\n상환방식: ${result.mode === 'equal-payment' ? '원리금균등' : '원금균등'}\n\n[계산 결과]\n월 상환액: ${formatNumber(result.monthlyPayment)}원\n총 상환액: ${formatNumber(result.totalPayment)}원\n총 이자: ${formatNumber(result.totalInterest)}원\n\n* 이 결과는 참고용이며, 실제 조건은 금융기관에 따라 달라질 수 있습니다.`;
-    downloadTxtFile(content, '대출이자계산결과.txt');
+    showDownloadOptions('modalLoanResult', '대출이자계산기');
 }
 
 window.exportRealEstateResult = function () {
@@ -1194,37 +1517,31 @@ window.exportRealEstateResult = function () {
 window.exportSavingsResult = function () {
     const result = window.currentSavingsResult;
     if (!result) { alert('계산 결과가 없습니다. 먼저 계산을 실행해주세요.'); return; }
-    const content = `예적금 계산 결과\n===================\n\n계산 일시: ${new Date().toLocaleString('ko-KR')}\n\n[입력 정보]\n${result.mode === 'deposit' ? '예금' : '적금'} 금액: ${formatNumber(result.amount)}원\n연이율: ${result.rate}%\n기간: ${result.months}개월\n\n[계산 결과]\n원금: ${formatNumber(result.principal)}원\n세후 이자: ${formatNumber(result.afterTaxInterest)}원\n세후 수령액: ${formatNumber(result.total)}원\n\n* 이 결과는 참고용이며, 실제 이자는 은행별 조건에 따라 달라질 수 있습니다.`;
-    downloadTxtFile(content, '예적금계산결과.txt');
+    showDownloadOptions('modalSavingsResult', '예적금계산기');
 }
 
 window.exportBrokerageResult = function () {
     const result = window.currentBrokerageResult;
     if (!result) { alert('계산 결과가 없습니다. 먼저 계산을 실행해주세요.'); return; }
-    const propertyTypeNames = { residential: '주거용', commercial: '상업용', land: '토지' };
-    const content = `중개수수료 계산 결과\n===================\n\n계산 일시: ${new Date().toLocaleString('ko-KR')}\n\n[입력 정보]\n거래금액: ${formatNumber(result.amount)}원\n부동산 유형: ${propertyTypeNames[result.propertyType]}\n거래 유형: ${result.mode === 'sale' ? '매매' : '임대'}\n\n[계산 결과]\n중개수수료율: ${(result.rate * 100).toFixed(2)}%\n상한 수수료: ${formatNumber(result.fee)}원\n\n* 이 결과는 참고용이며, 실제 수수료는 중개사와의 협의에 따라 달라질 수 있습니다.`;
-    downloadTxtFile(content, '중개수수료계산결과.txt');
+    showDownloadOptions('modalBrokerageResult', '중개수수료계산기');
 }
 
 window.exportLoanLimitResult = function () {
     const result = window.currentLoanLimitResult;
     if (!result) { alert('계산 결과가 없습니다. 먼저 계산을 실행해주세요.'); return; }
-    const content = `대출한도 계산 결과\n===================\n\n계산 일시: ${new Date().toLocaleString('ko-KR')}\n\n[입력 정보]\n월 소득: ${formatNumber(result.monthlyIncome)}원\n기존 부채: ${formatNumber(result.existingDebt)}원\n담보 가치: ${formatNumber(result.propertyValue)}원\n\n[계산 결과]\nDSR 기준 한도: ${formatNumber(result.dsrLimit)}원\nLTV 기준 한도: ${formatNumber(result.ltvLimit)}원\n최종 대출한도: ${formatNumber(result.finalLimit)}원\n\n* 이 결과는 참고용이며, 실제 대출한도는 금융기관의 심사에 따라 달라질 수 있습니다.`;
-    downloadTxtFile(content, '대출한도계산결과.txt');
+    showDownloadOptions('modalLoanLimitResult', '대출한도계산기');
 }
 
 window.exportAffordabilityResult = function () {
     const result = window.currentAffordabilityResult;
     if (!result) { alert('계산 결과가 없습니다. 먼저 계산을 실행해주세요.'); return; }
-    const content = `주택구매력 계산 결과\n===================\n\n계산 일시: ${new Date().toLocaleString('ko-KR')}\n\n[입력 정보]\n월 소득: ${formatNumber(result.monthlyIncome)}원\n자기자금: ${formatNumber(result.downPayment)}원\n대출금리: ${result.interestRate}%\n대출기간: ${result.loanTerm}년\n\n[계산 결과]\n대출 가능액: ${formatNumber(result.maxLoanAmount)}원\n총 구매가능액: ${formatNumber(result.totalPurchasePrice)}원\n월 상환액: ${formatNumber(result.monthlyPayment)}원\n\n* 이 결과는 참고용이며, 실제 구매력은 개별 조건에 따라 달라질 수 있습니다.`;
-    downloadTxtFile(content, '주택구매력계산결과.txt');
+    showDownloadOptions('modalAffordabilityResult', '주택구매력계산기');
 }
 
 window.exportLeaseConversionResult = function () {
     const result = window.currentLeaseConversionResult;
     if (!result) { alert('계산 결과가 없습니다. 먼저 계산을 실행해주세요.'); return; }
-    const content = `전월세 전환율 계산 결과\n===================\n\n계산 일시: ${new Date().toLocaleString('ko-KR')}\n\n[입력 정보]\n보증금: ${formatNumber(result.deposit)}원\n월세: ${formatNumber(result.monthlyRent)}원\n전세금: ${formatNumber(result.jeonseAmount)}원\n시중금리: ${result.interestRate}%\n\n[계산 결과]\n전환율: ${result.conversionRate.toFixed(2)}%\n유리한 선택: ${result.betterChoice}\n연간 차이: ${formatNumber(result.yearlyDifference)}원\n\n* 이 결과는 참고용이며, 실제 조건은 시장 상황에 따라 달라질 수 있습니다.`;
-    downloadTxtFile(content, '전월세전환율계산결과.txt');
+    showDownloadOptions('modalLeaseConversionResult', '전월세전환율계산기');
 }
 
 function downloadTxtFile(content, filename) {
@@ -1239,6 +1556,133 @@ function downloadTxtFile(content, filename) {
     URL.revokeObjectURL(url);
 }
 
+// 다운로드 옵션 모달 표시
+function showDownloadOptions(resultPanelId, calculatorName) {
+    const modal = document.createElement('div');
+    modal.className = 'calculator-modal';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>결과 저장 옵션</h3>
+                <span class="close-download-modal" style="cursor: pointer; font-size: 24px;">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <button class="btn btn-primary" onclick="downloadAsImage('${resultPanelId}', '${calculatorName}')">
+                        <i class="fas fa-image"></i>
+                        이미지로 저장 (PNG)
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadAsPDF('${resultPanelId}', '${calculatorName}')">
+                        <i class="fas fa-file-pdf"></i>
+                        PDF로 저장
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    
+    // 모달 닫기 이벤트
+    const closeBtn = modal.querySelector('.close-download-modal');
+    const modalContent = modal.querySelector('.modal-content');
+    
+    closeBtn.addEventListener('click', () => {
+        document.body.removeChild(modal);
+        document.body.style.overflow = 'auto';
+    });
+    
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+            document.body.style.overflow = 'auto';
+        }
+    });
+}
+
+
+// Ad Modal Function
+window.showAdModal = function () {
+    const adShownKey = 'adShown_' + new Date().toDateString();
+    const lastAdShown = localStorage.getItem(adShownKey);
+    const currentTime = Date.now();
+
+    if (lastAdShown && (currentTime - parseInt(localStorage.getItem('lastAdShownTimestamp') || '0') < 1800000 || lastAdShown === 'true')) {
+        return;
+    }
+
+    const adModal = document.getElementById('adModal');
+    const adTimer = document.getElementById('adTimer');
+    const closeAdModalBtn = document.getElementById('closeAdModal');
+
+    if (!adModal || !adTimer || !closeAdModalBtn) return;
+
+    let timeLeft = 5;
+    adModal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    const adModalContent = adModal.querySelector('.ad-modal-content');
+    let closeXBtn = adModalContent.querySelector('.close-x-btn');
+    if (!closeXBtn && adModalContent) {
+        closeXBtn = document.createElement('button');
+        closeXBtn.className = 'close-x-btn';
+        closeXBtn.innerHTML = '&times;';
+        closeXBtn.style.cssText = `
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #525252;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.3s, color 0.3s;
+        `;
+        adModalContent.style.position = 'relative';
+        adModalContent.appendChild(closeXBtn);
+
+        closeXBtn.addEventListener('mouseover', () => {
+            closeXBtn.style.backgroundColor = 'var(--neutral-100)';
+            closeXBtn.style.color = 'var(--neutral-900)';
+        });
+
+        closeXBtn.addEventListener('mouseout', () => {
+            closeXBtn.style.backgroundColor = 'transparent';
+            closeXBtn.style.color = 'var(--neutral-500)';
+        });
+
+        closeXBtn.addEventListener('click', closeAdModalFunction);
+    }
+
+    const countdown = setInterval(() => {
+        timeLeft--;
+        adTimer.textContent = timeLeft;
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            closeAdModalBtn.style.display = 'inline-flex';
+            adTimer.style.display = 'none';
+        }
+    }, 1000);
+
+    function closeAdModalFunction() {
+        adModal.style.display = 'none';
+        document.body.style.overflow = '';
+        localStorage.setItem(adShownKey, 'true');
+        localStorage.setItem('lastAdShownTimestamp', currentTime.toString());
+    }
+
+    closeAdModalBtn.addEventListener('click', closeAdModalFunction);
+}
 
 // 보유세 계산 함수
 window.calculateModalHoldingTax = function () {
@@ -1278,36 +1722,7 @@ window.calculateModalHoldingTax = function () {
     };
 }
 
-// 보유세 결과 내보내기
-window.exportHoldingTaxResult = function () {
-    if (!window.currentHoldingTaxResult) {
-        alert('먼저 계산을 수행해주세요.');
-        return;
-    }
-
-    const result = window.currentHoldingTaxResult;
-    const propertyTypeText = result.propertyType === 'house' ? '주택' : result.propertyType === 'land' ? '토지' : '건물';
-
-    const content = `보유세 계산 결과
-
-공시가격: ${formatNumber(result.propertyValue)}원
-부동산 유형: ${propertyTypeText}
-건물 연수: ${result.age}년
-보유 주택 수: ${result.homesCount}주택
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-재산세: ${formatNumber(result.propertyTax)}원
-종합부동산세: ${formatNumber(result.comprehensiveTax)}원
-총 보유세: ${formatNumber(result.totalTax)}원
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-계산일: ${new Date().toLocaleDateString('ko-KR')}
-
-※ 본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.`;
-
-    downloadResult(content, '보유세_계산결과.txt');
-}
+// 보유세 결과 내보내기 - HTML에서 이미 showDownloadOptions 사용중이므로 수정 없음
 
 // 피드백 모달 관련 함수들
 window.openFeedbackModal = function () {
@@ -1422,211 +1837,354 @@ window.clearFeedbacks = function () {
     }
 };
 
-// 계산기 검색 기능
-const calculatorData = [
-    {
-        id: 'loan',
-        title: '대출 이자 계산기',
-        description: '원리금균등/원금균등 상환방식별 월 상환액과 총 이자를 계산',
+// 계산기 데이터 구조 (확장 가능한 설계)
+const CALCULATOR_DATABASE = {
+    'loan': {
+        name: '대출이자계산기',
+        description: '원리금균등/원금균등 상환',
         icon: 'fas fa-home',
-        keywords: ['대출', '이자', '원리금', '원금', '상환', '월세']
+        url: 'loan-calculator.html',
+        category: 'loan',
+        gradient: 'var(--gradient-primary)',
+        keywords: ['대출', '이자', '상환', '원리금']
     },
-    {
-        id: 'realestate',
-        title: '부동산 세금 계산기',
-        description: '취득세, 양도소득세, 보유세 등 부동산 관련 세금을 정확하게 계산',
+    'realestate-tax': {
+        name: '부동산세금계산기',
+        description: '취득세/양도소득세 계산',
         icon: 'fas fa-building',
-        keywords: ['부동산', '세금', '취득세', '양도소득세', '보유세']
+        url: 'realestate-tax.html',
+        category: 'tax',
+        gradient: 'var(--gradient-secondary)',
+        keywords: ['부동산', '세금', '취득세', '양도소득세']
     },
-    {
-        id: 'savings',
-        title: '예적금 계산기',
-        description: '예금, 적금의 만기 수령액과 세후 이자를 정확하게 계산',
+    'savings': {
+        name: '예적금계산기',
+        description: '예금/적금 만기 수령액',
         icon: 'fas fa-piggy-bank',
-        keywords: ['예금', '적금', '이자', '만기', '수령액']
+        url: 'savings-calculator.html',
+        category: 'savings',
+        gradient: 'var(--gradient-success)',
+        keywords: ['예금', '적금', '이자', '복리']
     },
-    {
-        id: 'brokerage',
-        title: '중개수수료 계산기',
-        description: '매매, 임대 시 부동산 중개수수료와 관련 비용을 계산',
+    'brokerage': {
+        name: '중개수수료계산기',
+        description: '부동산 중개 수수료',
         icon: 'fas fa-handshake',
-        keywords: ['중개', '수수료', '매매', '임대', '부동산']
+        url: 'brokerage-calculator.html',
+        category: 'realestate',
+        gradient: 'var(--gradient-warning)',
+        keywords: ['중개수수료', '부동산', '수수료']
     },
-    {
-        id: 'loan-limit',
-        title: '대출한도 계산기',
-        description: '소득과 부채를 고려한 최대 대출 가능 금액을 계산',
+    'loan-limit': {
+        name: '대출한도계산기',
+        description: 'DSR/LTV 기준 한도',
         icon: 'fas fa-chart-bar',
-        keywords: ['대출', '한도', 'DSR', 'LTV', '소득']
+        url: 'loan-limit.html',
+        category: 'loan',
+        gradient: 'var(--gradient-primary)',
+        keywords: ['대출한도', 'DSR', 'LTV']
     },
-    {
-        id: 'affordability',
-        title: '주택구매력 계산기',
-        description: '월 소득 기준으로 구매 가능한 주택 가격을 계산',
+    'affordability': {
+        name: '주택구매력계산기',
+        description: '구매 가능 금액',
         icon: 'fas fa-house-user',
-        keywords: ['주택', '구매력', '소득', '가격']
+        url: 'affordability-calculator.html',
+        category: 'realestate',
+        gradient: 'var(--gradient-secondary)',
+        keywords: ['주택', '구매력', '구매가능금액']
     },
-    {
-        id: 'prepayment-fee',
-        title: '중도상환 수수료 계산기',
-        description: '대출 중도상환 시 발생하는 수수료와 절약 효과를 계산',
-        icon: 'fas fa-money-bill-wave',
-        keywords: ['중도상환', '수수료', '대출', '절약']
-    },
-    {
-        id: 'lease-conversion',
-        title: '전월세 전환율 계산기',
-        description: '전세와 월세 간의 전환율을 계산하여 유리한 조건 비교',
+    'jeonse': {
+        name: '전월세계산기',
+        description: '전세/월세 전환율',
         icon: 'fas fa-exchange-alt',
-        keywords: ['전세', '월세', '전환율', '임대']
+        url: 'jeonse-calculator.html',
+        category: 'realestate',
+        gradient: 'var(--gradient-info)',
+        keywords: ['전세', '월세', '전환율']
     },
-    {
-        id: 'holding-tax',
-        title: '보유세 계산기',
-        description: '재산세, 종합부동산세 등 부동산 보유세 계산',
-        icon: 'fas fa-building',
-        keywords: ['보유세', '재산세', '종부세', '부동산']
+    'prepayment': {
+        name: '중도상환계산기',
+        description: '수수료와 절약 효과',
+        icon: 'fas fa-money-bill-wave',
+        url: 'prepayment-calculator.html',
+        category: 'loan',
+        gradient: 'var(--gradient-success)',
+        keywords: ['중도상환', '수수료', '이자절약']
+    },
+    'investment': {
+        name: '투자수익계산기',
+        description: '수익률과 손익 분석',
+        icon: 'fas fa-chart-line',
+        url: 'investment-calculator.html',
+        category: 'investment',
+        gradient: 'var(--gradient-warning)',
+        keywords: ['투자', '수익률', '복리', '손익']
     }
-];
+};
 
-// 검색 기능 초기화
-function initializeSearch() {
-    const searchInput = document.getElementById('calculatorSearch');
-    const searchResults = document.getElementById('searchResults');
-    
-    if (!searchInput || !searchResults) return;
-    
-    let searchTimeout;
-    
-    searchInput.addEventListener('input', function(e) {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            const query = e.target.value.trim().toLowerCase();
-            
-            if (query.length === 0) {
-                searchResults.style.display = 'none';
-                return;
-            }
-            
-            const results = calculatorData.filter(calc => {
-                return calc.title.toLowerCase().includes(query) ||
-                       calc.description.toLowerCase().includes(query) ||
-                       calc.keywords.some(keyword => keyword.toLowerCase().includes(query));
-            });
-            
-            displaySearchResults(results, query);
-        }, 300);
-    });
-    
-    // 검색창 외부 클릭 시 결과 숨기기
-    document.addEventListener('click', function(e) {
-        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-            searchResults.style.display = 'none';
-        }
-    });
-    
-    // 검색창 포커스 시 결과 다시 보이기 (내용이 있는 경우)
-    searchInput.addEventListener('focus', function() {
-        if (searchInput.value.trim().length > 0 && searchResults.children.length > 0) {
-            searchResults.style.display = 'block';
-        }
-    });
-}
+// 랜덤 추천 계산기 시스템
+class RecommendedCalculators {
+    constructor() {
+        this.calculators = CALCULATOR_DATABASE;
+    }
 
-// 검색 결과 표시
-function displaySearchResults(results, query) {
-    const searchResults = document.getElementById('searchResults');
-    
-    if (results.length === 0) {
-        searchResults.innerHTML = `
-            <div class="search-result-item">
-                <i class="fas fa-search"></i>
-                <div class="search-result-content">
-                    <div class="search-result-title">검색 결과가 없습니다</div>
-                    <div class="search-result-description">"${query}"에 대한 계산기를 찾을 수 없습니다</div>
+    // 현재 페이지를 제외한 랜덤 계산기 추천
+    getRandomRecommendations(currentCalculatorId, count = 3) {
+        const availableCalculators = Object.keys(this.calculators)
+            .filter(id => id !== currentCalculatorId)
+            .map(id => ({ id, ...this.calculators[id] }));
+
+        return this.shuffleArray(availableCalculators).slice(0, count);
+    }
+
+    // 카테고리별 추천 (같은 카테고리 우선, 부족하면 다른 카테고리에서 보충)
+    getCategoryBasedRecommendations(currentCalculatorId, count = 3) {
+        const currentCalculator = this.calculators[currentCalculatorId];
+        if (!currentCalculator) return this.getRandomRecommendations(currentCalculatorId, count);
+
+        const sameCategory = Object.keys(this.calculators)
+            .filter(id => id !== currentCalculatorId && 
+                    this.calculators[id].category === currentCalculator.category)
+            .map(id => ({ id, ...this.calculators[id] }));
+
+        const otherCategory = Object.keys(this.calculators)
+            .filter(id => id !== currentCalculatorId && 
+                    this.calculators[id].category !== currentCalculator.category)
+            .map(id => ({ id, ...this.calculators[id] }));
+
+        const recommendations = [
+            ...this.shuffleArray(sameCategory),
+            ...this.shuffleArray(otherCategory)
+        ].slice(0, count);
+
+        return recommendations;
+    }
+
+    // 배열 셔플 함수 (Fisher-Yates 알고리즘)
+    shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
+    // HTML 생성 함수
+    generateRecommendedHTML(recommendations) {
+        return recommendations.map(calc => `
+            <a href="${calc.url}" class="recommended-item">
+                <div class="icon-wrapper" style="background: ${calc.gradient};">
+                    <i class="${calc.icon}"></i>
                 </div>
-            </div>
-        `;
-    } else {
-        searchResults.innerHTML = results.map(calc => `
-            <div class="search-result-item" onclick="openCalculatorModal('${calc.id}')">
-                <i class="${calc.icon}"></i>
-                <div class="search-result-content">
-                    <div class="search-result-title">${highlightText(calc.title, query)}</div>
-                    <div class="search-result-description">${highlightText(calc.description, query)}</div>
-                </div>
-            </div>
+                <div class="title">${calc.name}</div>
+                <div class="description">${calc.description}</div>
+            </a>
         `).join('');
     }
-    
-    searchResults.style.display = 'block';
+
+    // 페이지에 추천 계산기 렌더링
+    renderRecommendations(currentCalculatorId, containerId = 'recommended-grid', strategy = 'random') {
+        const container = document.querySelector(`#${containerId}, .recommended-grid`);
+        if (!container) return;
+
+        const recommendations = strategy === 'category' 
+            ? this.getCategoryBasedRecommendations(currentCalculatorId)
+            : this.getRandomRecommendations(currentCalculatorId);
+
+        container.innerHTML = this.generateRecommendedHTML(recommendations);
+
+        // 사용량 추적
+        if (typeof trackEvent === 'function') {
+            trackEvent('recommended_calculators_shown', {
+                current_calculator: currentCalculatorId,
+                recommended_calculators: recommendations.map(r => r.id),
+                strategy: strategy
+            });
+        }
+    }
 }
 
-// 검색어 하이라이트
-function highlightText(text, query) {
-    if (!query) return text;
-    
-    const regex = new RegExp(`(${query})`, 'gi');
-    return text.replace(regex, '<strong style="color: var(--primary-500);">$1</strong>');
+// 전역 인스턴스 생성
+window.recommendedCalculators = new RecommendedCalculators();
+
+// Export Functions for Multiple Formats
+function exportToTxt(content, filename) {
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
-// 계산기 모달 열기 통합 함수
-function openCalculatorModal(calculatorType) {
-    // 검색 결과 숨기기
-    const searchResults = document.getElementById('searchResults');
-    if (searchResults) {
-        searchResults.style.display = 'none';
+function exportToPDF(content, filename) {
+    // jsPDF 라이브러리가 로드되었는지 확인
+    if (typeof window.jsPDF === 'undefined') {
+        alert('PDF 라이브러리를 로딩 중입니다. 잠시 후 다시 시도해주세요.');
+        return;
     }
-    
-    // 검색창 초기화
-    const searchInput = document.getElementById('calculatorSearch');
-    if (searchInput) {
-        searchInput.value = '';
-    }
-    
-    // 해당 계산기 모달 열기
-    const modalId = calculatorType + 'Modal';
-    const modal = document.getElementById(modalId);
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+
+    try {
+        const { jsPDF } = window.jsPDF;
+        const doc = new jsPDF();
         
-        // GA 추적
-        trackCalculatorUsage(calculatorType, 'open');
+        // 한글 폰트 설정 (기본 폰트로 대체)
+        doc.setFont('helvetica');
+        doc.setFontSize(12);
+        
+        // 내용을 여러 줄로 분할
+        const lines = content.split('\n');
+        let yPosition = 20;
+        
+        lines.forEach(line => {
+            if (yPosition > 270) { // 페이지 끝에 도달하면 새 페이지 추가
+                doc.addPage();
+                yPosition = 20;
+            }
+            
+            // 한글이 포함된 경우 영문으로 변환하거나 기본 처리
+            const processedLine = line.replace(/[가-힣]/g, '?'); // 임시 처리
+            doc.text(processedLine, 20, yPosition);
+            yPosition += 7;
+        });
+        
+        doc.save(filename + '.pdf');
+    } catch (error) {
+        console.error('PDF 생성 오류:', error);
+        alert('PDF 저장 중 오류가 발생했습니다. 텍스트 파일로 저장됩니다.');
+        exportToTxt(content, filename);
     }
 }
 
-// 인기 도구 기능 초기화
-function initializePopularTools() {
-    const popularTools = document.querySelectorAll('.popular-tool');
-    
-    popularTools.forEach(tool => {
-        tool.addEventListener('click', function() {
-            const calculatorType = this.getAttribute('data-calculator');
-            openCalculatorModal(calculatorType);
-        });
+function exportToImage(elementId, filename) {
+    // html2canvas 라이브러리가 로드되었는지 확인
+    if (typeof window.html2canvas === 'undefined') {
+        alert('이미지 라이브러리를 로딩 중입니다. 잠시 후 다시 시도해주세요.');
+        return;
+    }
+
+    const element = document.getElementById(elementId);
+    if (!element) {
+        alert('저장할 결과가 없습니다.');
+        return;
+    }
+
+    // 임시로 배경색 설정
+    const originalStyle = element.style.cssText;
+    element.style.backgroundColor = 'white';
+    element.style.padding = '20px';
+
+    html2canvas(element, {
+        backgroundColor: 'white',
+        scale: 2,
+        useCORS: true
+    }).then(canvas => {
+        // 원래 스타일 복구
+        element.style.cssText = originalStyle;
+        
+        // 이미지 다운로드
+        const link = document.createElement('a');
+        link.download = filename + '.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    }).catch(error => {
+        console.error('이미지 생성 오류:', error);
+        alert('이미지 저장 중 오류가 발생했습니다.');
+        // 원래 스타일 복구
+        element.style.cssText = originalStyle;
     });
 }
 
-// 페이지 로드 시 검색 및 인기 도구 기능 초기화
-document.addEventListener('DOMContentLoaded', function() {
-    initializeSearch();
-    initializePopularTools();
+// 다운로드 옵션 모달 표시
+function showDownloadOptions(resultElementId, calculatorName, content) {
+    const modal = document.createElement('div');
+    modal.id = 'downloadModal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+        background: rgba(0,0,0,0.5); display: flex; justify-content: center; 
+        align-items: center; z-index: 10000;
+    `;
     
-    // 기존 계산기 카드 클릭 이벤트도 통합 함수 사용하도록 수정
-    const calculatorCards = document.querySelectorAll('.calculator-card');
-    calculatorCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const calculatorType = this.getAttribute('data-calculator');
-            openCalculatorModal(calculatorType);
-        });
+    modal.innerHTML = `
+        <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); min-width: 300px;">
+            <h3 style="margin: 0 0 20px 0; color: #333; text-align: center;">결과 저장</h3>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button onclick="downloadAsText()" style="padding: 12px 20px; border: none; background: #3b82f6; color: white; border-radius: 6px; cursor: pointer; font-size: 14px;">
+                    📄 텍스트 파일로 저장
+                </button>
+                <button onclick="downloadAsPDF()" style="padding: 12px 20px; border: none; background: #ef4444; color: white; border-radius: 6px; cursor: pointer; font-size: 14px;">
+                    📑 PDF 파일로 저장
+                </button>
+                <button onclick="downloadAsImage()" style="padding: 12px 20px; border: none; background: #10b981; color: white; border-radius: 6px; cursor: pointer; font-size: 14px;">
+                    🖼️ 이미지로 저장
+                </button>
+                <button onclick="closeDownloadModal()" style="padding: 12px 20px; border: 1px solid #d1d5db; background: white; color: #666; border-radius: 6px; cursor: pointer; font-size: 14px; margin-top: 10px;">
+                    취소
+                </button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // 전역 함수들 정의
+    window.downloadAsText = () => {
+        exportToTxt(content, calculatorName + '_결과');
+        closeDownloadModal();
+        if (typeof trackDownload === 'function') trackDownload('txt', calculatorName);
+    };
+    
+    window.downloadAsPDF = () => {
+        exportToPDF(content, calculatorName + '_결과');
+        closeDownloadModal();
+        if (typeof trackDownload === 'function') trackDownload('pdf', calculatorName);
+    };
+    
+    window.downloadAsImage = () => {
+        exportToImage(resultElementId, calculatorName + '_결과');
+        closeDownloadModal();
+        if (typeof trackDownload === 'function') trackDownload('png', calculatorName);
+    };
+    
+    window.closeDownloadModal = () => {
+        const modal = document.getElementById('downloadModal');
+        if (modal) modal.remove();
+        // 전역 함수들 정리
+        delete window.downloadAsText;
+        delete window.downloadAsPDF;
+        delete window.downloadAsImage;
+        delete window.closeDownloadModal;
+    };
+    
+    // ESC 키로 모달 닫기
+    const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+            closeDownloadModal();
+            document.removeEventListener('keydown', handleEsc);
+        }
+    };
+    document.addEventListener('keydown', handleEsc);
+    
+    // 배경 클릭으로 모달 닫기
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeDownloadModal();
     });
-});
+}
 
 // Export for testing purposes
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         formatNumber,
-        parseNumber
+        parseNumber,
+        RecommendedCalculators,
+        CALCULATOR_DATABASE,
+        exportToTxt,
+        exportToPDF,
+        exportToImage,
+        showDownloadOptions
     };
 }

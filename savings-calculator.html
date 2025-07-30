@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="예적금 계산기 - 예금, 적금, 복리 이자를 정확하게 계산하세요. 만기 수령액과 세후 이자를 한번에 계산">
+    <meta name="keywords" content="예적금 계산기, 예금 계산기, 적금 계산기, 복리 계산기, 이자 계산, 만기 수령액, 무료 계산기">
+    <meta name="author" content="금융계산기">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="ko">
+    <meta name="geo.region" content="KR">
+    <meta name="geo.country" content="South Korea">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="예적금 계산기 - 예금/적금 이자 및 만기 수령액 계산">
+    <meta property="og:description" content="예금, 적금의 이자와 만기 수령액을 정확하게 계산하세요. 단리, 복리 방식 비교">
+    <meta property="og:image" content="">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:site_name" content="금융계산기">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="예적금 계산기 - 예금/적금 이자 및 만기 수령액 계산">
+    <meta property="twitter:description" content="예금, 적금의 이자와 만기 수령액을 정확하게 계산하세요. 단리, 복리 방식 비교">
+    <meta property="twitter:image" content="">
+
+    <!-- Schema.org markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "예적금 계산기",
+      "description": "예금, 적금의 이자와 만기 수령액을 정확하게 계산하는 무료 계산기",
+      "url": "",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      },
+      "inLanguage": "ko-KR",
+      "creator": {
+        "@type": "Organization",
+        "name": "금융계산기"
+      }
+    }
+    </script>
+
+    <title>예적금 계산기 - 예금/적금 이자 및 만기 수령액 계산</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX', {
+            page_title: document.title,
+            page_location: window.location.href
+        });
+    </script>
+
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    </noscript>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Icons -->
+
+    <!-- PDF/Image Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
+
+    <style>
+        /* Page-specific styles */
+
+        /* 컨테이너 정렬을 위한 추가 스타일 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+        
+        /* 카테고리 메뉴 컨테이너 너비 조정 */
+        .container:has(.calculator-navigation) {
+            max-width: 1300px;
+            padding: 0 var(--space-6);
+        }
+
+        .page-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: var(--space-8);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6) var(--space-8);
+            min-height: calc(100vh - 200px);
+        }
+
+        .calculator-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-lg);
+            height: fit-content;
+        }
+
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+
+        .info-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-card h3 {
+            color: var(--primary-600);
+            margin-bottom: var(--space-4);
+            font-size: var(--font-size-xl);
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-card li {
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--neutral-100);
+            font-size: var(--font-size-sm);
+            line-height: 1.6;
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        .breadcrumb {
+            margin-bottom: var(--space-6);
+            font-size: var(--font-size-sm);
+            color: var(--neutral-500);
+        }
+
+        .breadcrumb a {
+            color: var(--primary-600);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            margin-bottom: var(--space-8);
+        }
+
+        .page-title {
+            font-size: var(--font-size-4xl);
+            color: var(--neutral-900);
+            margin-bottom: var(--space-4);
+        }
+
+        .page-description {
+            font-size: var(--font-size-lg);
+            color: var(--neutral-600);
+            line-height: 1.6;
+        }
+
+        .calculator-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+        }
+
+        .calculator-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-size-xl);
+        }
+
+        .calculator-navigation {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+            background: white;
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--neutral-200);
+        }
+
+        .nav-calculator {
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            background: var(--neutral-100);
+            color: var(--neutral-600);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .nav-calculator:hover {
+            background: var(--primary-50);
+            color: var(--primary-600);
+        }
+
+        .nav-calculator.active {
+            background: var(--primary-600);
+            color: white;
+        }
+
+        .recommended-calculators-section {
+            background: var(--primary-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-top: var(--space-6);
+        }
+
+        .recommended-calculators-section h3 {
+            color: var(--primary-700);
+            margin-bottom: var(--space-4);
+            font-size: var(--font-size-lg);
+            text-align: center;
+        }
+
+        .recommended-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-4);
+        }
+
+        .recommended-item {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-4);
+            background: white;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--neutral-700);
+            transition: all var(--duration-fast) var(--ease-out);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            min-height: 120px;
+        }
+
+        .recommended-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: var(--primary-600);
+        }
+
+        .recommended-item i {
+            color: white;
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .recommended-item:hover i {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+        }
+
+        .recommended-item span {
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 1024px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+                gap: var(--space-6);
+            }
+
+            .info-panel {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-layout {
+                padding: var(--space-4);
+            }
+
+            .calculator-section,
+            .info-card {
+                padding: var(--space-4);
+            }
+
+            .page-title {
+                font-size: var(--font-size-3xl);
+            }
+
+            .calculator-navigation {
+                flex-direction: column;
+            }
+
+            .nav-calculator {
+                text-align: center;
+            }
+
+            .recommended-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-3);
+            }
+
+            .recommended-item {
+                min-height: 100px;
+                flex-direction: row;
+                justify-content: flex-start;
+                text-align: left;
+                aspect-ratio: auto;
+            }
+
+            .recommended-item i {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                font-size: var(--font-size-lg);
+                margin-bottom: 0;
+                margin-right: var(--space-3);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <i class="fas fa-calculator"></i>
+                    <span>금융계산기</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">홈</a>
+                <a href="guides.html" class="nav-link">이용가이드</a>
+                <a href="about.html" class="nav-link">소개</a>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main style="margin-top: 80px;">
+        <!-- Breadcrumb -->
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">홈</a> > <a href="index.html#calculators">계산기</a> > 예적금 계산기
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">예적금 계산기</h1>
+                <p class="page-description">예금과 적금의 이자 및 만기 수령액을 정확하게 계산하세요. 단리와 복리 방식을 비교하여 최적의 저축 전략을 세울 수 있습니다.</p>
+            </div>
+        </div>
+
+        <!-- Calculator Navigation -->
+        <div class="container">
+            <div class="calculator-navigation">
+                <a href="loan-calculator.html" class="nav-calculator">대출 이자 계산기</a>
+                <a href="realestate-tax.html" class="nav-calculator">부동산 세금 계산기</a>
+                <a href="savings-calculator.html" class="nav-calculator active">예적금 계산기</a>
+                <a href="brokerage-calculator.html" class="nav-calculator">중개수수료 계산기</a>
+                <a href="loan-limit.html" class="nav-calculator">대출 한도 계산기</a>
+                <a href="affordability-calculator.html" class="nav-calculator">주택 구매력 계산기</a>
+                <a href="jeonse-calculator.html" class="nav-calculator">전월세 계산기</a>
+                <a href="prepayment-calculator.html" class="nav-calculator">중도상환 계산기</a>
+                <a href="investment-calculator.html" class="nav-calculator">투자 수익 계산기</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container">
+            <div class="page-layout">
+                <!-- Calculator Section -->
+                <div class="calculator-section">
+                    <div class="calculator-header">
+                        <div class="calculator-icon">
+                            <i class="fas fa-piggy-bank"></i>
+                        </div>
+                        <div>
+                            <h2>예적금 계산기</h2>
+                            <p>예금/적금 이자 및 만기 수령액</p>
+                        </div>
+                    </div>
+
+                    <div class="calculation-mode">
+                        <button class="mode-btn active" data-mode="deposit">예금</button>
+                        <button class="mode-btn" data-mode="savings">적금</button>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group deposit-only">
+                            <label for="principal">원금</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="principal" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group savings-only" style="display: none;">
+                            <label for="monthlyAmount">월 납입액</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="monthlyAmount" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="interestRate">연이율</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="interestRate" placeholder="0" class="input-field" step="0.01">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="term">가입기간</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="term" placeholder="0" class="input-field">
+                                <span class="input-unit">개월</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="interestType">이자계산방식</label>
+                            <select id="interestType" class="input-field">
+                                <option value="simple">단리</option>
+                                <option value="compound">복리</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="taxRate">이자소득세율</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="taxRate" placeholder="15.4" class="input-field" value="15.4">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="btn calculate-btn" onclick="calculateSavings()">
+                            <i class="fas fa-calculator"></i>
+                            계산하기
+                        </button>
+                    </div>
+
+                    <div class="result-panel" id="savingsResult" style="display: none;">
+                        <div class="result-header">
+                            <h4>계산 결과</h4>
+                            <button class="btn export-btn" onclick="exportSavingsResult()" style="display: none;">
+                                <i class="fas fa-download"></i>
+                                결과 저장
+                            </button>
+                        </div>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <span class="result-label">총 납입원금</span>
+                                <span class="result-value" id="totalPrincipal">0원</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">세전 이자</span>
+                                <span class="result-value" id="beforeTaxInterest">0원</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">세후 이자</span>
+                                <span class="result-value" id="afterTaxInterest">0원</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">만기 수령액</span>
+                                <span class="result-value highlight" id="maturityAmount">0원</span>
+                            </div>
+                        </div>
+                        <div class="legal-disclaimer">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                        </div>
+                    </div>
+
+                    <!-- Recommended Calculators -->
+                    <div class="recommended-calculators-section">
+                        <h3><i class="fas fa-star"></i> 추천 계산기</h3>
+                        <div class="recommended-grid" id="recommended-grid">
+                            <!-- 동적으로 생성됨 -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Information Panel -->
+                <div class="info-panel">
+                    <!-- Calculation Methods -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-chart-line"></i> 예적금 상품 비교</h3>
+                        <div style="margin-bottom: var(--space-4);">
+                            <h4 style="color: var(--primary-600); margin-bottom: var(--space-2);">예금</h4>
+                            <ul>
+                                <li>목돈을 한번에 맡기는 저축 상품</li>
+                                <li>일정한 이자율로 만기까지 운용</li>
+                                <li>중도 해지 시 약정금리보다 낮은 이율 적용</li>
+                                <li>자유입출금식과 정기예금으로 구분</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--accent-green); margin-bottom: var(--space-2);">적금</h4>
+                            <ul>
+                                <li>매월 일정 금액을 납입하는 저축 상품</li>
+                                <li>목돈 마련과 저축 습관 형성에 유리</li>
+                                <li>자유적금과 정기적금으로 구분</li>
+                                <li>일반적으로 예금보다 높은 이자율 제공</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Interest Calculation -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-percentage"></i> 이자 계산 방식</h3>
+                        <div style="margin-bottom: var(--space-4);">
+                            <h4 style="color: var(--primary-600); margin-bottom: var(--space-2);">단리</h4>
+                            <ul>
+                                <li>원금에 대해서만 이자를 계산</li>
+                                <li>이자 = 원금 × 연이율 × 기간</li>
+                                <li>계산이 간단하고 이해하기 쉬움</li>
+                                <li>대부분의 예적금에서 사용</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--accent-green); margin-bottom: var(--space-2);">복리</h4>
+                            <ul>
+                                <li>원금과 이자를 합쳐서 다시 이자를 계산</li>
+                                <li>시간이 길수록 단리보다 유리</li>
+                                <li>복리 효과로 수익률 증대</li>
+                                <li>일부 장기 상품에서 적용</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Savings Tips -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-lightbulb"></i> 저축 팁</h3>
+                        <ul>
+                            <li>금리 변동을 고려하여 고정금리와 변동금리 비교</li>
+                            <li>중도 해지 수수료와 조건을 미리 확인</li>
+                            <li>예금자보호법 적용 한도(5천만원) 고려</li>
+                            <li>세제 혜택이 있는 상품(청약통장, ISA 등) 우선 활용</li>
+                            <li>인플레이션을 고려한 실질 수익률 계산</li>
+                            <li>목적별 저축 목표 설정으로 효율적 자산 관리</li>
+                            <li>은행별 우대금리 조건 비교 검토</li>
+                        </ul>
+                    </div>
+
+                    <!-- Tax Information -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-receipt"></i> 세금 정보</h3>
+                        <ul>
+                            <li><strong>이자소득세:</strong> 14% (소득세)</li>
+                            <li><strong>지방소득세:</strong> 1.4% (소득세의 10%)</li>
+                            <li><strong>합계:</strong> 15.4% (일반적인 세율)</li>
+                            <li><strong>비과세종합저축:</strong> 서민층 대상 세금 면제</li>
+                            <li><strong>장기주택마련저축:</strong> 소득공제 혜택</li>
+                            <li><strong>연금저축:</strong> 세액공제 혜택</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-calculator"></i>
+                <span>금융계산기</span>
+            </div>
+            <div class="footer-right">
+                <p class="footer-copyright">&copy; 2024 Financial Calculator. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="guides.html">이용가이드</a>
+                    <a href="about.html">소개</a>
+                    <a href="index.html">메인으로</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Calculator JavaScript -->
+    <script src="calculators/savingsCalculator.js"></script>
+
+    <!-- Main JavaScript -->
+    <script src="script.js"></script>
+
+    <script>
+        // Page-specific JavaScript
+        let currentMode = 'deposit';
+        let savingsCalculator;
+
+        try {
+            savingsCalculator = new SavingsCalculator();
+        } catch (error) {
+            console.error('SavingsCalculator initialization failed:', error);
+            alert('계산기 초기화에 실패했습니다. 페이지를 새로고침해주세요.');
+        }
+
+        // Note: parseNumber and formatNumber are defined in script.js
+        // Using global functions from script.js
+
+        // Setup input formatting with real-time comma formatting
+        function setupInputFormatting() {
+            const inputs = document.querySelectorAll('.input-field');
+            inputs.forEach(input => {
+                input.addEventListener('input', function (e) {
+                    if (this.id === 'interestRate' || this.id === 'taxRate') {
+                        // Allow decimal input for interest rate and tax rate
+                        let value = this.value.replace(/[^0-9.]/g, '');
+                        const parts = value.split('.');
+                        if (parts.length > 2) {
+                            value = parts[0] + '.' + parts.slice(1).join('');
+                        }
+                        // Limit decimal places to 2
+                        if (parts[1] && parts[1].length > 2) {
+                            value = parts[0] + '.' + parts[1].substring(0, 2);
+                        }
+                        this.value = value;
+                        this.setAttribute('data-raw-value', value);
+                    } else if (this.type === 'text') {
+                        // Handle numeric fields with comma formatting
+                        const cursorPosition = this.selectionStart;
+                        let numericValue = this.value.replace(/[^0-9]/g, '');
+
+                        if (numericValue) {
+                            // Convert to number and format with commas
+                            const number = parseInt(numericValue, 10);
+                            if (!isNaN(number)) {
+                                const formattedValue = new Intl.NumberFormat('ko-KR').format(number);
+                                this.value = formattedValue;
+                                this.setAttribute('data-raw-value', numericValue);
+
+                                // Adjust cursor position
+                                const commasAdded = formattedValue.split(',').length - 1;
+                                const originalCommas = (this.getAttribute('data-old-value') || '').split(',').length - 1;
+                                const cursorAdjustment = commasAdded - originalCommas;
+                                const newCursorPosition = Math.min(cursorPosition + cursorAdjustment, formattedValue.length);
+
+                                setTimeout(() => {
+                                    this.setSelectionRange(newCursorPosition, newCursorPosition);
+                                }, 0);
+
+                                this.setAttribute('data-old-value', formattedValue);
+                            }
+                        } else {
+                            this.value = '';
+                            this.setAttribute('data-raw-value', '');
+                            this.setAttribute('data-old-value', '');
+                        }
+                    }
+                });
+
+                input.addEventListener('blur', function () {
+                    if (this.id === 'interestRate' || this.id === 'taxRate') {
+                        const value = parseFloat(this.value);
+                        if (!isNaN(value) && value >= 0) {
+                            this.value = value.toFixed(2);
+                        }
+                    }
+                });
+
+                input.addEventListener('focus', function () {
+                    this.setAttribute('data-old-value', this.value || '');
+                });
+            });
+        }
+
+        // Setup mode buttons
+        function setupModeButtons() {
+            const modeButtons = document.querySelectorAll('.mode-btn');
+            modeButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    modeButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    currentMode = this.dataset.mode;
+
+                    // Show/hide relevant fields
+                    const depositFields = document.querySelectorAll('.deposit-only');
+                    const savingsFields = document.querySelectorAll('.savings-only');
+
+                    if (currentMode === 'savings') {
+                        depositFields.forEach(field => field.style.display = 'none');
+                        savingsFields.forEach(field => field.style.display = 'block');
+                    } else {
+                        depositFields.forEach(field => field.style.display = 'block');
+                        savingsFields.forEach(field => field.style.display = 'none');
+                    }
+
+                    // Clear previous results
+                    document.getElementById('savingsResult').style.display = 'none';
+                });
+            });
+        }
+
+        // Calculate savings
+        function calculateSavings() {
+            if (!savingsCalculator) {
+                alert('계산기가 초기화되지 않았습니다. 페이지를 새로고침해주세요.');
+                return;
+            }
+
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const term = parseNumber(document.getElementById('term').value);
+            const interestType = document.getElementById('interestType').value;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 15.4;
+
+            if (interestRate < 0 || term <= 0) {
+                alert('올바른 값을 입력해주세요.');
+                return;
+            }
+
+            let result;
+            if (currentMode === 'deposit') {
+                const principal = parseNumber(document.getElementById('principal').value);
+                if (principal <= 0) {
+                    alert('올바른 원금을 입력해주세요.');
+                    return;
+                }
+                result = savingsCalculator.calculateDeposit(principal, interestRate, term, interestType, taxRate);
+            } else { // 'savings' mode
+                const monthlyAmount = parseNumber(document.getElementById('monthlyAmount').value);
+                if (monthlyAmount <= 0) {
+                    alert('올바른 월 납입액을 입력해주세요.');
+                    return;
+                }
+                result = savingsCalculator.calculateSavings(monthlyAmount, interestRate, term, interestType, taxRate);
+            }
+
+            // Display results
+            document.getElementById('totalPrincipal').textContent = formatNumber(Math.round(result.totalPrincipal)) + '원';
+            document.getElementById('beforeTaxInterest').textContent = formatNumber(Math.round(result.beforeTaxInterest)) + '원';
+            document.getElementById('afterTaxInterest').textContent = formatNumber(Math.round(result.afterTaxInterest)) + '원';
+            document.getElementById('maturityAmount').textContent = formatNumber(Math.round(result.maturityAmount)) + '원';
+
+            document.getElementById('savingsResult').style.display = 'block';
+            document.querySelector('.export-btn').style.display = 'inline-flex';
+
+            // Track usage
+            if (typeof trackCalculatorUsage === 'function') {
+                trackCalculatorUsage('savings', 'calculate');
+            }
+        }
+
+        // Export results
+        function exportSavingsResult() {
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const term = parseNumber(document.getElementById('term').value);
+            const interestType = document.getElementById('interestType').value;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 15.4;
+            const modeName = currentMode === 'deposit' ? '예금' : '적금';
+
+            const totalPrincipal = document.getElementById('totalPrincipal').textContent;
+            const beforeTaxInterest = document.getElementById('beforeTaxInterest').textContent;
+            const afterTaxInterest = document.getElementById('afterTaxInterest').textContent;
+            const maturityAmount = document.getElementById('maturityAmount').textContent;
+
+            let content = `${modeName} 계산 결과
+
+계산 조건:
+- 상품 유형: ${modeName}
+- 연이율: ${interestRate}%
+- 가입기간: ${term}개월
+- 이자계산방식: ${interestType === 'simple' ? '단리' : '복리'}
+- 이자소득세율: ${taxRate}%
+`;
+
+            if (currentMode === 'deposit') {
+                const principal = parseNumber(document.getElementById('principal').value);
+                content += `- 원금: ${formatNumber(principal)}원\n`;
+            } else {
+                const monthlyAmount = parseNumber(document.getElementById('monthlyAmount').value);
+                content += `- 월 납입액: ${formatNumber(monthlyAmount)}원\n`;
+            }
+
+            content += `
+계산 결과:
+- 총 납입원금: ${totalPrincipal}
+- 세전 이자: ${beforeTaxInterest}
+- 세후 이자: ${afterTaxInterest}
+- 만기 수령액: ${maturityAmount}
+
+계산일시: ${new Date().toLocaleString('ko-KR')}
+`;
+
+            // 다운로드 옵션 모달 표시
+            showDownloadOptions('savingsResult', '예적금계산기', content);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
+            setupInputFormatting();
+            setupModeButtons();
+
+            // Initialize random recommended calculators
+            if (window.recommendedCalculators) {
+                window.recommendedCalculators.renderRecommendations('savings', 'recommended-grid', 'category');
+            }
+
+            // Track page view
+            if (typeof trackPageView === 'function') {
+                trackPageView('예적금 계산기');
+            }
+        });
+    </script>
+</body>
+
+</html>

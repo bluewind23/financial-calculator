@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5809883478660758"
-        crossorigin="anonymous"></script>
+
     <!-- SEO Meta Tags -->
     <meta name="description" content="정확하고 신뢰할 수 있는 금융계산기 - 대출이자, 부동산세금, 예적금, 양도소득세, 중도상환 등 9가지 전문 계산기 무료 제공">
     <meta name="keywords"
@@ -71,14 +70,16 @@
     <link rel="apple-touch-icon" sizes="180x180"
         href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-H25YCX68S3"></script>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() { dataLayer.push(arguments); }
         gtag('js', new Date());
-
-        gtag('config', 'G-H25YCX68S3');
+        gtag('config', 'G-XXXXXXXXXX', {
+            page_title: document.title,
+            page_location: window.location.href
+        });
     </script>
 
     <!-- Preload critical resources -->
@@ -127,49 +128,54 @@
                 <span class="gradient-text">쉽고 빠르게</span>
             </h1>
             
-            <!-- 검색창 추가 -->
-            <div class="search-container">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="calculatorSearch" placeholder="계산기 검색..." autocomplete="off">
-                </div>
-                <div class="search-results" id="searchResults" style="display: none;"></div>
-            </div>
-
-            <!-- 인기 도구 섹션 -->
-            <div class="popular-tools">
-                <h3 class="popular-title">인기 도구</h3>
-                <div class="popular-grid">
-                    <div class="popular-tool" data-calculator="loan">
-                        <i class="fas fa-home"></i>
-                        <span>대출 이자</span>
-                    </div>
-                    <div class="popular-tool" data-calculator="realestate">
-                        <i class="fas fa-building"></i>
-                        <span>부동산 세금</span>
-                    </div>
-                    <div class="popular-tool" data-calculator="savings">
-                        <i class="fas fa-piggy-bank"></i>
-                        <span>예적금</span>
-                    </div>
-                    <div class="popular-tool" data-calculator="brokerage">
-                        <i class="fas fa-handshake"></i>
-                        <span>중개수수료</span>
-                    </div>
-                    <div class="popular-tool" data-calculator="loan-limit">
-                        <i class="fas fa-chart-bar"></i>
-                        <span>대출한도</span>
-                    </div>
-                    <div class="popular-tool" data-calculator="affordability">
-                        <i class="fas fa-house-user"></i>
-                        <span>주택구매력</span>
-                    </div>
-                </div>
-            </div>
-
             <p class="hero-description">
                 대출 이자부터 부동산 세금까지, 모든 금융 계산을 한 곳에서
             </p>
+            
+            <!-- 검색창 -->
+            <div class="search-wrapper">
+                <div class="search-input-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="calculatorSearch" class="search-input" 
+                           placeholder="예: 대출, 부동산, 세금, 예금...">
+                    <button class="search-clear" id="searchClear" style="display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="search-suggestions" id="searchSuggestions"></div>
+            </div>
+            
+            <!-- 인기 도구 섹션 -->
+            <div class="popular-tools">
+                <h3 class="popular-title">인기도구</h3>
+                <div class="popular-grid">
+                    <a href="loan-calculator.html" class="popular-tool" data-calculator="loan">
+                        <i class="fas fa-home"></i>
+                        <span>대출이자</span>
+                    </a>
+                    <a href="realestate-tax.html" class="popular-tool" data-calculator="realestate">
+                        <i class="fas fa-building"></i>
+                        <span>부동산세금</span>
+                    </a>
+                    <a href="savings-calculator.html" class="popular-tool" data-calculator="savings">
+                        <i class="fas fa-piggy-bank"></i>
+                        <span>예적금</span>
+                    </a>
+                    <a href="brokerage-calculator.html" class="popular-tool" data-calculator="brokerage">
+                        <i class="fas fa-handshake"></i>
+                        <span>중개수수료</span>
+                    </a>
+                    <a href="loan-limit.html" class="popular-tool" data-calculator="loan-limit">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>대출한도</span>
+                    </a>
+                    <a href="affordability-calculator.html" class="popular-tool" data-calculator="affordability">
+                        <i class="fas fa-house-user"></i>
+                        <span>주택구매력</span>
+                    </a>
+                </div>
+            </div>
+
             <div class="hero-cta">
                 <button class="btn btn-primary" onclick="scrollToSection('calculators')">
                     <i class="fas fa-calculator"></i>
@@ -210,7 +216,7 @@
         </div>
 
         <div class="calculator-grid">
-            <div class="calculator-card" data-calculator="loan">
+            <a href="loan-calculator.html" class="calculator-card" data-calculator="loan">
                 <div class="card-icon">
                     <i class="fas fa-home"></i>
                 </div>
@@ -226,9 +232,9 @@
                 <div class="card-action">
                     <i class="fas fa-arrow-right"></i>
                 </div>
-            </div>
+            </a>
 
-            <div class="calculator-card" data-calculator="realestate">
+            <a href="realestate-tax.html" class="calculator-card" data-calculator="realestate">
                 <div class="card-icon">
                     <i class="fas fa-building"></i>
                 </div>
@@ -244,9 +250,9 @@
                 <div class="card-action">
                     <i class="fas fa-arrow-right"></i>
                 </div>
-            </div>
+            </a>
 
-            <div class="calculator-card" data-calculator="savings">
+            <a href="savings-calculator.html" class="calculator-card" data-calculator="savings">
                 <div class="card-icon">
                     <i class="fas fa-piggy-bank"></i>
                 </div>
@@ -262,9 +268,9 @@
                 <div class="card-action">
                     <i class="fas fa-arrow-right"></i>
                 </div>
-            </div>
+            </a>
 
-            <div class="calculator-card" data-calculator="brokerage">
+            <a href="brokerage-calculator.html" class="calculator-card" data-calculator="brokerage">
                 <div class="card-icon">
                     <i class="fas fa-handshake"></i>
                 </div>
@@ -280,9 +286,9 @@
                 <div class="card-action">
                     <i class="fas fa-arrow-right"></i>
                 </div>
-            </div>
+            </a>
 
-            <div class="calculator-card" data-calculator="loan-limit">
+            <a href="loan-limit.html" class="calculator-card" data-calculator="loan-limit">
                 <div class="card-icon">
                     <i class="fas fa-chart-bar"></i>
                 </div>
@@ -298,9 +304,9 @@
                 <div class="card-action">
                     <i class="fas fa-arrow-right"></i>
                 </div>
-            </div>
+            </a>
 
-            <div class="calculator-card" data-calculator="affordability">
+            <a href="affordability-calculator.html" class="calculator-card" data-calculator="affordability">
                 <div class="card-icon">
                     <i class="fas fa-house-user"></i>
                 </div>
@@ -316,9 +322,9 @@
                 <div class="card-action">
                     <i class="fas fa-arrow-right"></i>
                 </div>
-            </div>
+            </a>
 
-            <div class="calculator-card" data-calculator="prepayment-fee">
+            <a href="prepayment-calculator.html" class="calculator-card" data-calculator="prepayment-fee">
                 <div class="card-icon">
                     <i class="fas fa-money-bill-wave"></i>
                 </div>
@@ -334,9 +340,9 @@
                 <div class="card-action">
                     <i class="fas fa-arrow-right"></i>
                 </div>
-            </div>
+            </a>
 
-            <div class="calculator-card" data-calculator="lease-conversion">
+            <a href="jeonse-calculator.html" class="calculator-card" data-calculator="lease-conversion">
                 <div class="card-icon">
                     <i class="fas fa-exchange-alt"></i>
                 </div>
@@ -352,25 +358,25 @@
                 <div class="card-action">
                     <i class="fas fa-arrow-right"></i>
                 </div>
-            </div>
+            </a>
 
-            <div class="calculator-card" data-calculator="holding-tax">
+            <a href="investment-calculator.html" class="calculator-card" data-calculator="holding-tax">
                 <div class="card-icon">
-                    <i class="fas fa-building"></i>
+                    <i class="fas fa-chart-line"></i>
                 </div>
                 <div class="card-content">
-                    <h3 class="card-title">보유세 계산기</h3>
-                    <p class="card-description">재산세, 종합부동산세 등 부동산 보유세 계산</p>
+                    <h3 class="card-title">투자 수익 계산기</h3>
+                    <p class="card-description">주식, 펀드 등 투자 상품의 수익률과 손익을 계산</p>
                     <div class="card-features">
-                        <span class="feature-tag">재산세</span>
-                        <span class="feature-tag">종부세</span>
-                        <span class="feature-tag">보유비용</span>
+                        <span class="feature-tag">수익률</span>
+                        <span class="feature-tag">손익분석</span>
+                        <span class="feature-tag">복리효과</span>
                     </div>
                 </div>
                 <div class="card-action">
                     <i class="fas fa-arrow-right"></i>
                 </div>
-            </div>
+            </a>
         </div>
     </section>
 
@@ -398,7 +404,7 @@
                     <div class="input-group">
                         <label for="modalInterestRate">연이율</label>
                         <div class="input-wrapper">
-                            <input type="text" id="modalInterestRate" placeholder="0" class="input-field">
+                            <input type="text" id="modalInterestRate" placeholder="0" class="input-field" step="0.01">
                             <span class="input-unit">%</span>
                         </div>
                     </div>
@@ -422,33 +428,24 @@
                 <div class="result-panel" id="modalLoanResult" style="display: none;">
                     <div class="result-header">
                         <h4>계산 결과</h4>
-                        <button class="btn export-btn" onclick="showDownloadOptions('modalLoanResult', '대출이자계산기')"
-                            style="display: none;">
+                        <button class="btn export-btn" onclick="showDownloadOptions('modalLoanResult', '대출이자계산기')" style="display: none;">
                             <i class="fas fa-download"></i>
                             결과 저장
                         </button>
                     </div>
-                    <div class="result-grid result-grid-dense">
+                    <div class="result-grid">
                         <div class="result-item">
                             <span class="result-label">월 상환액</span>
                             <span class="result-value" id="modalMonthlyPayment">0원</span>
                         </div>
                         <div class="result-item">
+                            <span class="result-label">총 상환액</span>
+                            <span class="result-value" id="modalTotalPayment">0원</span>
+                        </div>
+                        <div class="result-item">
                             <span class="result-label">총 이자</span>
                             <span class="result-value highlight" id="modalTotalInterest">0원</span>
                         </div>
-                        <div class="result-item">
-                            <span class="result-label">첫 달 원금</span>
-                            <span class="result-value" id="modalFirstPrincipal">0원</span>
-                        </div>
-                        <div class="result-item">
-                            <span class="result-label">첫 달 이자</span>
-                            <span class="result-value" id="modalFirstInterest">0원</span>
-                        </div>
-                    </div>
-                    <div class="legal-disclaimer">
-                        <i class="fas fa-info-circle"></i>
-                        <span>원리금균등 방식은 회차가 지날수록 원금 비중이 늘고 이자 비중이 줄어듭니다.</span>
                     </div>
                 </div>
             </div>
@@ -701,7 +698,7 @@
                 <div class="result-panel" id="modalSavingsResult" style="display: none;">
                     <div class="result-header">
                         <h4>만기 수령액</h4>
-                        <button class="btn export-btn" onclick="exportSavingsResult()" style="display: none;">
+                        <button class="btn export-btn" onclick="showDownloadOptions('modalSavingsResult', '예적금계산기')" style="display: none;">
                             <i class="fas fa-download"></i>
                             결과 저장
                         </button>
@@ -779,7 +776,7 @@
                 <div class="result-panel" id="modalBrokerageResult" style="display: none;">
                     <div class="result-header">
                         <h4>수수료 계산 결과</h4>
-                        <button class="btn export-btn" onclick="exportBrokerageResult()" style="display: none;">
+                        <button class="btn export-btn" onclick="showDownloadOptions('modalBrokerageResult', '중개수수료계산기')" style="display: none;">
                             <i class="fas fa-download"></i>
                             결과 저장
                         </button>
@@ -851,7 +848,7 @@
                 <div class="result-panel" id="modalLoanLimitResult" style="display: none;">
                     <div class="result-header">
                         <h4>대출한도 계산 결과</h4>
-                        <button class="btn export-btn" onclick="exportLoanLimitResult()">
+                        <button class="btn export-btn" onclick="showDownloadOptions('modalLoanLimitResult', '대출한도계산기')">
                             <i class="fas fa-download"></i>
                             결과 저장
                         </button>
@@ -931,7 +928,7 @@
                 <div class="result-panel" id="modalAffordabilityResult" style="display: none;">
                     <div class="result-header">
                         <h4>주택구매력 분석</h4>
-                        <button class="btn export-btn" onclick="exportAffordabilityResult()">
+                        <button class="btn export-btn" onclick="showDownloadOptions('modalAffordabilityResult', '주택구매력계산기')">
                             <i class="fas fa-download"></i>
                             결과 저장
                         </button>
@@ -1011,7 +1008,7 @@
                 <div class="result-panel" id="modalLeaseConversionResult" style="display: none;">
                     <div class="result-header">
                         <h4>전월세 전환율 분석</h4>
-                        <button class="btn export-btn" onclick="exportLeaseConversionResult()">
+                        <button class="btn export-btn" onclick="showDownloadOptions('modalLeaseConversionResult', '전월세전환율계산기')">
                             <i class="fas fa-download"></i>
                             결과 저장
                         </button>
@@ -1272,7 +1269,6 @@
                 <div class="footer-links">
                     <a href="guides.html">이용가이드</a>
                     <a href="about.html">소개</a>
-                    <a href="#contact">문의하기</a>
                     <a href="#" onclick="openFeedbackModal(); return false;" class="feedback-link">
                         <i class="fas fa-comment"></i>
                         피드백하기

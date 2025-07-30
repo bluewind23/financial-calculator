@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="부동산 세금 계산기 - 취득세, 등록세, 양도소득세를 정확하게 계산하세요. 부동산 거래 시 필요한 모든 세금을 한번에 계산">
+    <meta name="keywords" content="부동산 세금 계산기, 취득세, 등록세, 양도소득세, 부동산 세금, 무료 계산기, 부동산 거래">
+    <meta name="author" content="금융계산기">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="ko">
+    <meta name="geo.region" content="KR">
+    <meta name="geo.country" content="South Korea">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="부동산 세금 계산기 - 취득세/등록세/양도소득세 계산">
+    <meta property="og:description" content="부동산 거래 시 필요한 취득세, 등록세, 양도소득세를 정확하게 계산하세요">
+    <meta property="og:image" content="">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:site_name" content="금융계산기">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="부동산 세금 계산기 - 취득세/등록세/양도소득세 계산">
+    <meta property="twitter:description" content="부동산 거래 시 필요한 취득세, 등록세, 양도소득세를 정확하게 계산하세요">
+    <meta property="twitter:image" content="">
+
+    <!-- Schema.org markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "부동산 세금 계산기",
+      "description": "부동산 거래 시 필요한 취득세, 등록세, 양도소득세를 정확하게 계산하는 무료 계산기",
+      "url": "",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      },
+      "inLanguage": "ko-KR",
+      "creator": {
+        "@type": "Organization",
+        "name": "금융계산기"
+      }
+    }
+    </script>
+
+    <title>부동산 세금 계산기 - 취득세/등록세/양도소득세 계산</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX', {
+            page_title: document.title,
+            page_location: window.location.href
+        });
+    </script>
+
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    </noscript>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Icons -->
+
+    <!-- PDF/Image Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
+
+    <style>
+        /* Page-specific styles */
+        .page-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: var(--space-8);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6) var(--space-8);
+            min-height: calc(100vh - 200px);
+        }
+
+        /* 컨테이너 정렬을 위한 추가 스타일 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+        
+        /* 카테고리 메뉴 컨테이너 너비 조정 */
+        .container:has(.calculator-navigation) {
+            max-width: 1300px;
+            padding: 0 var(--space-6);
+        }
+
+        .calculator-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-lg);
+            height: fit-content;
+        }
+
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+
+        .info-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-card h3 {
+            color: var(--primary-600);
+            margin-bottom: var(--space-4);
+            font-size: var(--font-size-xl);
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-card li {
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--neutral-100);
+            font-size: var(--font-size-sm);
+            line-height: 1.6;
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        .breadcrumb {
+            margin-bottom: var(--space-6);
+            font-size: var(--font-size-sm);
+            color: var(--neutral-500);
+        }
+
+        .breadcrumb a {
+            color: var(--primary-600);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            margin-bottom: var(--space-8);
+        }
+
+        .page-title {
+            font-size: var(--font-size-4xl);
+            color: var(--neutral-900);
+            margin-bottom: var(--space-4);
+        }
+
+        .page-description {
+            font-size: var(--font-size-lg);
+            color: var(--neutral-600);
+            line-height: 1.6;
+        }
+
+        .calculator-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+        }
+
+        .calculator-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-size-xl);
+        }
+
+        .calculator-navigation {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+            background: white;
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--neutral-200);
+        }
+
+        .nav-calculator {
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            background: var(--neutral-100);
+            color: var(--neutral-600);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .nav-calculator:hover {
+            background: var(--primary-50);
+            color: var(--primary-600);
+        }
+
+        .nav-calculator.active {
+            background: var(--primary-600);
+            color: white;
+        }
+
+        .recommended-calculators-section {
+            background: var(--primary-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-top: var(--space-6);
+        }
+
+        .recommended-calculators-section h3 {
+            color: var(--primary-700);
+            margin-bottom: var(--space-4);
+            font-size: var(--font-size-lg);
+            text-align: center;
+        }
+
+        .recommended-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-4);
+        }
+
+        .recommended-item {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-4);
+            background: white;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--neutral-700);
+            transition: all var(--duration-fast) var(--ease-out);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            min-height: 120px;
+        }
+
+        .recommended-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: var(--primary-600);
+        }
+
+        .recommended-item i {
+            color: white;
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .recommended-item:hover i {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+        }
+
+        .recommended-item span {
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 1024px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+                gap: var(--space-6);
+            }
+
+            .info-panel {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-layout {
+                padding: var(--space-4);
+            }
+
+            .calculator-section,
+            .info-card {
+                padding: var(--space-4);
+            }
+
+            .page-title {
+                font-size: var(--font-size-3xl);
+            }
+
+            .calculator-navigation {
+                flex-direction: column;
+            }
+
+            .nav-calculator {
+                text-align: center;
+            }
+
+            .recommended-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-3);
+            }
+
+            .recommended-item {
+                min-height: 100px;
+                flex-direction: row;
+                justify-content: flex-start;
+                text-align: left;
+                aspect-ratio: auto;
+            }
+
+            .recommended-item i {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                font-size: var(--font-size-lg);
+                margin-bottom: 0;
+                margin-right: var(--space-3);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <i class="fas fa-calculator"></i>
+                    <span>금융계산기</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">홈</a>
+                <a href="guides.html" class="nav-link">이용가이드</a>
+                <a href="about.html" class="nav-link">소개</a>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main style="margin-top: 80px;">
+        <!-- Breadcrumb -->
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">홈</a> > <a href="index.html#calculators">계산기</a> > 부동산 세금 계산기
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">부동산 세금 계산기</h1>
+                <p class="page-description">부동산 거래 시 발생하는 취득세, 등록세, 양도소득세를 정확하게 계산하세요. 각 세금별 적용 조건과 절약 방법도 함께 확인할 수 있습니다.</p>
+            </div>
+        </div>
+
+        <!-- Calculator Navigation -->
+        <div class="container">
+            <div class="calculator-navigation">
+                <a href="loan-calculator.html" class="nav-calculator">대출 이자 계산기</a>
+                <a href="realestate-tax.html" class="nav-calculator active">부동산 세금 계산기</a>
+                <a href="savings-calculator.html" class="nav-calculator">예적금 계산기</a>
+                <a href="brokerage-calculator.html" class="nav-calculator">중개수수료 계산기</a>
+                <a href="loan-limit.html" class="nav-calculator">대출 한도 계산기</a>
+                <a href="affordability-calculator.html" class="nav-calculator">주택 구매력 계산기</a>
+                <a href="jeonse-calculator.html" class="nav-calculator">전월세 계산기</a>
+                <a href="prepayment-calculator.html" class="nav-calculator">중도상환 계산기</a>
+                <a href="investment-calculator.html" class="nav-calculator">투자 수익 계산기</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container">
+            <div class="page-layout">
+                <!-- Calculator Section -->
+                <div class="calculator-section">
+                    <div class="calculator-header">
+                        <div class="calculator-icon">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div>
+                            <h2>부동산 세금 계산기</h2>
+                            <p>취득세/등록세/양도소득세 계산</p>
+                        </div>
+                    </div>
+
+                    <div class="calculation-mode">
+                        <button class="mode-btn active" data-mode="acquisition">취득세</button>
+                        <button class="mode-btn" data-mode="transfer">양도소득세</button>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="propertyPrice">부동산 가격</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="propertyPrice" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="propertyType">부동산 유형</label>
+                            <select id="propertyType" class="input-field">
+                                <option value="housing">주택</option>
+                                <option value="apartment">아파트</option>
+                                <option value="land">토지</option>
+                                <option value="commercial">상업용</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="buyerType">취득자 구분</label>
+                            <select id="buyerType" class="input-field">
+                                <option value="individual">개인</option>
+                                <option value="corporation">법인</option>
+                                <option value="foreigner">외국인</option>
+                            </select>
+                        </div>
+
+                        <div class="input-group transfer-only" style="display: none;">
+                            <label for="acquisitionPrice">취득가액</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="acquisitionPrice" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group transfer-only" style="display: none;">
+                            <label for="holdingPeriod">보유기간</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="holdingPeriod" placeholder="0" class="input-field">
+                                <span class="input-unit">년</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="btn calculate-btn" onclick="calculateTax()">
+                            <i class="fas fa-calculator"></i>
+                            계산하기
+                        </button>
+                    </div>
+
+                    <div class="result-panel" id="taxResult" style="display: none;">
+                        <div class="result-header">
+                            <h4>계산 결과</h4>
+                            <button class="btn export-btn" onclick="exportTaxResult()" style="display: none;">
+                                <i class="fas fa-download"></i>
+                                결과 저장
+                            </button>
+                        </div>
+                        <div class="result-grid">
+                            <div class="result-item acquisition-only">
+                                <span class="result-label">취득세</span>
+                                <span class="result-value" id="acquisitionTax">0원</span>
+                            </div>
+                            <div class="result-item acquisition-only">
+                                <span class="result-label">등록세</span>
+                                <span class="result-value" id="registrationTax">0원</span>
+                            </div>
+                            <div class="result-item transfer-only" style="display: none;">
+                                <span class="result-label">양도소득세</span>
+                                <span class="result-value" id="transferTax">0원</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">총 세금</span>
+                                <span class="result-value highlight" id="totalTax">0원</span>
+                            </div>
+                        </div>
+                        <div class="legal-disclaimer">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Recommended Calculators -->
+                    <div class="recommended-calculators-section">
+                        <h3><i class="fas fa-star"></i> 추천 계산기</h3>
+                        <div class="recommended-grid" id="recommended-grid">
+                            <!-- 동적으로 생성됨 -->
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Information Panel -->
+                <div class="info-panel">
+                    <!-- Tax Types -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-gavel"></i> 부동산 세금 종류</h3>
+                        <div style="margin-bottom: var(--space-4);">
+                            <h4 style="color: var(--primary-600); margin-bottom: var(--space-2);">취득세</h4>
+                            <ul>
+                                <li>부동산 취득 시 부과되는 지방세</li>
+                                <li>주택: 1~3% (취득가액에 따라 차등)</li>
+                                <li>토지: 2~4% (용도에 따라 차등)</li>
+                                <li>1세대 1주택 특례 적용 시 세율 경감</li>
+                            </ul>
+                        </div>
+                        <div style="margin-bottom: var(--space-4);">
+                            <h4 style="color: var(--accent-green); margin-bottom: var(--space-2);">등록세</h4>
+                            <ul>
+                                <li>소유권 이전등기 시 부과되는 세금</li>
+                                <li>주택: 0.4~2% (취득가액에 따라 차등)</li>
+                                <li>토지: 1~3% (용도에 따라 차등)</li>
+                                <li>농어촌특별세 별도 부과</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--accent-orange); margin-bottom: var(--space-2);">양도소득세</h4>
+                            <ul>
+                                <li>부동산 양도 시 발생한 소득에 대한 세금</li>
+                                <li>보유기간에 따라 세율 차등 (6~45%)</li>
+                                <li>1세대 1주택 비과세 조건 확인 필요</li>
+                                <li>장기보유특별공제 및 기본공제 적용</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Tax Saving Tips -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-piggy-bank"></i> 절세 방법</h3>
+                        <ul>
+                            <li>1세대 1주택 요건 충족으로 양도소득세 비과세</li>
+                            <li>취득세 중과 회피를 위한 취득 시점 조정</li>
+                            <li>생애최초 주택구입자 특례 활용</li>
+                            <li>신혼부부 취득세 감면 혜택 확인</li>
+                            <li>다주택자 양도 순서 최적화</li>
+                            <li>증여세와 양도소득세 비교 검토</li>
+                            <li>보유기간 2년 이상 유지로 장기보유특별공제</li>
+                        </ul>
+                    </div>
+
+                    <!-- Legal Information -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-balance-scale"></i> 법률 정보</h3>
+                        <ul>
+                            <li><strong>취득세법:</strong> 지방세법에 따른 취득세 과세기준</li>
+                            <li><strong>등록세법:</strong> 부동산 등기 시 등록세 부과</li>
+                            <li><strong>소득세법:</strong> 양도소득에 대한 세율 및 공제</li>
+                            <li><strong>종합부동산세:</strong> 고가 부동산 보유세</li>
+                            <li><strong>재산세:</strong> 매년 부과되는 보유세</li>
+                            <li><strong>중과세:</strong> 다주택자 및 법인 중과세율</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-calculator"></i>
+                <span>금융계산기</span>
+            </div>
+            <div class="footer-right">
+                <p class="footer-copyright">&copy; 2024 Financial Calculator. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="guides.html">이용가이드</a>
+                    <a href="about.html">소개</a>
+                    <a href="index.html">메인으로</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Calculator JavaScript -->
+    <script src="calculators/realEstateTaxCalculator.js"></script>
+    
+    <!-- Main JavaScript -->
+    <script src="script.js"></script>
+
+    <script>
+        // Page-specific JavaScript
+        let currentMode = 'acquisition';
+        let taxCalculator;
+        
+        try {
+            taxCalculator = new RealEstateTaxCalculator();
+        } catch (error) {
+            console.error('RealEstateTaxCalculator initialization failed:', error);
+            alert('계산기 초기화에 실패했습니다. 페이지를 새로고침해주세요.');
+        }
+
+        // Note: formatNumber and parseNumber are defined in script.js
+
+        // Setup input formatting with real-time comma formatting
+        function setupInputFormatting() {
+            const inputs = document.querySelectorAll('.input-field');
+            inputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    if (this.type === 'text') {
+                        // Handle numeric fields with comma formatting
+                        const cursorPosition = this.selectionStart;
+                        let numericValue = this.value.replace(/[^0-9]/g, '');
+                        
+                        if (numericValue) {
+                            // Convert to number and format with commas
+                            const number = parseInt(numericValue, 10);
+                            if (!isNaN(number)) {
+                                const formattedValue = new Intl.NumberFormat('ko-KR').format(number);
+                                this.value = formattedValue;
+                                this.setAttribute('data-raw-value', numericValue);
+                                
+                                // Adjust cursor position
+                                const commasAdded = formattedValue.split(',').length - 1;
+                                const originalCommas = (this.getAttribute('data-old-value') || '').split(',').length - 1;
+                                const cursorAdjustment = commasAdded - originalCommas;
+                                const newCursorPosition = Math.min(cursorPosition + cursorAdjustment, formattedValue.length);
+                                
+                                setTimeout(() => {
+                                    this.setSelectionRange(newCursorPosition, newCursorPosition);
+                                }, 0);
+                                
+                                this.setAttribute('data-old-value', formattedValue);
+                            }
+                        } else {
+                            this.value = '';
+                            this.setAttribute('data-raw-value', '');
+                            this.setAttribute('data-old-value', '');
+                        }
+                    }
+                });
+
+                input.addEventListener('focus', function() {
+                    this.setAttribute('data-old-value', this.value || '');
+                });
+            });
+        }
+
+        // Setup mode buttons
+        function setupModeButtons() {
+            const modeButtons = document.querySelectorAll('.mode-btn');
+            modeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    modeButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    currentMode = this.dataset.mode;
+                    
+                    // Show/hide relevant fields
+                    const transferFields = document.querySelectorAll('.transfer-only');
+                    const acquisitionFields = document.querySelectorAll('.acquisition-only');
+                    
+                    if (currentMode === 'transfer') {
+                        transferFields.forEach(field => field.style.display = 'block');
+                        acquisitionFields.forEach(field => field.style.display = 'none');
+                    } else {
+                        transferFields.forEach(field => field.style.display = 'none');
+                        acquisitionFields.forEach(field => field.style.display = 'block');
+                    }
+                    
+                    // Clear previous results
+                    document.getElementById('taxResult').style.display = 'none';
+                });
+            });
+        }
+
+        // Calculate tax
+        function calculateTax() {
+            if (!taxCalculator) {
+                alert('계산기가 초기화되지 않았습니다. 페이지를 새로고침해주세요.');
+                return;
+            }
+            
+            const propertyPrice = parseNumber(document.getElementById('propertyPrice').value);
+            const propertyType = document.getElementById('propertyType').value;
+            const buyerType = document.getElementById('buyerType').value;
+
+            if (propertyPrice <= 0) {
+                alert('올바른 부동산 가격을 입력해주세요.');
+                return;
+            }
+
+            let result;
+            if (currentMode === 'acquisition') {
+                result = taxCalculator.calculateAcquisitionTax(propertyPrice, propertyType, buyerType);
+                
+                document.getElementById('acquisitionTax').textContent = formatNumber(Math.round(result.acquisitionTax)) + '원';
+                document.getElementById('registrationTax').textContent = formatNumber(Math.round(result.registrationTax)) + '원';
+                document.getElementById('totalTax').textContent = formatNumber(Math.round(result.totalTax)) + '원';
+            } else {
+                const acquisitionPrice = parseNumber(document.getElementById('acquisitionPrice').value);
+                const holdingPeriod = parseNumber(document.getElementById('holdingPeriod').value);
+                
+                if (acquisitionPrice <= 0 || holdingPeriod < 0) {
+                    alert('올바른 취득가액과 보유기간을 입력해주세요.');
+                    return;
+                }
+                
+                result = taxCalculator.calculateTransferTax(propertyPrice, acquisitionPrice, holdingPeriod, propertyType);
+                
+                document.getElementById('transferTax').textContent = formatNumber(Math.round(result.transferTax)) + '원';
+                document.getElementById('totalTax').textContent = formatNumber(Math.round(result.transferTax)) + '원';
+            }
+            
+            document.getElementById('taxResult').style.display = 'block';
+            document.querySelector('.export-btn').style.display = 'inline-flex';
+
+            // Track usage
+            if (typeof trackCalculatorUsage === 'function') {
+                trackCalculatorUsage('realestate-tax', 'calculate');
+            }
+        }
+
+        // Export results
+        function exportTaxResult() {
+            const propertyPrice = parseNumber(document.getElementById('propertyPrice').value);
+            const propertyType = document.getElementById('propertyType').value;
+            const buyerType = document.getElementById('buyerType').value;
+            const modeName = currentMode === 'acquisition' ? '취득세' : '양도소득세';
+
+            let content = `부동산 세금 계산 결과
+
+계산 조건:
+- 계산 유형: ${modeName}
+- 부동산 가격: ${formatNumber(propertyPrice)}원
+- 부동산 유형: ${propertyType}
+- 취득자 구분: ${buyerType}
+`;
+
+            if (currentMode === 'acquisition') {
+                const acquisitionTax = document.getElementById('acquisitionTax').textContent;
+                const registrationTax = document.getElementById('registrationTax').textContent;
+                const totalTax = document.getElementById('totalTax').textContent;
+                
+                content += `
+계산 결과:
+- 취득세: ${acquisitionTax}
+- 등록세: ${registrationTax}
+- 총 세금: ${totalTax}
+`;
+            } else {
+                const acquisitionPrice = parseNumber(document.getElementById('acquisitionPrice').value);
+                const holdingPeriod = parseNumber(document.getElementById('holdingPeriod').value);
+                const transferTax = document.getElementById('transferTax').textContent;
+                
+                content += `- 취득가액: ${formatNumber(acquisitionPrice)}원
+- 보유기간: ${holdingPeriod}년
+
+계산 결과:
+- 양도소득세: ${transferTax}
+`;
+            }
+
+            content += `
+계산일시: ${new Date().toLocaleString('ko-KR')}
+`;
+
+            // 다운로드 옵션 모달 표시
+            showDownloadOptions('taxResult', '부동산세금계산기', content);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            setupInputFormatting();
+            setupModeButtons();
+            
+            // Initialize random recommended calculators
+            if (window.recommendedCalculators) {
+                window.recommendedCalculators.renderRecommendations('realestate', 'recommended-grid', 'category');
+            }
+            
+            // Track page view
+            if (typeof trackPageView === 'function') {
+                trackPageView('부동산 세금 계산기');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="대출한도 계산기 - DSR, LTV 기준으로 대출 가능 한도를 정확하게 계산하세요. 주택담보대출, 신용대출 한도 계산">
+    <meta name="keywords" content="대출한도 계산기, DSR 계산기, LTV 계산기, 주택담보대출 한도, 신용대출 한도, 무료 계산기">
+    <meta name="author" content="금융계산기">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="ko">
+    <meta name="geo.region" content="KR">
+    <meta name="geo.country" content="South Korea">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="">
+    <meta property="og:title" content="대출한도 계산기 - DSR/LTV 기준 대출 한도 계산">
+    <meta property="og:description" content="DSR, LTV 기준으로 대출 가능 한도를 정확하게 계산하세요">
+    <meta property="og:image" content="">
+    <meta property="og:locale" content="ko_KR">
+    <meta property="og:site_name" content="금융계산기">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="">
+    <meta property="twitter:title" content="대출한도 계산기 - DSR/LTV 기준 대출 한도 계산">
+    <meta property="twitter:description" content="DSR, LTV 기준으로 대출 가능 한도를 정확하게 계산하세요">
+    <meta property="twitter:image" content="">
+
+    <!-- Schema.org markup -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "대출한도 계산기",
+      "description": "DSR, LTV 기준으로 대출 가능 한도를 정확하게 계산하는 무료 계산기",
+      "url": "",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "KRW"
+      },
+      "inLanguage": "ko-KR",
+      "creator": {
+        "@type": "Organization",
+        "name": "금융계산기"
+      }
+    }
+    </script>
+
+    <title>대출한도 계산기 - DSR/LTV 기준 대출 한도 계산</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX', {
+            page_title: document.title,
+            page_location: window.location.href
+        });
+    </script>
+
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    </noscript>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Icons -->
+
+    <!-- PDF/Image Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
+
+    <style>
+        /* Page-specific styles */
+        
+        /* 컨테이너 정렬을 위한 추가 스타일 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6);
+        }
+        
+        /* 카테고리 메뉴 컨테이너 너비 조정 */
+        .container:has(.calculator-navigation) {
+            max-width: 1300px;
+            padding: 0 var(--space-6);
+        }
+        .page-layout {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: var(--space-8);
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 var(--space-6) var(--space-8);
+            min-height: calc(100vh - 200px);
+        }
+
+        .calculator-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-lg);
+            height: fit-content;
+        }
+
+        .info-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-6);
+        }
+
+        .info-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            box-shadow: var(--shadow-md);
+        }
+
+        .info-card h3 {
+            color: var(--primary-600);
+            margin-bottom: var(--space-4);
+            font-size: var(--font-size-xl);
+        }
+
+        .info-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .info-card li {
+            padding: var(--space-2) 0;
+            border-bottom: 1px solid var(--neutral-100);
+            font-size: var(--font-size-sm);
+            line-height: 1.6;
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        .breadcrumb {
+            margin-bottom: var(--space-6);
+            font-size: var(--font-size-sm);
+            color: var(--neutral-500);
+        }
+
+        .breadcrumb a {
+            color: var(--primary-600);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .page-header {
+            margin-bottom: var(--space-8);
+        }
+
+        .page-title {
+            font-size: var(--font-size-4xl);
+            color: var(--neutral-900);
+            margin-bottom: var(--space-4);
+        }
+
+        .page-description {
+            font-size: var(--font-size-lg);
+            color: var(--neutral-600);
+            line-height: 1.6;
+        }
+
+        .calculator-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            margin-bottom: var(--space-6);
+        }
+
+        .calculator-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: var(--font-size-xl);
+        }
+
+        .calculator-navigation {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+            flex-wrap: wrap;
+            background: white;
+            padding: var(--space-4);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--neutral-200);
+        }
+
+        .nav-calculator {
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-md);
+            background: var(--neutral-100);
+            color: var(--neutral-600);
+            text-decoration: none;
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            transition: all var(--duration-fast) var(--ease-out);
+        }
+
+        .nav-calculator:hover {
+            background: var(--primary-50);
+            color: var(--primary-600);
+        }
+
+        .nav-calculator.active {
+            background: var(--primary-600);
+            color: white;
+        }
+
+        .recommended-calculators-section {
+            background: var(--primary-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-top: var(--space-6);
+        }
+
+        .recommended-calculators-section h3 {
+            color: var(--primary-700);
+            margin-bottom: var(--space-4);
+            font-size: var(--font-size-lg);
+            text-align: center;
+        }
+
+        .recommended-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--space-4);
+        }
+
+        .recommended-item {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            padding: var(--space-4);
+            background: white;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--neutral-700);
+            transition: all var(--duration-fast) var(--ease-out);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            min-height: 120px;
+        }
+
+        .recommended-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            color: var(--primary-600);
+        }
+
+        .recommended-item i {
+            color: white;
+            background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--space-3);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .recommended-item:hover i {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+        }
+
+        .recommended-item span {
+            font-size: var(--font-size-sm);
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 1024px) {
+            .page-layout {
+                grid-template-columns: 1fr;
+                gap: var(--space-6);
+            }
+
+            .info-panel {
+                order: -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-layout {
+                padding: var(--space-4);
+            }
+
+            .calculator-section,
+            .info-card {
+                padding: var(--space-4);
+            }
+
+            .page-title {
+                font-size: var(--font-size-3xl);
+            }
+
+            .calculator-navigation {
+                flex-direction: column;
+            }
+
+            .nav-calculator {
+                text-align: center;
+            }
+
+            .recommended-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-3);
+            }
+
+            .recommended-item {
+                min-height: 100px;
+                flex-direction: row;
+                justify-content: flex-start;
+                text-align: left;
+                aspect-ratio: auto;
+            }
+
+            .recommended-item i {
+                width: 44px;
+                height: 44px;
+                border-radius: 12px;
+                font-size: var(--font-size-lg);
+                margin-bottom: 0;
+                margin-right: var(--space-3);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <i class="fas fa-calculator"></i>
+                    <span>금융계산기</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">홈</a>
+                <a href="guides.html" class="nav-link">이용가이드</a>
+                <a href="about.html" class="nav-link">소개</a>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </nav>
+    </header>
+
+    <main style="margin-top: 80px;">
+        <!-- Breadcrumb -->
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="index.html">홈</a> > <a href="index.html#calculators">계산기</a> > 대출한도 계산기
+            </div>
+        </div>
+
+        <!-- Page Header -->
+        <div class="container">
+            <div class="page-header">
+                <h1 class="page-title">대출한도 계산기</h1>
+                <p class="page-description">DSR(총부채원리금상환비율)과 LTV(주택담보인정비율) 기준으로 대출 가능 한도를 정확하게 계산하세요. 소득과 자산 상황에 맞는 최적의 대출 계획을 세울 수 있습니다.</p>
+            </div>
+        </div>
+
+        <!-- Calculator Navigation -->
+        <div class="container">
+            <div class="calculator-navigation">
+                <a href="loan-calculator.html" class="nav-calculator">대출 이자 계산기</a>
+                <a href="realestate-tax.html" class="nav-calculator">부동산 세금 계산기</a>
+                <a href="savings-calculator.html" class="nav-calculator">예적금 계산기</a>
+                <a href="brokerage-calculator.html" class="nav-calculator">중개수수료 계산기</a>
+                <a href="loan-limit.html" class="nav-calculator active">대출 한도 계산기</a>
+                <a href="affordability-calculator.html" class="nav-calculator">주택 구매력 계산기</a>
+                <a href="jeonse-calculator.html" class="nav-calculator">전월세 계산기</a>
+                <a href="prepayment-calculator.html" class="nav-calculator">중도상환 계산기</a>
+                <a href="investment-calculator.html" class="nav-calculator">투자 수익 계산기</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container">
+            <div class="page-layout">
+                <!-- Calculator Section -->
+                <div class="calculator-section">
+                    <div class="calculator-header">
+                        <div class="calculator-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div>
+                            <h2>대출한도 계산기</h2>
+                            <p>DSR/LTV 기준 대출 한도</p>
+                        </div>
+                    </div>
+
+                    <div class="calculation-mode">
+                        <button class="mode-btn active" data-mode="mortgage">주택담보대출</button>
+                        <button class="mode-btn" data-mode="credit">신용대출</button>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label for="monthlyIncome">월 소득</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="monthlyIncome" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="existingDebt">기존 대출</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="existingDebt" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group mortgage-only">
+                            <label for="propertyValue">담보물건 가치</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="propertyValue" placeholder="0" class="input-field">
+                                <span class="input-unit">원</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="interestRate">대출금리</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="interestRate" placeholder="4.5" class="input-field">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="loanTerm">대출기간</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="loanTerm" placeholder="30" class="input-field">
+                                <span class="input-unit">년</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label for="dsrLimit">DSR 한도</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="dsrLimit" placeholder="40" class="input-field">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+
+                        <div class="input-group mortgage-only">
+                            <label for="ltvLimit">LTV 한도</label>
+                            <div class="input-wrapper">
+                                <input type="text" id="ltvLimit" placeholder="70" class="input-field">
+                                <span class="input-unit">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-actions">
+                        <button class="btn calculate-btn" onclick="calculateLoanLimit()">
+                            <i class="fas fa-calculator"></i>
+                            계산하기
+                        </button>
+                    </div>
+
+                    <div class="result-panel" id="loanLimitResult" style="display: none;">
+                        <div class="result-header">
+                            <h4>계산 결과</h4>
+                            <button class="btn export-btn" onclick="exportLoanLimitResult()" style="display: none;">
+                                <i class="fas fa-download"></i>
+                                결과 저장
+                            </button>
+                        </div>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <span class="result-label">DSR 기준 한도</span>
+                                <span class="result-value" id="dsrLimit">0원</span>
+                            </div>
+                            <div class="result-item mortgage-only">
+                                <span class="result-label">LTV 기준 한도</span>
+                                <span class="result-value" id="ltvLimitAmount">0원</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">최종 대출한도</span>
+                                <span class="result-value highlight" id="finalLimit">0원</span>
+                            </div>
+                            <div class="result-item">
+                                <span class="result-label">예상 월 상환액</span>
+                                <span class="result-value" id="monthlyPayment">0원</span>
+                            </div>
+                        </div>
+                        <div class="legal-disclaimer">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>본 계산 결과는 참고용으로 실제와 다를 수 있으며, 법적 책임을 지지 않습니다.</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Recommended Calculators -->
+                    <div class="recommended-calculators-section">
+                        <h3><i class="fas fa-star"></i> 추천 계산기</h3>
+                        <div class="recommended-grid" id="recommended-grid">
+                            <!-- 동적으로 생성됨 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Information Panel -->
+                <div class="info-panel">
+                    <!-- DSR & LTV Info -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-chart-pie"></i> DSR & LTV 이해</h3>
+                        <div style="margin-bottom: var(--space-4);">
+                            <h4 style="color: var(--primary-600); margin-bottom: var(--space-2);">DSR (총부채원리금상환비율)</h4>
+                            <ul>
+                                <li>연소득 대비 모든 대출의 연간 원리금 상환액 비율</li>
+                                <li>DSR = (연간 총 원리금 상환액 ÷ 연소득) × 100</li>
+                                <li>규제지역: 40%, 비규제지역: 60% (일반적)</li>
+                                <li>신용대출, 주택담보대출 등 모든 대출 포함</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--accent-green); margin-bottom: var(--space-2);">LTV (주택담보인정비율)</h4>
+                            <ul>
+                                <li>담보물건 가치 대비 대출금 비율</li>
+                                <li>LTV = (대출금액 ÷ 담보물건 가치) × 100</li>
+                                <li>규제지역: 40~70%, 비규제지역: 80% (일반적)</li>
+                                <li>주택담보대출에만 적용</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Loan Limit Factors -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-list-check"></i> 대출한도 결정 요인</h3>
+                        <ul>
+                            <li><strong>소득 수준:</strong> 연소득 및 소득 안정성</li>
+                            <li><strong>신용도:</strong> 신용등급 및 신용점수</li>
+                            <li><strong>기존 부채:</strong> 현재 보유 중인 대출 현황</li>
+                            <li><strong>담보 가치:</strong> 주택의 감정가액 (담보대출)</li>
+                            <li><strong>대출 목적:</strong> 주택구입, 전세자금, 기타</li>
+                            <li><strong>대출 기간:</strong> 상환 기간에 따른 월 상환액</li>
+                            <li><strong>규제 지역:</strong> 투기지역, 투기과열지구 여부</li>
+                        </ul>
+                    </div>
+
+                    <!-- Loan Tips -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-lightbulb"></i> 대출한도 늘리는 방법</h3>
+                        <ul>
+                            <li>연소득 증빙 자료 충실히 준비 (재직증명서, 소득금액증명원)</li>
+                            <li>기존 대출 정리로 DSR 비율 개선</li>
+                            <li>신용등급 관리 및 신용점수 향상</li>
+                            <li>담보물건의 정확한 시세 조사 (담보대출)</li>
+                            <li>배우자 소득 합산 검토 (공동 대출)</li>
+                            <li>보증기관 보증서 활용</li>
+                            <li>여러 금융기관 조건 비교 검토</li>
+                        </ul>
+                    </div>
+
+                    <!-- Regulation Information -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-gavel"></i> 규제 정보</h3>
+                        <ul>
+                            <li><strong>투기지역:</strong> LTV 40%, DSR 40%</li>
+                            <li><strong>투기과열지구:</strong> LTV 20~40%, DSR 40%</li>
+                            <li><strong>조정대상지역:</strong> LTV 60~70%, DSR 40%</li>
+                            <li><strong>비규제지역:</strong> LTV 70~80%, DSR 60%</li>
+                            <li><strong>다주택자:</strong> 추가 규제 적용</li>
+                            <li><strong>법인 대출:</strong> 별도 규제 기준</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <i class="fas fa-calculator"></i>
+                <span>금융계산기</span>
+            </div>
+            <div class="footer-right">
+                <p class="footer-copyright">&copy; 2024 Financial Calculator. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="guides.html">이용가이드</a>
+                    <a href="about.html">소개</a>
+                    <a href="index.html">메인으로</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Calculator JavaScript -->
+    <script src="calculators/loanLimitCalculator.js"></script>
+    
+    <!-- Main JavaScript -->
+    <script src="script.js"></script>
+
+    <script>
+        // Page-specific JavaScript
+        let currentMode = 'mortgage';
+        let loanLimitCalculator;
+        
+        try {
+            loanLimitCalculator = new LoanLimitCalculator();
+        } catch (error) {
+            console.error('LoanLimitCalculator initialization failed:', error);
+            alert('계산기 초기화에 실패했습니다. 페이지를 새로고침해주세요.');
+        }
+
+        // Note: formatNumber and parseNumber are defined in script.js
+
+        // Setup input formatting with real-time comma formatting
+        function setupInputFormatting() {
+            const inputs = document.querySelectorAll('.input-field');
+            inputs.forEach(input => {
+                input.addEventListener('input', function(e) {
+                    if (this.id === 'interestRate' || this.id === 'dsrLimit' || this.id === 'ltvLimit') {
+                        // Allow decimal input for percentage fields
+                        let value = this.value.replace(/[^0-9.]/g, '');
+                        const parts = value.split('.');
+                        if (parts.length > 2) {
+                            value = parts[0] + '.' + parts.slice(1).join('');
+                        }
+                        // Limit decimal places to 2
+                        if (parts[1] && parts[1].length > 2) {
+                            value = parts[0] + '.' + parts[1].substring(0, 2);
+                        }
+                        this.value = value;
+                        this.setAttribute('data-raw-value', value);
+                    } else if (this.type === 'text') {
+                        // Handle numeric fields with comma formatting
+                        const cursorPosition = this.selectionStart;
+                        let numericValue = this.value.replace(/[^0-9]/g, '');
+                        
+                        if (numericValue) {
+                            // Convert to number and format with commas
+                            const number = parseInt(numericValue, 10);
+                            if (!isNaN(number)) {
+                                const formattedValue = new Intl.NumberFormat('ko-KR').format(number);
+                                this.value = formattedValue;
+                                this.setAttribute('data-raw-value', numericValue);
+                                
+                                // Adjust cursor position
+                                const commasAdded = formattedValue.split(',').length - 1;
+                                const originalCommas = (this.getAttribute('data-old-value') || '').split(',').length - 1;
+                                const cursorAdjustment = commasAdded - originalCommas;
+                                const newCursorPosition = Math.min(cursorPosition + cursorAdjustment, formattedValue.length);
+                                
+                                setTimeout(() => {
+                                    this.setSelectionRange(newCursorPosition, newCursorPosition);
+                                }, 0);
+                                
+                                this.setAttribute('data-old-value', formattedValue);
+                            }
+                        } else {
+                            this.value = '';
+                            this.setAttribute('data-raw-value', '');
+                            this.setAttribute('data-old-value', '');
+                        }
+                    }
+                });
+
+                input.addEventListener('blur', function() {
+                    if (this.id === 'interestRate' || this.id === 'dsrLimit' || this.id === 'ltvLimit') {
+                        const value = parseFloat(this.value);
+                        if (!isNaN(value) && value >= 0) {
+                            this.value = value.toFixed(1);
+                        }
+                    }
+                });
+
+                input.addEventListener('focus', function() {
+                    this.setAttribute('data-old-value', this.value || '');
+                });
+            });
+        }
+
+        // Setup mode buttons
+        function setupModeButtons() {
+            const modeButtons = document.querySelectorAll('.mode-btn');
+            modeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    modeButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    currentMode = this.dataset.mode;
+                    
+                    // Show/hide relevant fields
+                    const mortgageFields = document.querySelectorAll('.mortgage-only');
+                    
+                    if (currentMode === 'credit') {
+                        mortgageFields.forEach(field => field.style.display = 'none');
+                    } else {
+                        mortgageFields.forEach(field => field.style.display = 'block');
+                    }
+                    
+                    // Clear previous results
+                    document.getElementById('loanLimitResult').style.display = 'none';
+                });
+            });
+        }
+
+        // Calculate loan limit
+        function calculateLoanLimit() {
+            if (!loanLimitCalculator) {
+                alert('계산기가 초기화되지 않았습니다. 페이지를 새로고침해주세요.');
+                return;
+            }
+            
+            const monthlyIncome = parseNumber(document.getElementById('monthlyIncome').value);
+            const existingDebt = parseNumber(document.getElementById('existingDebt').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const loanTerm = parseNumber(document.getElementById('loanTerm').value);
+            const dsrLimitRate = parseFloat(document.getElementById('dsrLimit').value);
+
+            if (monthlyIncome <= 0 || interestRate < 0 || loanTerm <= 0 || dsrLimitRate <= 0) {
+                alert('올바른 값을 입력해주세요.');
+                return;
+            }
+
+            let result;
+            if (currentMode === 'mortgage') {
+                const propertyValue = parseNumber(document.getElementById('propertyValue').value);
+                const ltvLimitRate = parseFloat(document.getElementById('ltvLimit').value);
+                
+                if (propertyValue <= 0 || ltvLimitRate <= 0) {
+                    alert('올바른 담보물건 가치와 LTV 한도를 입력해주세요.');
+                    return;
+                }
+                
+                result = loanLimitCalculator.calculateMortgageLimit(
+                    monthlyIncome, existingDebt, propertyValue, 
+                    interestRate, loanTerm, dsrLimitRate, ltvLimitRate
+                );
+                
+                document.getElementById('ltvLimitAmount').textContent = formatNumber(Math.round(result.ltvLimit)) + '원';
+                document.querySelectorAll('.mortgage-only').forEach(el => el.style.display = 'block');
+            } else {
+                result = loanLimitCalculator.calculateCreditLimit(
+                    monthlyIncome, existingDebt, interestRate, loanTerm, dsrLimitRate
+                );
+                
+                document.querySelectorAll('.mortgage-only').forEach(el => el.style.display = 'none');
+            }
+
+            // Display results
+            document.getElementById('dsrLimit').textContent = formatNumber(Math.round(result.dsrLimit)) + '원';
+            document.getElementById('finalLimit').textContent = formatNumber(Math.round(result.finalLimit)) + '원';
+            document.getElementById('monthlyPayment').textContent = formatNumber(Math.round(result.monthlyPayment)) + '원';
+            
+            document.getElementById('loanLimitResult').style.display = 'block';
+            document.querySelector('.export-btn').style.display = 'inline-flex';
+
+            // Track usage
+            if (typeof trackCalculatorUsage === 'function') {
+                trackCalculatorUsage('loan-limit', 'calculate');
+            }
+        }
+
+        // Export results
+        function exportLoanLimitResult() {
+            const monthlyIncome = parseNumber(document.getElementById('monthlyIncome').value);
+            const existingDebt = parseNumber(document.getElementById('existingDebt').value);
+            const interestRate = parseFloat(document.getElementById('interestRate').value);
+            const loanTerm = parseNumber(document.getElementById('loanTerm').value);
+            const dsrLimitRate = parseFloat(document.getElementById('dsrLimit').value);
+            const modeName = currentMode === 'mortgage' ? '주택담보대출' : '신용대출';
+            
+            const dsrLimit = document.getElementById('dsrLimit').textContent;
+            const finalLimit = document.getElementById('finalLimit').textContent;
+            const monthlyPayment = document.getElementById('monthlyPayment').textContent;
+
+            let content = `대출한도 계산 결과
+
+계산 조건:
+- 대출 유형: ${modeName}
+- 월 소득: ${formatNumber(monthlyIncome)}원
+- 기존 대출: ${formatNumber(existingDebt)}원
+- 대출금리: ${interestRate}%
+- 대출기간: ${loanTerm}년
+- DSR 한도: ${dsrLimitRate}%
+`;
+
+            if (currentMode === 'mortgage') {
+                const propertyValue = parseNumber(document.getElementById('propertyValue').value);
+                const ltvLimitRate = parseFloat(document.getElementById('ltvLimit').value);
+                const ltvLimitAmount = document.getElementById('ltvLimitAmount').textContent;
+                
+                content += `- 담보물건 가치: ${formatNumber(propertyValue)}원\n`;
+                content += `- LTV 한도: ${ltvLimitRate}%\n`;
+                content += `
+계산 결과:
+- DSR 기준 한도: ${dsrLimit}
+- LTV 기준 한도: ${ltvLimitAmount}
+- 최종 대출한도: ${finalLimit}
+- 예상 월 상환액: ${monthlyPayment}
+`;
+            } else {
+                content += `
+계산 결과:
+- DSR 기준 한도: ${dsrLimit}
+- 최종 대출한도: ${finalLimit}
+- 예상 월 상환액: ${monthlyPayment}
+`;
+            }
+
+            content += `
+계산일시: ${new Date().toLocaleString('ko-KR')}
+`;
+
+            // 다운로드 옵션 모달 표시
+            showDownloadOptions('loanLimitResult', '대출한도계산기', content);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            setupInputFormatting();
+            setupModeButtons();
+            
+            // Initialize random recommended calculators
+            if (window.recommendedCalculators) {
+                window.recommendedCalculators.renderRecommendations('loan-limit', 'recommended-grid', 'category');
+            }
+            
+            // Track page view
+            if (typeof trackPageView === 'function') {
+                trackPageView('대출한도 계산기');
+            }
+        });
+    </script>
+</body>
+
+</html>
