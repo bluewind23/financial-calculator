@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
     
     <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js?client=ca-pub-5809883478660758"
+         crossorigin="anonymous"></script>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5809883478660758"
          crossorigin="anonymous"></script>
     
@@ -53,8 +55,6 @@
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5809883478660758" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -462,15 +462,20 @@
 
         <!-- 디스플레이 광고 -->
         <div class="display-ad-container">
-            <script async
-                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5809883478660758"
-                crossorigin="anonymous"></script>
-            <!-- middle_calculators -->
-            <ins class="adsbygoogle display-ad" style="display:block" data-ad-client="ca-pub-5809883478660758"
-                data-ad-slot="9416832110" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
+            <ins class="adsbygoogle display-ad" 
+                 style="display:block" 
+                 data-ad-client="ca-pub-5809883478660758"
+                 data-ad-slot="9416832110" 
+                 data-ad-format="auto" 
+                 data-full-width-responsive="true"></ins>
+        </div>
+
+        <!-- 테스트 광고 -->
+        <div style="text-align: center; margin: 20px 0; padding: 10px; border: 1px dashed #ccc;">
+            <ins class="adsbygoogle"
+                 style="display:inline-block;width:728px;height:90px"
+                 data-ad-client="ca-pub-5809883478660758"
+                 data-ad-slot="9416832110"></ins>
         </div>
 
         <!-- Sidebar Ad -->
@@ -496,15 +501,8 @@
 
     <!-- 하단 디스플레이 광고 -->
     <div class="display-ad-container">
-        <script async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5809883478660758"
-            crossorigin="anonymous"></script>
-        <!-- middle_calculators -->
         <ins class="adsbygoogle display-ad" style="display:block" data-ad-client="ca-pub-5809883478660758"
             data-ad-slot="9416832110" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
     </div>
 
     <!-- Footer -->
@@ -574,9 +572,13 @@
             // 가이드 탭 기능 초기화
             initGuideNavigation();
             
-            // AdSense 초기화 (DOM 로드 후)
+            // AdSense 초기화 (DOM 로드 후) - 모든 광고를 한 번에 초기화
             try {
-                (adsbygoogle = window.adsbygoogle || []).push({});
+                // 모든 adsbygoogle 요소를 찾아서 초기화
+                const ads = document.querySelectorAll('.adsbygoogle');
+                ads.forEach(() => {
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                });
             } catch (e) {
                 console.log('AdSense 초기화 오류:', e);
             }
