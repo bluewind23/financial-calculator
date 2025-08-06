@@ -54,31 +54,9 @@
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     
     <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5809883478660758" crossorigin="anonymous"></script>
 </head>
 <body>
-    <!-- Ad Modal Overlay -->
-    <div id="adModal" class="ad-modal">
-        <div class="ad-modal-content">
-            <div class="ad-modal-header">
-                <h3>잠시만요! 광고를 시청해주세요</h3>
-                <span class="ad-timer" id="adTimer">5</span>
-            </div>
-            <!-- AdSense 광고 영역 -->
-            <div class="ad-container">
-                <ins class="adsbygoogle"
-                     style="display:block"
-                     data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-                     data-ad-slot="XXXXXXXXXX"
-                     data-ad-format="auto"
-                     data-full-width-responsive="true"></ins>
-            </div>
-            <button id="closeAdModal" class="close-ad-btn" style="display: none;">
-                <i class="fas fa-times"></i>
-                광고 닫기
-            </button>
-        </div>
-    </div>
 
     <!-- Header -->
     <header class="header">
@@ -104,7 +82,7 @@
     <div class="ad-banner top-banner">
         <ins class="adsbygoogle"
              style="display:block"
-             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-client="ca-pub-5809883478660758"
              data-ad-slot="XXXXXXXXXX"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
@@ -121,7 +99,7 @@
         <div class="sidebar-ad left-sidebar">
             <ins class="adsbygoogle"
                  style="display:block"
-                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-client="ca-pub-5809883478660758"
                  data-ad-slot="XXXXXXXXXX"
                  data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
@@ -155,7 +133,7 @@
                     <div class="ad-banner middle-banner">
                         <ins class="adsbygoogle"
                              style="display:block"
-                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-client="ca-pub-5809883478660758"
                              data-ad-slot="XXXXXXXXXX"
                              data-ad-format="auto"
                              data-full-width-responsive="true"></ins>
@@ -245,7 +223,7 @@
                     <div class="ad-banner middle-banner">
                         <ins class="adsbygoogle"
                              style="display:block"
-                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-client="ca-pub-5809883478660758"
                              data-ad-slot="XXXXXXXXXX"
                              data-ad-format="auto"
                              data-full-width-responsive="true"></ins>
@@ -336,7 +314,7 @@
                     <div class="ad-banner middle-banner">
                         <ins class="adsbygoogle"
                              style="display:block"
-                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-client="ca-pub-5809883478660758"
                              data-ad-slot="XXXXXXXXXX"
                              data-ad-format="auto"
                              data-full-width-responsive="true"></ins>
@@ -465,7 +443,7 @@
                     <div class="ad-banner middle-banner">
                         <ins class="adsbygoogle"
                              style="display:block"
-                             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                             data-ad-client="ca-pub-5809883478660758"
                              data-ad-slot="XXXXXXXXXX"
                              data-ad-format="auto"
                              data-full-width-responsive="true"></ins>
@@ -492,11 +470,24 @@
             </div>
         </div>
 
+        <!-- 디스플레이 광고 -->
+        <div class="display-ad-container">
+            <script async
+                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5809883478660758"
+                crossorigin="anonymous"></script>
+            <!-- middle_calculators -->
+            <ins class="adsbygoogle display-ad" style="display:block" data-ad-client="ca-pub-5809883478660758"
+                data-ad-slot="9416832110" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+
         <!-- Sidebar Ad -->
         <div class="sidebar-ad right-sidebar">
             <ins class="adsbygoogle"
                  style="display:block"
-                 data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+                 data-ad-client="ca-pub-5809883478660758"
                  data-ad-slot="XXXXXXXXXX"
                  data-ad-format="auto"
                  data-full-width-responsive="true"></ins>
@@ -507,7 +498,7 @@
     <div class="ad-banner bottom-banner">
         <ins class="adsbygoogle"
              style="display:block"
-             data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+             data-ad-client="ca-pub-5809883478660758"
              data-ad-slot="XXXXXXXXXX"
              data-ad-format="auto"
              data-full-width-responsive="true"></ins>
@@ -575,13 +566,8 @@
     <!-- JavaScript -->
     <script src="script.js"></script>
     <script>
-        // 전면 광고 모달 표시
+        // 페이지 로드 시 초기화
         document.addEventListener('DOMContentLoaded', function() {
-            // showAdModal 함수가 정의되어 있는지 확인 후 호출
-            if (typeof window.showAdModal === 'function') {
-                window.showAdModal();
-            }
-            
             // 가이드 탭 기능 초기화
             initGuideNavigation();
             

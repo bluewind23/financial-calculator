@@ -1619,86 +1619,8 @@ function showDownloadOptions(resultPanelId, calculatorName) {
 }
 
 
-// Ad Modal Function
-window.showAdModal = function () {
-    const adShownKey = 'adShown_' + new Date().toDateString();
-    const lastAdShown = localStorage.getItem(adShownKey);
-    const currentTime = Date.now();
-
-    if (lastAdShown && (currentTime - parseInt(localStorage.getItem('lastAdShownTimestamp') || '0') < 1800000 || lastAdShown === 'true')) {
-        return;
-    }
-
-    const adModal = document.getElementById('adModal');
-    const adTimer = document.getElementById('adTimer');
-    const closeAdModalBtn = document.getElementById('closeAdModal');
-
-    if (!adModal || !adTimer || !closeAdModalBtn) return;
-
-    let timeLeft = 5;
-    adModal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-
-    const adModalContent = adModal.querySelector('.ad-modal-content');
-    let closeXBtn = adModalContent.querySelector('.close-x-btn');
-    if (!closeXBtn && adModalContent) {
-        closeXBtn = document.createElement('button');
-        closeXBtn.className = 'close-x-btn';
-        closeXBtn.innerHTML = '&times;';
-        closeXBtn.style.cssText = `
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 24px;
-            color: #525252;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background-color 0.3s, color 0.3s;
-        `;
-        adModalContent.style.position = 'relative';
-        adModalContent.appendChild(closeXBtn);
-
-        closeXBtn.addEventListener('mouseover', () => {
-            closeXBtn.style.backgroundColor = 'var(--neutral-100)';
-            closeXBtn.style.color = 'var(--neutral-900)';
-        });
-
-        closeXBtn.addEventListener('mouseout', () => {
-            closeXBtn.style.backgroundColor = 'transparent';
-            closeXBtn.style.color = 'var(--neutral-500)';
-        });
-
-        closeXBtn.addEventListener('click', closeAdModalFunction);
-    }
-
-    const countdown = setInterval(() => {
-        timeLeft--;
-        adTimer.textContent = timeLeft;
-
-        if (timeLeft <= 0) {
-            clearInterval(countdown);
-            closeAdModalBtn.style.display = 'inline-flex';
-            adTimer.style.display = 'none';
-        }
-    }, 1000);
-
-    function closeAdModalFunction() {
-        adModal.style.display = 'none';
-        document.body.style.overflow = '';
-        localStorage.setItem(adShownKey, 'true');
-        localStorage.setItem('lastAdShownTimestamp', currentTime.toString());
-    }
-
-    closeAdModalBtn.addEventListener('click', closeAdModalFunction);
-}
+// Ad Modal Function - 제거됨 (구글 AdSense로 대체)
+// 이전에 사용하던 광고 모달 기능은 구글 AdSense로 대체되어 더 이상 사용하지 않습니다.
 
 // 보유세 계산 함수
 window.calculateModalHoldingTax = function () {
