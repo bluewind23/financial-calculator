@@ -980,18 +980,19 @@ p {
 }
 
 .guide-container {
-    max-width: 1200px;
+    max-width: 1400px; /* 너비 확장 */
     margin: 0 auto;
     margin-top: 2rem; /* 상단 여백 추가하여 설명과 탭 사이 간격 늘림 */
     padding: 0 var(--space-6);
+    width: 100%;
 }
 
 /* 화면이 클 때 사이드바 광고 공간 확보 */
 @media (min-width: 1201px) {
     .guide-container {
-        margin-left: 200px;
-        margin-right: 200px;
-        max-width: calc(100vw - 400px);
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 1400px;
     }
 }
 
@@ -1094,6 +1095,8 @@ p {
     border-radius: var(--radius-2xl);
     padding: var(--space-10);
     box-shadow: var(--shadow-xl);
+    max-width: 100%;
+    width: 100%;
 }
 
 .guide-panel {
@@ -1148,8 +1151,8 @@ p {
 
 .comparison-table {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: var(--space-8);
     margin-top: var(--space-6);
 }
 
@@ -1195,8 +1198,8 @@ p {
 
 .rate-types {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-6);
     margin-top: var(--space-6);
 }
 
@@ -1239,8 +1242,8 @@ p {
 
 .tax-rates {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
     margin-top: var(--space-6);
 }
 
@@ -1297,8 +1300,8 @@ p {
 
 .savings-comparison {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: var(--space-8);
     margin-top: var(--space-6);
 }
 
@@ -1400,8 +1403,8 @@ p {
 
 .tips-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--space-6);
     margin-top: var(--space-6);
 }
 
@@ -2399,7 +2402,9 @@ p {
     .about-page,
     .user-guide-page {
         margin: 0;
-        max-width: none;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
         padding-left: var(--space-6);
         padding-right: var(--space-6);
     }
@@ -2420,6 +2425,7 @@ p {
     margin: 0 auto;
     padding-left: var(--space-6);
     padding-right: var(--space-6);
+    width: 100%;
 }
 
 .user-guide-page {
