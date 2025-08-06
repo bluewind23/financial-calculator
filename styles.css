@@ -1463,7 +1463,7 @@ p {
 }
 
 .about-content {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto var(--space-16);
 }
 
@@ -2383,10 +2383,30 @@ p {
     right: var(--space-4);
 }
 
-/* Hide sidebar ads on mobile */
+/* Hide sidebar ads on mobile and ensure content doesn't overlap */
 @media (max-width: 1200px) {
     .sidebar-ad {
         display: none;
+    }
+}
+
+/* Ensure main content doesn't overlap with sidebar ads on wide screens */
+@media (min-width: 1400px) {
+    body {
+        margin: 0 200px;
+    }
+    
+    .about-page,
+    .user-guide-page {
+        margin: 0;
+        max-width: none;
+        padding-left: var(--space-6);
+        padding-right: var(--space-6);
+    }
+    
+    .service-features {
+        padding-left: var(--space-6);
+        padding-right: var(--space-6);
     }
 }
 
@@ -2396,6 +2416,10 @@ p {
     padding-top: 120px;
     /* Reduced space for header */
     min-height: 100vh;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: var(--space-6);
+    padding-right: var(--space-6);
 }
 
 .user-guide-page {
@@ -2455,7 +2479,7 @@ p {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
@@ -2476,7 +2500,7 @@ p {
 }
 
 .service-features .feature-item i {
-    font-size: 3rem;
+    font-size: 2.2rem;
     color: #3b82f6;
     margin-bottom: 1rem;
 }
@@ -2653,7 +2677,7 @@ p {
 }
 
 .feature-item i {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     color: var(--primary-500);
     margin-bottom: var(--space-4);
 }
