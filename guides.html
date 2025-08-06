@@ -1,59 +1,70 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=5.0">
-    
+
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5809883478660758"
-         crossorigin="anonymous"></script>
-    
+        crossorigin="anonymous"></script>
+
     <!-- SEO Meta Tags -->
     <meta name="description" content="금융계산기 이용가이드 - 대출, 부동산세금, 예적금, 중도상환 등 각 계산기의 정확한 사용법과 금융 용어 설명">
     <meta name="keywords" content="금융계산기 사용법, 대출계산기 가이드, 부동산세금 계산법, 예적금 계산법, 이용가이드">
     <meta name="author" content="금융계산기">
     <meta name="robots" content="index, follow">
     <meta name="language" content="ko">
-    
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="이용가이드 - 금융계산기">
     <meta property="og:description" content="금융계산기 이용가이드 - 대출, 부동산세금, 예적금, 중도상환 등 각 계산기의 정확한 사용법과 금융 용어 설명">
     <meta property="og:locale" content="ko_KR">
     <meta property="og:site_name" content="금융계산기">
-    
+
     <title>이용가이드 - 금융계산기</title>
-    
+
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
-    <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
-    
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+
     <!-- Google Analytics 4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-XXXXXXXXXX', {
-        page_title: document.title,
-        page_location: window.location.href
-      });
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX', {
+            page_title: document.title,
+            page_location: window.location.href
+        });
     </script>
-    
+
     <!-- Preload critical resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"></noscript>
-    
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    </noscript>
+
     <!-- CSS -->
     <link rel="stylesheet" href="styles.css">
-    
+
     <!-- Icons -->
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
-    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    </noscript>
+
 </head>
+
 <body>
 
     <!-- Header -->
@@ -82,8 +93,8 @@
             <h1 class="page-title">이용 가이드</h1>
             <p class="page-description">각 계산기의 정확한 사용법과 금융 용어를 쉽게 설명해드립니다</p>
         </div>
-        
-        
+
+
         <div class="guide-container">
             <div class="guide-tabs">
                 <button class="guide-tab active" data-guide="loan">대출 계산기</button>
@@ -92,12 +103,12 @@
                 <button class="guide-tab" data-guide="prepayment">중도상환</button>
                 <button class="guide-tab" data-guide="general">일반 가이드</button>
             </div>
-            
+
             <div class="guide-content">
                 <!-- 대출 계산기 가이드 -->
                 <div id="loan-guide" class="guide-panel active">
                     <h3>대출 이자 계산기 사용법</h3>
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-calculator"></i> 기본 사용법</h4>
                         <ol>
@@ -108,7 +119,7 @@
                         </ol>
                     </div>
 
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-info-circle"></i> 상환방식 설명</h4>
                         <div class="comparison-table">
@@ -124,7 +135,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="comparison-item">
                                 <h5>원금균등 상환</h5>
                                 <p>매월 원금을 동일하게 상환하고, 이자는 남은 원금에 대해서만 계산하는 방식입니다.</p>
@@ -139,7 +150,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-chart-line"></i> 금리 유형별 특징</h4>
                         <div class="rate-types">
@@ -161,15 +172,15 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- 부동산 세금 가이드 -->
                 <div id="realestate-guide" class="guide-panel">
                     <h3>부동산 세금 계산기 사용법</h3>
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-home"></i> 취득세 계산</h4>
                         <p>부동산을 취득할 때 납부하는 세금으로, 취득가액을 기준으로 계산됩니다.</p>
-                        
+
                         <div class="tax-rates">
                             <div class="tax-item">
                                 <h5>주택 (1주택자)</h5>
@@ -189,7 +200,7 @@
                         </div>
                     </div>
 
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-file-alt"></i> 등록세</h4>
                         <p>부동산 소유권 이전 등기 시 납부하는 세금입니다.</p>
@@ -197,7 +208,7 @@
                             <p>등록세율: <strong>0.2%</strong> (모든 부동산 공통)</p>
                         </div>
                     </div>
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-calculator"></i> 양도소득세</h4>
                         <p>부동산을 매도할 때 발생한 이익에 대해 납부하는 세금입니다.</p>
@@ -212,11 +223,11 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-home"></i> 보유세 (재산세 + 종합부동산세)</h4>
                         <p>부동산을 보유하고 있는 동안 매년 납부하는 세금입니다.</p>
-                        
+
                         <div class="holding-tax-info">
                             <div class="tax-item">
                                 <h5>재산세</h5>
@@ -229,7 +240,7 @@
                                 </ul>
                                 <small>※ 1세대 1주택은 50% 감면 가능</small>
                             </div>
-                            
+
                             <div class="tax-item">
                                 <h5>종합부동산세</h5>
                                 <p>고액 부동산 보유자에게 부과되는 국세</p>
@@ -242,11 +253,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- 예적금 가이드 -->
                 <div id="savings-guide" class="guide-panel">
                     <h3>예적금 계산기 사용법</h3>
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-piggy-bank"></i> 예금 vs 적금</h4>
                         <div class="savings-comparison">
@@ -271,7 +282,7 @@
                         </div>
                     </div>
 
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-percent"></i> 금리 유형</h4>
                         <div class="interest-types">
@@ -287,7 +298,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-receipt"></i> 세금 안내</h4>
                         <p>예적금 이자에는 <strong>15.4%</strong>의 세금이 부과됩니다.</p>
@@ -300,11 +311,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- 중도상환 수수료 가이드 -->
                 <div id="prepayment-guide" class="guide-panel">
                     <h3>중도상환 수수료 계산기 사용법</h3>
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-calculator"></i> 기본 사용법</h4>
                         <ol>
@@ -316,7 +327,7 @@
                             <li><strong>상환금액</strong>: 중도상환하려는 금액을 입력하세요</li>
                         </ol>
                     </div>
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-info-circle"></i> 계산 결과 이해하기</h4>
                         <div class="comparison-table">
@@ -324,17 +335,17 @@
                                 <h5>중도상환수수료</h5>
                                 <p>상환금액 × 중도상환수수료율로 계산됩니다. 은행마다 수수료율이 다르니 확인이 필요합니다.</p>
                             </div>
-                            
+
                             <div class="comparison-item">
                                 <h5>절약되는 이자</h5>
                                 <p>중도상환으로 인해 향후 지불하지 않아도 되는 이자의 총합입니다.</p>
                             </div>
-                            
+
                             <div class="comparison-item">
                                 <h5>실제 절약액</h5>
                                 <p>절약되는 이자에서 중도상환수수료를 뺀 실질적인 이익입니다.</p>
                             </div>
-                            
+
                             <div class="comparison-item">
                                 <h5>손익분기점</h5>
                                 <p>중도상환 후 몇 개월이 지나야 수수료를 상쇄할 수 있는지를 나타냅니다.</p>
@@ -364,11 +375,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- 일반 가이드 -->
                 <div id="general-guide" class="guide-panel">
                     <h3>금융 계산 일반 가이드</h3>
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-lightbulb"></i> 금융 계산 꿀팁</h4>
                         <div class="tips-grid">
@@ -391,7 +402,7 @@
                         </div>
                     </div>
 
-                    
+
                     <div class="guide-section">
                         <h4><i class="fas fa-exclamation-triangle"></i> 주의사항</h4>
                         <div class="warnings">
@@ -465,7 +476,8 @@
                     <input type="email" id="feedbackEmail" class="input-field" placeholder="답변 받을 이메일 (선택)">
                 </div>
                 <div class="modal-actions">
-                    <button class="btn" onclick="submitFeedback()" style="background: var(--primary-500); color: white;">
+                    <button class="btn" onclick="submitFeedback()"
+                        style="background: var(--primary-500); color: white;">
                         <i class="fas fa-paper-plane"></i>
                         보내기
                     </button>
@@ -479,10 +491,10 @@
     <script src="script.js"></script>
     <script>
         // 페이지 로드 시 초기화
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // 가이드 탭 기능 초기화
             initGuideNavigation();
-            
+
             // AdSense automatic ads initialization
             try {
                 (adsbygoogle = window.adsbygoogle || []).push({
@@ -493,25 +505,25 @@
                 console.log('AdSense initialization error:', e);
             }
         });
-        
+
         // 가이드 내비게이션 초기화
         function initGuideNavigation() {
             const guideTabs = document.querySelectorAll('.guide-tab');
             const guidePanels = document.querySelectorAll('.guide-panel');
-            
+
             guideTabs.forEach(tab => {
-                tab.addEventListener('click', function() {
+                tab.addEventListener('click', function () {
                     const targetGuide = this.getAttribute('data-guide');
-                    
+
                     // 모든 탭에서 active 클래스 제거
                     guideTabs.forEach(t => t.classList.remove('active'));
-                    
+
                     // 모든 패널에서 active 클래스 제거
                     guidePanels.forEach(panel => panel.classList.remove('active'));
-                    
+
                     // 클릭된 탭에 active 클래스 추가
                     this.classList.add('active');
-                    
+
                     // 해당 패널에 active 클래스 추가
                     const targetPanel = document.getElementById(targetGuide + '-guide');
                     if (targetPanel) {
@@ -522,4 +534,5 @@
         }
     </script>
 </body>
+
 </html>
