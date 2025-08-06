@@ -87,34 +87,29 @@ class CalculatorManager {
         const calculatorCards = document.querySelectorAll('.calculator-card');
         const popularTools = document.querySelectorAll('.popular-tool');
 
-        // 기존 계산기 카드 이벤트
+        // 기존 계산기 카드 이벤트 - 모달 대신 직접 페이지 이동
         calculatorCards.forEach(card => {
             card.addEventListener('click', () => {
                 const calculatorType = card.dataset.calculator;
 
-                calculatorCards.forEach(c => c.classList.remove('active'));
-                card.classList.add('active');
+                // GA4 이벤트 추적 - 계산기 페이지 이동
+                trackCalculatorUsage(calculatorType, 'navigate');
 
-                this.activeCalculator = calculatorType;
-
-                // GA4 이벤트 추적 - 계산기 열기
-                trackCalculatorUsage(calculatorType, 'open');
-
-                this.openModal(calculatorType);
+                // href 속성이 있으면 자연스럽게 페이지 이동 허용
+                // preventDefault 없이 기본 동작 허용
             });
         });
 
-        // 인기 도구 이벤트
+        // 인기 도구 이벤트 - 모달 대신 직접 페이지 이동
         popularTools.forEach(tool => {
             tool.addEventListener('click', () => {
                 const calculatorType = tool.dataset.calculator;
 
-                this.activeCalculator = calculatorType;
-
-                // GA4 이벤트 추적 - 인기 도구에서 계산기 열기
+                // GA4 이벤트 추적 - 인기 도구에서 계산기 페이지 이동
                 trackCalculatorUsage(calculatorType, 'popular-tool');
 
-                this.openModal(calculatorType);
+                // href 속성이 있으면 자연스럽게 페이지 이동 허용
+                // preventDefault 없이 기본 동작 허용
             });
         });
     }
@@ -681,7 +676,12 @@ class CalculatorManager {
                 // GA4 이벤트 추적
                 trackCalculatorUsage(calculatorId, 'search');
                 
-                this.openModal(calculatorId);
+                // 모달 대신 해당 페이지로 직접 이동
+                const pageUrl = this.getCalculatorPageUrl(calculatorId);
+                if (pageUrl) {
+                    window.location.href = pageUrl;
+                }
+                
                 this.hideSuggestions(container);
                 
                 // 검색창 초기화
@@ -695,6 +695,22 @@ class CalculatorManager {
 
     hideSuggestions(container) {
         container.classList.remove('active');
+    }
+
+    // 계산기 ID를 페이지 URL로 변환하는 함수
+    getCalculatorPageUrl(calculatorId) {
+        const urlMap = {
+            'loan': 'loan-calculator.html',
+            'realestate': 'realestate-tax.html',
+            'savings': 'savings-calculator.html',
+            'brokerage': 'brokerage-calculator.html',
+            'loan-limit': 'loan-limit.html',
+            'affordability': 'affordability-calculator.html',
+            'lease-conversion': 'jeonse-calculator.html',
+            'prepayment-fee': 'prepayment-calculator.html',
+            'holding-tax': 'investment-calculator.html'
+        };
+        return urlMap[calculatorId] || null;
     }
 
     searchCalculators(query) {
