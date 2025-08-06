@@ -2335,6 +2335,17 @@ p {
     display: block !important;
 }
 
+/* 작은 크기 디스플레이 광고 */
+.display-ad-container.small {
+    max-width: 500px; /* 기본보다 작게 */
+    margin: var(--space-4) auto; /* 여백도 줄임 */
+    padding: var(--space-2) 0;
+}
+
+.display-ad-container.small .display-ad {
+    min-height: 70px;
+}
+
 /* Ad Banner Styles */
 .ad-banner {
     width: 100%;
@@ -2386,7 +2397,7 @@ p {
 }
 
 .user-guide-page {
-    padding-top: 100px;
+    padding-top: 80px;
     /* 이용가이드 페이지만 더 짧은 간격 */
 }
 
@@ -2883,6 +2894,16 @@ p {
         min-height: 80px;
     }
     
+    .display-ad-container.small {
+        max-width: 100%;
+        margin: var(--space-3) auto;
+        padding: var(--space-1) 0;
+    }
+    
+    .display-ad-container.small .display-ad {
+        min-height: 60px;
+    }
+    
     .ad-banner {
         min-height: 80px;
         margin: var(--space-3) 0;
@@ -2901,6 +2922,10 @@ p {
     
     .display-ad-container .display-ad {
         min-height: 70px;
+    }
+    
+    .display-ad-container.small .display-ad {
+        min-height: 50px;
     }
     
     .ad-banner {
