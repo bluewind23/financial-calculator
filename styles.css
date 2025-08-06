@@ -982,7 +982,7 @@ p {
 .guide-container {
     max-width: 1200px;
     margin: 0 auto;
-    margin-top: -1rem;
+    margin-top: 2rem; /* 상단 여백 추가하여 설명과 탭 사이 간격 늘림 */
     padding: 0 var(--space-6);
 }
 
@@ -1005,12 +1005,14 @@ p {
 @media (max-width: 768px) {
     .guide-container {
         padding: 0 var(--space-3);
+        margin-top: 1.5rem; /* 모바일에서 적절한 여백 */
     }
 }
 
 @media (max-width: 480px) {
     .guide-container {
         padding: 0 var(--space-2);
+        margin-top: 1rem; /* 작은 화면에서 여백 */
     }
 }
 
@@ -2397,17 +2399,29 @@ p {
 }
 
 .user-guide-page {
-    padding-top: 80px;
-    /* 이용가이드 페이지만 더 짧은 간격 */
+    padding-top: 100px;
+    /* 이용가이드 페이지만 더 짧은 간격 - top 광고 제거로 적정 간격 */
 }
 
-.user-guide-page .section-header,
+.user-guide-page .section-header {
+    text-align: center;
+    margin-bottom: 0.5rem; /* 여백 대폭 축소 */
+    padding-top: 0; /* 상단 패딩 제거 */
+}
+
 .about-page .section-header {
     text-align: center;
     margin-bottom: 1.5rem;
 }
 
-.user-guide-page .page-title,
+.user-guide-page .page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem; /* 여백 축소 */
+    margin-top: 0; /* 상단 여백 제거 */
+}
+
 .about-page .page-title {
     font-size: 2.5rem;
     font-weight: 700;
@@ -2884,6 +2898,10 @@ p {
 }
 
 @media (max-width: 768px) {
+    .user-guide-page {
+        padding-top: 90px; /* 모바일에서 적절한 간격 */
+    }
+    
     .display-ad-container {
         max-width: 100%;
         margin: var(--space-4) auto;
@@ -2915,6 +2933,10 @@ p {
 }
 
 @media (max-width: 480px) {
+    .user-guide-page {
+        padding-top: 80px; /* 작은 화면에서 적절한 간격 */
+    }
+    
     .display-ad-container {
         margin: var(--space-3) auto;
         padding: var(--space-2) var(--space-3);
