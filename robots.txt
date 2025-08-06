@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: /admin.html
 
-Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://fincalc.pe.kr/sitemap.xml
