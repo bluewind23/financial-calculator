@@ -7,7 +7,6 @@
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5809883478660758"
          crossorigin="anonymous"></script>
-    <meta name="google-adsense-account" content="ca-pub-5809883478660758">
     
     <!-- SEO Meta Tags -->
     <meta name="description" content="금융계산기 이용가이드 - 대출, 부동산세금, 예적금, 중도상환 등 각 계산기의 정확한 사용법과 금융 용어 설명">
@@ -484,7 +483,15 @@
             // 가이드 탭 기능 초기화
             initGuideNavigation();
             
-            // AdSense automatic ads are handled by the script in head section
+            // AdSense automatic ads initialization
+            try {
+                (adsbygoogle = window.adsbygoogle || []).push({
+                    google_ad_client: "ca-pub-5809883478660758",
+                    enable_page_level_ads: true
+                });
+            } catch (e) {
+                console.log('AdSense initialization error:', e);
+            }
         });
         
         // 가이드 내비게이션 초기화
